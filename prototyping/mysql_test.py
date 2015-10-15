@@ -5,11 +5,11 @@ import pandas as pd
 
 
 def rd_pass():
-    return open('pass.txt').read()
+    return open('pass.pass').read()
 
 def parse_table_main(res):
     i = 0
-    print print
+    print ""
 
 if __name__ == "__main__":
 
