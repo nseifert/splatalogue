@@ -1,2 +1,4 @@
 # Password files #
 *.pass
+
+.idea/
