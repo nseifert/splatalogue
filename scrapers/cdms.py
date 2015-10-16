@@ -42,4 +42,5 @@ if __name__ == "__main__":
                          formatted_date, urls[i][1], urls[i][2]])
 
     compiled.sort(key=lambda x: x[2], reverse=True)
+
     print pretty_print(compiled)

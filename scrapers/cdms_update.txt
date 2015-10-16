@@ -1,0 +1,787 @@
+Tag  	Molecule                                     	Date           	Cat Link                                 Metadata Link                           
+062523	gauche-C2H5SH                                	September 2015 	/site/vorhersagen/catalog/c062523.cat    /cgi-bin/cdmsinfo?file=e062523.cat      
+062524	anti-C2H5SH                                  	September 2015 	/site/vorhersagen/catalog/c062524.cat    /cgi-bin/cdmsinfo?file=e062524.cat      
+064517	gauche-C2H534SH                              	September 2015 	/site/vorhersagen/catalog/c064517.cat    /cgi-bin/cdmsinfo?file=e064517.cat      
+047515	a-CH3CH2OD                                   	August 2015    	/site/vorhersagen/catalog/c047515.cat    /cgi-bin/cdmsinfo?file=e047515.cat      
+047516	a-CH3CHDOH                                   	August 2015    	/site/vorhersagen/catalog/c047516.cat    /cgi-bin/cdmsinfo?file=e047516.cat      
+047517	a-a-CH2DCH2OH                                	August 2015    	/site/vorhersagen/catalog/c047517.cat    /cgi-bin/cdmsinfo?file=e047517.cat      
+047518	a-s-CH2DCH2OH                                	August 2015    	/site/vorhersagen/catalog/c047518.cat    /cgi-bin/cdmsinfo?file=e047518.cat      
+061516	CH2(OD)CHO                                   	August 2015    	/site/vorhersagen/catalog/c061516.cat    /cgi-bin/cdmsinfo?file=e061516.cat      
+061517	CHD(OH)CHO                                   	August 2015    	/site/vorhersagen/catalog/c061517.cat    /cgi-bin/cdmsinfo?file=e061517.cat      
+061518	CH2(OH)CDO                                   	August 2015    	/site/vorhersagen/catalog/c061518.cat    /cgi-bin/cdmsinfo?file=e061518.cat      
+053519	NCCNH+                                       	July 2015      	/site/vorhersagen/catalog/c053519.cat    /cgi-bin/cdmsinfo?file=e053519.cat      
+054515	NCCND+                                       	July 2015      	/site/vorhersagen/catalog/c054515.cat    /cgi-bin/cdmsinfo?file=e054515.cat      
+054516	NC13CNH+                                     	July 2015      	/site/vorhersagen/catalog/c054516.cat    /cgi-bin/cdmsinfo?file=e054516.cat      
+054517	N13CCNH+                                     	July 2015      	/site/vorhersagen/catalog/c054517.cat    /cgi-bin/cdmsinfo?file=e054517.cat      
+054518	CH2CHCNH+                                    	July 2015      	/site/vorhersagen/catalog/c054518.cat    /cgi-bin/cdmsinfo?file=e054518.cat      
+067505	HCCNSi                                       	July 2015      	/site/vorhersagen/catalog/c067505.cat    /cgi-bin/cdmsinfo?file=e067505.cat      
+068509	NCNSi                                        	July 2015      	/site/vorhersagen/catalog/c068509.cat    /cgi-bin/cdmsinfo?file=e068509.cat      
+013502	CH                                           	June 2015      	/site/vorhersagen/catalog/c013502.cat    /cgi-bin/cdmsinfo?file=e013502.cat      
+057504	PCN                                          	June 2015      	/site/vorhersagen/catalog/c057504.cat    /cgi-bin/cdmsinfo?file=e057504.cat      
+059509	H2PCN                                        	June 2015      	/site/vorhersagen/catalog/c059509.cat    /cgi-bin/cdmsinfo?file=e059509.cat      
+068508	Si2C, v = 0                                  	June 2015      	/site/vorhersagen/catalog/c068508.cat    /cgi-bin/cdmsinfo?file=e068508.cat      
+061505	C5H                                          	May 2015       	/site/vorhersagen/catalog/c061505.cat    /cgi-bin/cdmsinfo?file=e061505.cat      
+061515	CH3O13CHO, vt = 0, 1                         	May 2015       	/site/vorhersagen/catalog/c061515.cat    /cgi-bin/cdmsinfo?file=e061515.cat      
+062517	C413CH                                       	May 2015       	/site/vorhersagen/catalog/c062517.cat    /cgi-bin/cdmsinfo?file=e062517.cat      
+062518	C313CCH                                      	May 2015       	/site/vorhersagen/catalog/c062518.cat    /cgi-bin/cdmsinfo?file=e062518.cat      
+062519	C213CC2H                                     	May 2015       	/site/vorhersagen/catalog/c062519.cat    /cgi-bin/cdmsinfo?file=e062519.cat      
+062520	C13CC3H                                      	May 2015       	/site/vorhersagen/catalog/c062520.cat    /cgi-bin/cdmsinfo?file=e062520.cat      
+062521	13CC4H                                       	May 2015       	/site/vorhersagen/catalog/c062521.cat    /cgi-bin/cdmsinfo?file=e062521.cat      
+062522	C5D                                          	May 2015       	/site/vorhersagen/catalog/c062522.cat    /cgi-bin/cdmsinfo?file=e062522.cat      
+033508	SH, v = 0                                    	March 2015     	/site/vorhersagen/catalog/c033508.cat    /cgi-bin/cdmsinfo?file=e033508.cat      
+033509	SH, v = 1                                    	March 2015     	/site/vorhersagen/catalog/c033509.cat    /cgi-bin/cdmsinfo?file=e033509.cat      
+037504	H2Cl+                                        	March 2015     	/site/vorhersagen/catalog/c037504.cat    /cgi-bin/cdmsinfo?file=e037504.cat      
+037505	C3H+                                         	March 2015     	/site/vorhersagen/catalog/c037505.cat    /cgi-bin/cdmsinfo?file=e037505.cat      
+039507	H237Cl+                                      	March 2015     	/site/vorhersagen/catalog/c039507.cat    /cgi-bin/cdmsinfo?file=e039507.cat      
+092501	C5S                                          	February 2015  	/site/vorhersagen/catalog/c092501.cat    /cgi-bin/cdmsinfo?file=e092501.cat      
+093501	13CC4S                                       	February 2015  	/site/vorhersagen/catalog/c093501.cat    /cgi-bin/cdmsinfo?file=e093501.cat      
+093502	C13CC3S                                      	February 2015  	/site/vorhersagen/catalog/c093502.cat    /cgi-bin/cdmsinfo?file=e093502.cat      
+093503	C213CC2S                                     	February 2015  	/site/vorhersagen/catalog/c093503.cat    /cgi-bin/cdmsinfo?file=e093503.cat      
+093504	C313CCS                                      	February 2015  	/site/vorhersagen/catalog/c093504.cat    /cgi-bin/cdmsinfo?file=e093504.cat      
+093505	C413CS                                       	February 2015  	/site/vorhersagen/catalog/c093505.cat    /cgi-bin/cdmsinfo?file=e093505.cat      
+094502	C534S                                        	February 2015  	/site/vorhersagen/catalog/c094502.cat    /cgi-bin/cdmsinfo?file=e094502.cat      
+116501	C7S                                          	February 2015  	/site/vorhersagen/catalog/c116501.cat    /cgi-bin/cdmsinfo?file=e116501.cat      
+030517	NO, v = 0                                    	January 2015   	/site/vorhersagen/catalog/c030517.cat    /cgi-bin/cdmsinfo?file=e030517.cat      
+030518	NO, v = 1                                    	January 2015   	/site/vorhersagen/catalog/c030518.cat    /cgi-bin/cdmsinfo?file=e030518.cat      
+031512	15NO                                         	January 2015   	/site/vorhersagen/catalog/c031512.cat    /cgi-bin/cdmsinfo?file=e031512.cat      
+031513	N17O                                         	January 2015   	/site/vorhersagen/catalog/c031513.cat    /cgi-bin/cdmsinfo?file=e031513.cat      
+032513	N18O                                         	January 2015   	/site/vorhersagen/catalog/c032513.cat    /cgi-bin/cdmsinfo?file=e032513.cat      
+032514	15N17O                                       	January 2015   	/site/vorhersagen/catalog/c032514.cat    /cgi-bin/cdmsinfo?file=e032514.cat      
+033507	15N18O                                       	January 2015   	/site/vorhersagen/catalog/c033507.cat    /cgi-bin/cdmsinfo?file=e033507.cat      
+060505	Ga-n-C3H7OH                                  	January 2015   	/site/vorhersagen/catalog/c060505.cat    /cgi-bin/cdmsinfo?file=e060505.cat      
+065512	SiC3H                                        	December 2014  	/site/vorhersagen/catalog/c065512.cat    /cgi-bin/cdmsinfo?file=e065512.cat      
+066507	H2S2                                         	December 2014  	/site/vorhersagen/catalog/c066507.cat    /cgi-bin/cdmsinfo?file=e066507.cat      
+066508	SiC2N                                        	December 2014  	/site/vorhersagen/catalog/c066508.cat    /cgi-bin/cdmsinfo?file=e066508.cat      
+077511	SiC4H                                        	December 2014  	/site/vorhersagen/catalog/c077511.cat    /cgi-bin/cdmsinfo?file=e077511.cat      
+078504	SiC3N                                        	December 2014  	/site/vorhersagen/catalog/c078504.cat    /cgi-bin/cdmsinfo?file=e078504.cat      
+096501	cis-S2O2                                     	December 2014  	/site/vorhersagen/catalog/c096501.cat    /cgi-bin/cdmsinfo?file=e096501.cat      
+028501	H13CN, v = 0                                 	November 2014  	/site/vorhersagen/catalog/c028501.cat    /cgi-bin/cdmsinfo?file=e028501.cat      
+028511	H13CN, v2 = 1                                	November 2014  	/site/vorhersagen/catalog/c028511.cat    /cgi-bin/cdmsinfo?file=e028511.cat      
+028520	H13CN, v2 = 2                                	November 2014  	/site/vorhersagen/catalog/c028520.cat    /cgi-bin/cdmsinfo?file=e028520.cat      
+028521	H13CN, v2 = 3                                	November 2014  	/site/vorhersagen/catalog/c028521.cat    /cgi-bin/cdmsinfo?file=e028521.cat      
+028522	H13CN, v3 = 1                                	November 2014  	/site/vorhersagen/catalog/c028522.cat    /cgi-bin/cdmsinfo?file=e028522.cat      
+028523	H13CN, v1 = 1                                	November 2014  	/site/vorhersagen/catalog/c028523.cat    /cgi-bin/cdmsinfo?file=e028523.cat      
+077510	AlC3N                                        	October 2014   	/site/vorhersagen/catalog/c077510.cat    /cgi-bin/cdmsinfo?file=e077510.cat      
+017502	OH                                           	September 2014 	/site/vorhersagen/catalog/c017502.cat    /cgi-bin/cdmsinfo?file=e017502.cat      
+033505	SH+                                          	September 2014 	/site/vorhersagen/catalog/c033505.cat    /cgi-bin/cdmsinfo?file=e033505.cat      
+056518	SiH3CCH                                      	September 2014 	/site/vorhersagen/catalog/c056518.cat    /cgi-bin/cdmsinfo?file=e056518.cat      
+057503	SiH3CN                                       	September 2014 	/site/vorhersagen/catalog/c057503.cat    /cgi-bin/cdmsinfo?file=e057503.cat      
+058511	SiH313CN                                     	September 2014 	/site/vorhersagen/catalog/c058511.cat    /cgi-bin/cdmsinfo?file=e058511.cat      
+058512	29SiH3CN                                     	September 2014 	/site/vorhersagen/catalog/c058512.cat    /cgi-bin/cdmsinfo?file=e058512.cat      
+059508	30SiH3CN                                     	September 2014 	/site/vorhersagen/catalog/c059508.cat    /cgi-bin/cdmsinfo?file=e059508.cat      
+076513	aG'g-CH3CHOHCH2OH                            	August 2014    	/site/vorhersagen/catalog/c076513.cat    /cgi-bin/cdmsinfo?file=e076513.cat      
+076515	gG'a-CH3CHOHCH2OH                            	August 2014    	/site/vorhersagen/catalog/c076515.cat    /cgi-bin/cdmsinfo?file=e076515.cat      
+076516	g'G'g-CH3CHOHCH2OH                           	August 2014    	/site/vorhersagen/catalog/c076516.cat    /cgi-bin/cdmsinfo?file=e076516.cat      
+067504	c-C4H4NH                                     	June 2014      	/site/vorhersagen/catalog/c067504.cat    /cgi-bin/cdmsinfo?file=e067504.cat      
+068507	c-C4H4O                                      	June 2014      	/site/vorhersagen/catalog/c068507.cat    /cgi-bin/cdmsinfo?file=e068507.cat      
+079501	c-C5H5N                                      	June 2014      	/site/vorhersagen/catalog/c079501.cat    /cgi-bin/cdmsinfo?file=e079501.cat      
+029518	H2CNH                                        	May 2014       	/site/vorhersagen/catalog/c029518.cat    /cgi-bin/cdmsinfo?file=e029518.cat      
+030514	H213CNH                                      	May 2014       	/site/vorhersagen/catalog/c030514.cat    /cgi-bin/cdmsinfo?file=e030514.cat      
+030515	H2CND                                        	May 2014       	/site/vorhersagen/catalog/c030515.cat    /cgi-bin/cdmsinfo?file=e030515.cat      
+030516	H2C15NH                                      	May 2014       	/site/vorhersagen/catalog/c030516.cat    /cgi-bin/cdmsinfo?file=e030516.cat      
+040515	l-C3D2                                       	May 2014       	/site/vorhersagen/catalog/c040515.cat    /cgi-bin/cdmsinfo?file=e040515.cat      
+064516	o-c-SiC3                                     	May 2014       	/site/vorhersagen/catalog/c064516.cat    /cgi-bin/cdmsinfo?file=e064516.cat      
+069505	n-C3H7CN                                     	May 2014       	/site/vorhersagen/catalog/c069505.cat    /cgi-bin/cdmsinfo?file=e069505.cat      
+090501	CHOCHOHCH2OH                                 	May 2014       	/site/vorhersagen/catalog/c090501.cat    /cgi-bin/cdmsinfo?file=e090501.cat      
+029506	N2H+, v = 0                                  	April 2014     	/site/vorhersagen/catalog/c029506.cat    /cgi-bin/cdmsinfo?file=e029506.cat      
+043516	HNSi                                         	April 2014     	/site/vorhersagen/catalog/c043516.cat    /cgi-bin/cdmsinfo?file=e043516.cat      
+058509	dibridged Si2H2                              	April 2014     	/site/vorhersagen/catalog/c058509.cat    /cgi-bin/cdmsinfo?file=e058509.cat      
+058510	monobridged Si2H2                            	April 2014     	/site/vorhersagen/catalog/c058510.cat    /cgi-bin/cdmsinfo?file=e058510.cat      
+062515	trans-HC(O)SH                                	April 2014     	/site/vorhersagen/catalog/c062515.cat    /cgi-bin/cdmsinfo?file=e062515.cat      
+062516	cis-HC(O)SH                                  	April 2014     	/site/vorhersagen/catalog/c062516.cat    /cgi-bin/cdmsinfo?file=e062516.cat      
+062514	C4N                                          	March 2014     	/site/vorhersagen/catalog/c062514.cat    /cgi-bin/cdmsinfo?file=e062514.cat      
+076518	a'GG'g-CH2OHCH2CH2OH                         	March 2014     	/site/vorhersagen/catalog/c076518.cat    /cgi-bin/cdmsinfo?file=e076518.cat      
+076519	gGG'g-CH2OHCH2CH2OH                          	March 2014     	/site/vorhersagen/catalog/c076519.cat    /cgi-bin/cdmsinfo?file=e076519.cat      
+046523	29Si17O, v = 0   2                           	February 2014  	/site/vorhersagen/catalog/c046523.cat    /cgi-bin/cdmsinfo?file=e046523.cat      
+047514	30Si17O, v = 0   2                           	February 2014  	/site/vorhersagen/catalog/c047514.cat    /cgi-bin/cdmsinfo?file=e047514.cat      
+054512	E-HNCHCN                                     	February 2014  	/site/vorhersagen/catalog/c054512.cat    /cgi-bin/cdmsinfo?file=e054512.cat      
+054513	Z-HNCHCN                                     	February 2014  	/site/vorhersagen/catalog/c054513.cat    /cgi-bin/cdmsinfo?file=e054513.cat      
+054514	H2CNCN                                       	February 2014  	/site/vorhersagen/catalog/c054514.cat    /cgi-bin/cdmsinfo?file=e054514.cat      
+044505	SiO, v = 0   10                              	January 2014   	/site/vorhersagen/catalog/c044505.cat    /cgi-bin/cdmsinfo?file=e044505.cat      
+045504	29SiO, v = 0   6                             	January 2014   	/site/vorhersagen/catalog/c045504.cat    /cgi-bin/cdmsinfo?file=e045504.cat      
+045519	Si17O, v = 0   4                             	January 2014   	/site/vorhersagen/catalog/c045519.cat    /cgi-bin/cdmsinfo?file=e045519.cat      
+046502	30SiO, v = 0   6                             	January 2014   	/site/vorhersagen/catalog/c046502.cat    /cgi-bin/cdmsinfo?file=e046502.cat      
+046503	Si18O, v = 0   5                             	January 2014   	/site/vorhersagen/catalog/c046503.cat    /cgi-bin/cdmsinfo?file=e046503.cat      
+047513	29Si18O, v = 0   3                           	January 2014   	/site/vorhersagen/catalog/c047513.cat    /cgi-bin/cdmsinfo?file=e047513.cat      
+048510	30Si18O, v = 0   3                           	January 2014   	/site/vorhersagen/catalog/c048510.cat    /cgi-bin/cdmsinfo?file=e048510.cat      
+039511	38ArH+                                       	December 2013  	/site/vorhersagen/catalog/c039511.cat    /cgi-bin/cdmsinfo?file=e039511.cat      
+056507	H2NCH2CN                                     	December 2013  	/site/vorhersagen/catalog/c056507.cat    /cgi-bin/cdmsinfo?file=e056507.cat      
+057502	HDNCH2CN                                     	December 2013  	/site/vorhersagen/catalog/c057502.cat    /cgi-bin/cdmsinfo?file=e057502.cat      
+058508	D2NCH2CN                                     	December 2013  	/site/vorhersagen/catalog/c058508.cat    /cgi-bin/cdmsinfo?file=e058508.cat      
+072502	s-cis-H2C=CHCOOH                             	December 2013  	/site/vorhersagen/catalog/c072502.cat    /cgi-bin/cdmsinfo?file=e072502.cat      
+072503	s-trans-H2C=CHCOOH                           	December 2013  	/site/vorhersagen/catalog/c072503.cat    /cgi-bin/cdmsinfo?file=e072503.cat      
+041508	MgOH                                         	November 2013  	/site/vorhersagen/catalog/c041508.cat    /cgi-bin/cdmsinfo?file=e041508.cat      
+044516	H2NCO+                                       	November 2013  	/site/vorhersagen/catalog/c044516.cat    /cgi-bin/cdmsinfo?file=e044516.cat      
+057501	CaOH                                         	November 2013  	/site/vorhersagen/catalog/c057501.cat    /cgi-bin/cdmsinfo?file=e057501.cat      
+068506	H2CNCH2CN                                    	November 2013  	/site/vorhersagen/catalog/c068506.cat    /cgi-bin/cdmsinfo?file=e068506.cat      
+016503	CH2D+                                        	October 2013   	/site/vorhersagen/catalog/c016503.cat    /cgi-bin/cdmsinfo?file=e016503.cat      
+045517	trans-HOCO                                   	October 2013   	/site/vorhersagen/catalog/c045517.cat    /cgi-bin/cdmsinfo?file=e045517.cat      
+045518	cis-HOCO                                     	October 2013   	/site/vorhersagen/catalog/c045518.cat    /cgi-bin/cdmsinfo?file=e045518.cat      
+084502	OC3S                                         	October 2013   	/site/vorhersagen/catalog/c084502.cat    /cgi-bin/cdmsinfo?file=e084502.cat      
+019506	NH3D+                                        	September 2013 	/site/vorhersagen/catalog/c019506.cat    /cgi-bin/cdmsinfo?file=e019506.cat      
+051527	HMgNC                                        	September 2013 	/site/vorhersagen/catalog/c051527.cat    /cgi-bin/cdmsinfo?file=e051527.cat      
+055505	HSiCN                                        	September 2013 	/site/vorhersagen/catalog/c055505.cat    /cgi-bin/cdmsinfo?file=e055505.cat      
+055506	HSiNC                                        	September 2013 	/site/vorhersagen/catalog/c055506.cat    /cgi-bin/cdmsinfo?file=e055506.cat      
+060509	c-C2H4S                                      	September 2013 	/site/vorhersagen/catalog/c060509.cat    /cgi-bin/cdmsinfo?file=e060509.cat      
+094501	c-C6H5OH                                     	September 2013 	/site/vorhersagen/catalog/c094501.cat    /cgi-bin/cdmsinfo?file=e094501.cat      
+028513	CO+, v = 0                                   	August 2013    	/site/vorhersagen/catalog/c028513.cat    /cgi-bin/cdmsinfo?file=e028513.cat      
+028519	CO+, v = 1                                   	August 2013    	/site/vorhersagen/catalog/c028519.cat    /cgi-bin/cdmsinfo?file=e028519.cat      
+029519	13CO+                                        	August 2013    	/site/vorhersagen/catalog/c029519.cat    /cgi-bin/cdmsinfo?file=e029519.cat      
+030513	C18O+                                        	August 2013    	/site/vorhersagen/catalog/c030513.cat    /cgi-bin/cdmsinfo?file=e030513.cat      
+031511	13C18O+                                      	August 2013    	/site/vorhersagen/catalog/c031511.cat    /cgi-bin/cdmsinfo?file=e031511.cat      
+042511	CH2DCN                                       	July 2013      	/site/vorhersagen/catalog/c042511.cat    /cgi-bin/cdmsinfo?file=e042511.cat      
+043514	CHD2CN                                       	July 2013      	/site/vorhersagen/catalog/c043514.cat    /cgi-bin/cdmsinfo?file=e043514.cat      
+068503	C3S, v = 0                                   	June 2013      	/site/vorhersagen/catalog/c068503.cat    /cgi-bin/cdmsinfo?file=e068503.cat      
+068505	C3S, v5 = 1                                  	June 2013      	/site/vorhersagen/catalog/c068505.cat    /cgi-bin/cdmsinfo?file=e068505.cat      
+069502	C13CCS                                       	June 2013      	/site/vorhersagen/catalog/c069502.cat    /cgi-bin/cdmsinfo?file=e069502.cat      
+069503	13CCCS                                       	June 2013      	/site/vorhersagen/catalog/c069503.cat    /cgi-bin/cdmsinfo?file=e069503.cat      
+069507	CC13CS                                       	June 2013      	/site/vorhersagen/catalog/c069507.cat    /cgi-bin/cdmsinfo?file=e069507.cat      
+070502	C334S                                        	June 2013      	/site/vorhersagen/catalog/c070502.cat    /cgi-bin/cdmsinfo?file=e070502.cat      
+070506	C13C13CS                                     	June 2013      	/site/vorhersagen/catalog/c070506.cat    /cgi-bin/cdmsinfo?file=e070506.cat      
+070507	13CC13CS                                     	June 2013      	/site/vorhersagen/catalog/c070507.cat    /cgi-bin/cdmsinfo?file=e070507.cat      
+071503	CC13C34S                                     	June 2013      	/site/vorhersagen/catalog/c071503.cat    /cgi-bin/cdmsinfo?file=e071503.cat      
+071504	C13CC34S                                     	June 2013      	/site/vorhersagen/catalog/c071504.cat    /cgi-bin/cdmsinfo?file=e071504.cat      
+071505	13CCC34S                                     	June 2013      	/site/vorhersagen/catalog/c071505.cat    /cgi-bin/cdmsinfo?file=e071505.cat      
+034501	PH3                                          	May 2013       	/site/vorhersagen/catalog/c034501.cat    /cgi-bin/cdmsinfo?file=e034501.cat      
+064504	TiO                                          	May 2013       	/site/vorhersagen/catalog/c064504.cat    /cgi-bin/cdmsinfo?file=e064504.cat      
+045512	HC(O)NH2, v = 0                              	April 2013     	/site/vorhersagen/catalog/c045512.cat    /cgi-bin/cdmsinfo?file=e045512.cat      
+045516	HC(O)NH2, v12 = 1                            	April 2013     	/site/vorhersagen/catalog/c045516.cat    /cgi-bin/cdmsinfo?file=e045516.cat      
+046512	H13C(O)NH2                                   	April 2013     	/site/vorhersagen/catalog/c046512.cat    /cgi-bin/cdmsinfo?file=e046512.cat      
+046520	DC(O)NH2                                     	April 2013     	/site/vorhersagen/catalog/c046520.cat    /cgi-bin/cdmsinfo?file=e046520.cat      
+046521	cis-HC(O)NHD                                 	April 2013     	/site/vorhersagen/catalog/c046521.cat    /cgi-bin/cdmsinfo?file=e046521.cat      
+046522	trans-HC(O)NHD                               	April 2013     	/site/vorhersagen/catalog/c046522.cat    /cgi-bin/cdmsinfo?file=e046522.cat      
+066506	H2C(CN)2                                     	April 2013     	/site/vorhersagen/catalog/c066506.cat    /cgi-bin/cdmsinfo?file=e066506.cat      
+056504	C2H513CN, v = 0                              	February 2013  	/site/vorhersagen/catalog/c056504.cat    /cgi-bin/cdmsinfo?file=e056504.cat      
+056505	CH313CH2CN, v = 0                            	February 2013  	/site/vorhersagen/catalog/c056505.cat    /cgi-bin/cdmsinfo?file=e056505.cat      
+056506	13CH3CH2CN, v = 0                            	February 2013  	/site/vorhersagen/catalog/c056506.cat    /cgi-bin/cdmsinfo?file=e056506.cat      
+061513	CH2(OH)13CHO                                 	February 2013  	/site/vorhersagen/catalog/c061513.cat    /cgi-bin/cdmsinfo?file=e061513.cat      
+061514	13CH2(OH)CHO                                 	February 2013  	/site/vorhersagen/catalog/c061514.cat    /cgi-bin/cdmsinfo?file=e061514.cat      
+045515	C2H5NH2                                      	January 2013   	/site/vorhersagen/catalog/c045515.cat    /cgi-bin/cdmsinfo?file=e045515.cat      
+045514	HSiO                                         	December 2012  	/site/vorhersagen/catalog/c045514.cat    /cgi-bin/cdmsinfo?file=e045514.cat      
+061512	HSiS                                         	December 2012  	/site/vorhersagen/catalog/c061512.cat    /cgi-bin/cdmsinfo?file=e061512.cat      
+021502	H2F+                                         	November 2012  	/site/vorhersagen/catalog/c021502.cat    /cgi-bin/cdmsinfo?file=e021502.cat      
+046519	H2SiO                                        	November 2012  	/site/vorhersagen/catalog/c046519.cat    /cgi-bin/cdmsinfo?file=e046519.cat      
+062513	H2SiS                                        	November 2012  	/site/vorhersagen/catalog/c062513.cat    /cgi-bin/cdmsinfo?file=e062513.cat      
+034504	CH318OH, vt   2                              	September 2012 	/site/vorhersagen/catalog/c034504.cat    /cgi-bin/cdmsinfo?file=e034504.cat      
+049512	HSO                                          	September 2012 	/site/vorhersagen/catalog/c049512.cat    /cgi-bin/cdmsinfo?file=e049512.cat      
+052536	AlCCH                                        	September 2012 	/site/vorhersagen/catalog/c052536.cat    /cgi-bin/cdmsinfo?file=e052536.cat      
+059507	AlS                                          	September 2012 	/site/vorhersagen/catalog/c059507.cat    /cgi-bin/cdmsinfo?file=e059507.cat      
+077509	ScS                                          	September 2012 	/site/vorhersagen/catalog/c077509.cat    /cgi-bin/cdmsinfo?file=e077509.cat      
+105502	YO                                           	September 2012 	/site/vorhersagen/catalog/c105502.cat    /cgi-bin/cdmsinfo?file=e105502.cat      
+121502	YS                                           	September 2012 	/site/vorhersagen/catalog/c121502.cat    /cgi-bin/cdmsinfo?file=e121502.cat      
+047511	a-CH313CH2OH                                 	August 2012    	/site/vorhersagen/catalog/c047511.cat    /cgi-bin/cdmsinfo?file=e047511.cat      
+047512	a-13CH3CH2OH                                 	August 2012    	/site/vorhersagen/catalog/c047512.cat    /cgi-bin/cdmsinfo?file=e047512.cat      
+040514	c-C3D2                                       	July 2012      	/site/vorhersagen/catalog/c040514.cat    /cgi-bin/cdmsinfo?file=e040514.cat      
+041506	HCCO                                         	July 2012      	/site/vorhersagen/catalog/c041506.cat    /cgi-bin/cdmsinfo?file=e041506.cat      
+041507	HNCN                                         	July 2012      	/site/vorhersagen/catalog/c041507.cat    /cgi-bin/cdmsinfo?file=e041507.cat      
+044504	c-C2H4O                                      	July 2012      	/site/vorhersagen/catalog/c044504.cat    /cgi-bin/cdmsinfo?file=e044504.cat      
+045513	c-C13CH4O                                    	July 2012      	/site/vorhersagen/catalog/c045513.cat    /cgi-bin/cdmsinfo?file=e045513.cat      
+046518	c-C2H418O                                    	July 2012      	/site/vorhersagen/catalog/c046518.cat    /cgi-bin/cdmsinfo?file=e046518.cat      
+039508	c-C3HD                                       	June 2012      	/site/vorhersagen/catalog/c039508.cat    /cgi-bin/cdmsinfo?file=e039508.cat      
+039509	c-13CC2H2                                    	June 2012      	/site/vorhersagen/catalog/c039509.cat    /cgi-bin/cdmsinfo?file=e039509.cat      
+039510	c-CC13CH2                                    	June 2012      	/site/vorhersagen/catalog/c039510.cat    /cgi-bin/cdmsinfo?file=e039510.cat      
+018505	H2O+                                         	May 2012       	/site/vorhersagen/catalog/c018505.cat    /cgi-bin/cdmsinfo?file=e018505.cat      
+018506	OD+                                          	May 2012       	/site/vorhersagen/catalog/c018506.cat    /cgi-bin/cdmsinfo?file=e018506.cat      
+019505	18OH+                                        	May 2012       	/site/vorhersagen/catalog/c019505.cat    /cgi-bin/cdmsinfo?file=e019505.cat      
+038508	c-C3H2                                       	May 2012       	/site/vorhersagen/catalog/c038508.cat    /cgi-bin/cdmsinfo?file=e038508.cat      
+051506	HC3N, (1,0,0,0)                              	April 2012     	/site/vorhersagen/catalog/c051506.cat    /cgi-bin/cdmsinfo?file=e051506.cat      
+051525	HC3N, (0,0,0,4)/(0,1,0,1)                    	April 2012     	/site/vorhersagen/catalog/c051525.cat    /cgi-bin/cdmsinfo?file=e051525.cat      
+051526	HC3N, (0,0,2,0)                              	April 2012     	/site/vorhersagen/catalog/c051526.cat    /cgi-bin/cdmsinfo?file=e051526.cat      
+075514	HC5N, v11 = 5                                	April 2012     	/site/vorhersagen/catalog/c075514.cat    /cgi-bin/cdmsinfo?file=e075514.cat      
+075513	HC5N, v10 = v11 = 1                          	March 2012     	/site/vorhersagen/catalog/c075513.cat    /cgi-bin/cdmsinfo?file=e075513.cat      
+083501	AA-n-C4H9CN                                  	March 2012     	/site/vorhersagen/catalog/c083501.cat    /cgi-bin/cdmsinfo?file=e083501.cat      
+083502	GA-n-C4H9CN                                  	March 2012     	/site/vorhersagen/catalog/c083502.cat    /cgi-bin/cdmsinfo?file=e083502.cat      
+083503	AG-n-C4H9CN                                  	March 2012     	/site/vorhersagen/catalog/c083503.cat    /cgi-bin/cdmsinfo?file=e083503.cat      
+004501	H2D+                                         	February 2012  	/site/vorhersagen/catalog/c004501.cat    /cgi-bin/cdmsinfo?file=e004501.cat      
+005501	HD2+                                         	February 2012  	/site/vorhersagen/catalog/c005501.cat    /cgi-bin/cdmsinfo?file=e005501.cat      
+070505	CH3CH(NH2)CN                                 	February 2012  	/site/vorhersagen/catalog/c070505.cat    /cgi-bin/cdmsinfo?file=e070505.cat      
+039501	HCCN                                         	January 2012   	/site/vorhersagen/catalog/c039501.cat    /cgi-bin/cdmsinfo?file=e039501.cat      
+040510	H13CCN                                       	January 2012   	/site/vorhersagen/catalog/c040510.cat    /cgi-bin/cdmsinfo?file=e040510.cat      
+040511	HC13CN                                       	January 2012   	/site/vorhersagen/catalog/c040511.cat    /cgi-bin/cdmsinfo?file=e040511.cat      
+040512	DCCN                                         	January 2012   	/site/vorhersagen/catalog/c040512.cat    /cgi-bin/cdmsinfo?file=e040512.cat      
+040513	HCC15N                                       	January 2012   	/site/vorhersagen/catalog/c040513.cat    /cgi-bin/cdmsinfo?file=e040513.cat      
+049510	NaCN, NaNC                                   	January 2012   	/site/vorhersagen/catalog/c049510.cat    /cgi-bin/cdmsinfo?file=e049510.cat      
+050513	Na13CN, NaN13C                               	January 2012   	/site/vorhersagen/catalog/c050513.cat    /cgi-bin/cdmsinfo?file=e050513.cat      
+003501	HD                                           	December 2011  	/site/vorhersagen/catalog/c003501.cat    /cgi-bin/cdmsinfo?file=e003501.cat      
+043515	H2N13CN                                      	December 2011  	/site/vorhersagen/catalog/c043515.cat    /cgi-bin/cdmsinfo?file=e043515.cat      
+051522	HC3N,  3 band                                	December 2011  	/site/vorhersagen/catalog/c051522.cat    /cgi-bin/cdmsinfo?file=e051522.cat      
+051523	HC3N,  2 band                                	December 2011  	/site/vorhersagen/catalog/c051523.cat    /cgi-bin/cdmsinfo?file=e051523.cat      
+051524	HC3N,  1 band                                	December 2011  	/site/vorhersagen/catalog/c051524.cat    /cgi-bin/cdmsinfo?file=e051524.cat      
+052527	SiC2, v = 0                                  	December 2011  	/site/vorhersagen/catalog/c052527.cat    /cgi-bin/cdmsinfo?file=e052527.cat      
+053510	29SiC2                                       	December 2011  	/site/vorhersagen/catalog/c053510.cat    /cgi-bin/cdmsinfo?file=e053510.cat      
+054505	30SiC2                                       	December 2011  	/site/vorhersagen/catalog/c054505.cat    /cgi-bin/cdmsinfo?file=e054505.cat      
+018503	15NH3                                        	November 2011  	/site/vorhersagen/catalog/c018503.cat    /cgi-bin/cdmsinfo?file=e018503.cat      
+046514	CH3OCH3, v = 0                               	November 2011  	/site/vorhersagen/catalog/c046514.cat    /cgi-bin/cdmsinfo?file=e046514.cat      
+051505	HC3N, (0,0,1,1)                              	November 2011  	/site/vorhersagen/catalog/c051505.cat    /cgi-bin/cdmsinfo?file=e051505.cat      
+052531	H13CCCN, (0,0,1,1)                           	November 2011  	/site/vorhersagen/catalog/c052531.cat    /cgi-bin/cdmsinfo?file=e052531.cat      
+052532	HC13CCN, (0,0,1,1)                           	November 2011  	/site/vorhersagen/catalog/c052532.cat    /cgi-bin/cdmsinfo?file=e052532.cat      
+052533	HCC13CN, (0,0,1,1)                           	November 2011  	/site/vorhersagen/catalog/c052533.cat    /cgi-bin/cdmsinfo?file=e052533.cat      
+052534	HCC13CN, (1,0,0,0)                           	November 2011  	/site/vorhersagen/catalog/c052534.cat    /cgi-bin/cdmsinfo?file=e052534.cat      
+052535	HCC13CN, (1,0,0,1)                           	November 2011  	/site/vorhersagen/catalog/c052535.cat    /cgi-bin/cdmsinfo?file=e052535.cat      
+032512	LiCCH                                        	October 2011   	/site/vorhersagen/catalog/c032512.cat    /cgi-bin/cdmsinfo?file=e032512.cat      
+048505	NaCCH                                        	October 2011   	/site/vorhersagen/catalog/c048505.cat    /cgi-bin/cdmsinfo?file=e048505.cat      
+049507	MgCCH                                        	October 2011   	/site/vorhersagen/catalog/c049507.cat    /cgi-bin/cdmsinfo?file=e049507.cat      
+064515	KCCH                                         	October 2011   	/site/vorhersagen/catalog/c064515.cat    /cgi-bin/cdmsinfo?file=e064515.cat      
+065511	CaCCH                                        	October 2011   	/site/vorhersagen/catalog/c065511.cat    /cgi-bin/cdmsinfo?file=e065511.cat      
+055504	C3F                                          	September 2011 	/site/vorhersagen/catalog/c055504.cat    /cgi-bin/cdmsinfo?file=e055504.cat      
+059506	C2Cl                                         	September 2011 	/site/vorhersagen/catalog/c059506.cat    /cgi-bin/cdmsinfo?file=e059506.cat      
+061509	HSCO+                                        	September 2011 	/site/vorhersagen/catalog/c061509.cat    /cgi-bin/cdmsinfo?file=e061509.cat      
+061510	HOCS+                                        	September 2011 	/site/vorhersagen/catalog/c061510.cat    /cgi-bin/cdmsinfo?file=e061510.cat      
+061511	C237Cl                                       	September 2011 	/site/vorhersagen/catalog/c061511.cat    /cgi-bin/cdmsinfo?file=e061511.cat      
+063506	c-C3HCN                                      	September 2011 	/site/vorhersagen/catalog/c063506.cat    /cgi-bin/cdmsinfo?file=e063506.cat      
+065510	cis-HOSO+                                    	September 2011 	/site/vorhersagen/catalog/c065510.cat    /cgi-bin/cdmsinfo?file=e065510.cat      
+071502	C3Cl                                         	September 2011 	/site/vorhersagen/catalog/c071502.cat    /cgi-bin/cdmsinfo?file=e071502.cat      
+077506	C2H3C3N                                      	September 2011 	/site/vorhersagen/catalog/c077506.cat    /cgi-bin/cdmsinfo?file=e077506.cat      
+077507	(E)-HC2CHCHCN                                	September 2011 	/site/vorhersagen/catalog/c077507.cat    /cgi-bin/cdmsinfo?file=e077507.cat      
+077508	(Z)-HC2CHCHCN                                	September 2011 	/site/vorhersagen/catalog/c077508.cat    /cgi-bin/cdmsinfo?file=e077508.cat      
+046515	NS, v = 0                                    	August 2011    	/site/vorhersagen/catalog/c046515.cat    /cgi-bin/cdmsinfo?file=e046515.cat      
+046516	NS, v = 1                                    	August 2011    	/site/vorhersagen/catalog/c046516.cat    /cgi-bin/cdmsinfo?file=e046516.cat      
+046517	NS, v = 1   0 band                           	August 2011    	/site/vorhersagen/catalog/c046517.cat    /cgi-bin/cdmsinfo?file=e046517.cat      
+047509	N33S                                         	August 2011    	/site/vorhersagen/catalog/c047509.cat    /cgi-bin/cdmsinfo?file=e047509.cat      
+047510	15NS                                         	August 2011    	/site/vorhersagen/catalog/c047510.cat    /cgi-bin/cdmsinfo?file=e047510.cat      
+048509	N34S                                         	August 2011    	/site/vorhersagen/catalog/c048509.cat    /cgi-bin/cdmsinfo?file=e048509.cat      
+049511	15N34S                                       	August 2011    	/site/vorhersagen/catalog/c049511.cat    /cgi-bin/cdmsinfo?file=e049511.cat      
+050516	N36S                                         	August 2011    	/site/vorhersagen/catalog/c050516.cat    /cgi-bin/cdmsinfo?file=e050516.cat      
+042512	NCO                                          	July 2011      	/site/vorhersagen/catalog/c042512.cat    /cgi-bin/cdmsinfo?file=e042512.cat      
+067503	c-C3H5CN                                     	July 2011      	/site/vorhersagen/catalog/c067503.cat    /cgi-bin/cdmsinfo?file=e067503.cat      
+076517	OSiS                                         	July 2011      	/site/vorhersagen/catalog/c076517.cat    /cgi-bin/cdmsinfo?file=e076517.cat      
+078502	46TiO2                                       	June 2011      	/site/vorhersagen/catalog/c078502.cat    /cgi-bin/cdmsinfo?file=e078502.cat      
+080504	TiO2                                         	June 2011      	/site/vorhersagen/catalog/c080504.cat    /cgi-bin/cdmsinfo?file=e080504.cat      
+082502	50TiO2                                       	June 2011      	/site/vorhersagen/catalog/c082502.cat    /cgi-bin/cdmsinfo?file=e082502.cat      
+019501	NHD2                                         	May 2011       	/site/vorhersagen/catalog/c019501.cat    /cgi-bin/cdmsinfo?file=e019501.cat      
+020502	D2O                                          	May 2011       	/site/vorhersagen/catalog/c020502.cat    /cgi-bin/cdmsinfo?file=e020502.cat      
+058502	NaCl, v = 0   4                              	February 2011  	/site/vorhersagen/catalog/c058502.cat    /cgi-bin/cdmsinfo?file=e058502.cat      
+069506	i-C3H7CN                                     	February 2011  	/site/vorhersagen/catalog/c069506.cat    /cgi-bin/cdmsinfo?file=e069506.cat      
+074516	CHOCOOH                                      	February 2011  	/site/vorhersagen/catalog/c074516.cat    /cgi-bin/cdmsinfo?file=e074516.cat      
+076514	CH2OHCOOH                                    	February 2011  	/site/vorhersagen/catalog/c076514.cat    /cgi-bin/cdmsinfo?file=e076514.cat      
+074505	KCl, v = 0   4                               	January 2011   	/site/vorhersagen/catalog/c074505.cat    /cgi-bin/cdmsinfo?file=e074505.cat      
+029517	SiH                                          	December 2010  	/site/vorhersagen/catalog/c029517.cat    /cgi-bin/cdmsinfo?file=e029517.cat      
+029516	N2H+,  2 IR band                             	November 2010  	/site/vorhersagen/catalog/c029516.cat    /cgi-bin/cdmsinfo?file=e029516.cat      
+078503	46TiS                                        	November 2010  	/site/vorhersagen/catalog/c078503.cat    /cgi-bin/cdmsinfo?file=e078503.cat      
+080505	TiS                                          	November 2010  	/site/vorhersagen/catalog/c080505.cat    /cgi-bin/cdmsinfo?file=e080505.cat      
+082503	50TiS                                        	November 2010  	/site/vorhersagen/catalog/c082503.cat    /cgi-bin/cdmsinfo?file=e082503.cat      
+029515	HCO+,  2 IR band                             	September 2010 	/site/vorhersagen/catalog/c029515.cat    /cgi-bin/cdmsinfo?file=e029515.cat      
+012503	C+                                           	August 2010    	/site/vorhersagen/catalog/c012503.cat    /cgi-bin/cdmsinfo?file=e012503.cat      
+013506	13C+                                         	August 2010    	/site/vorhersagen/catalog/c013506.cat    /cgi-bin/cdmsinfo?file=e013506.cat      
+014506	N+                                           	August 2010    	/site/vorhersagen/catalog/c014506.cat    /cgi-bin/cdmsinfo?file=e014506.cat      
+016504	O                                            	August 2010    	/site/vorhersagen/catalog/c016504.cat    /cgi-bin/cdmsinfo?file=e016504.cat      
+027515	Al                                           	August 2010    	/site/vorhersagen/catalog/c027515.cat    /cgi-bin/cdmsinfo?file=e027515.cat      
+028517	Si                                           	August 2010    	/site/vorhersagen/catalog/c028517.cat    /cgi-bin/cdmsinfo?file=e028517.cat      
+028518	Si+                                          	August 2010    	/site/vorhersagen/catalog/c028518.cat    /cgi-bin/cdmsinfo?file=e028518.cat      
+032511	S                                            	August 2010    	/site/vorhersagen/catalog/c032511.cat    /cgi-bin/cdmsinfo?file=e032511.cat      
+056516	Fe                                           	August 2010    	/site/vorhersagen/catalog/c056516.cat    /cgi-bin/cdmsinfo?file=e056516.cat      
+056517	Fe+                                          	August 2010    	/site/vorhersagen/catalog/c056517.cat    /cgi-bin/cdmsinfo?file=e056517.cat      
+025501	CCH, v = 0                                   	July 2010      	/site/vorhersagen/catalog/c025501.cat    /cgi-bin/cdmsinfo?file=e025501.cat      
+025503	CCH, v2 = 1                                  	July 2010      	/site/vorhersagen/catalog/c025503.cat    /cgi-bin/cdmsinfo?file=e025503.cat      
+025505	CCH, v2 = 2                                  	July 2010      	/site/vorhersagen/catalog/c025505.cat    /cgi-bin/cdmsinfo?file=e025505.cat      
+025506	CCH, v3 = 1                                  	July 2010      	/site/vorhersagen/catalog/c025506.cat    /cgi-bin/cdmsinfo?file=e025506.cat      
+025507	CCH,  2 FIR band                             	July 2010      	/site/vorhersagen/catalog/c025507.cat    /cgi-bin/cdmsinfo?file=e025507.cat      
+025508	CCH,  3 IR band                              	July 2010      	/site/vorhersagen/catalog/c025508.cat    /cgi-bin/cdmsinfo?file=e025508.cat      
+025509	CCH,  2 +  3 IR band                         	July 2010      	/site/vorhersagen/catalog/c025509.cat    /cgi-bin/cdmsinfo?file=e025509.cat      
+025510	CCH, 5 2 IR band                             	July 2010      	/site/vorhersagen/catalog/c025510.cat    /cgi-bin/cdmsinfo?file=e025510.cat      
+020503	H2DO+                                        	June 2010      	/site/vorhersagen/catalog/c020503.cat    /cgi-bin/cdmsinfo?file=e020503.cat      
+013504	CH+, v = 1   0 band                          	May 2010       	/site/vorhersagen/catalog/c013504.cat    /cgi-bin/cdmsinfo?file=e013504.cat      
+013505	CH+, v = 2   0 band                          	May 2010       	/site/vorhersagen/catalog/c013505.cat    /cgi-bin/cdmsinfo?file=e013505.cat      
+014504	13CH+, v = 1   0 band                        	May 2010       	/site/vorhersagen/catalog/c014504.cat    /cgi-bin/cdmsinfo?file=e014504.cat      
+014505	CD+, v = 1   0 band                          	May 2010       	/site/vorhersagen/catalog/c014505.cat    /cgi-bin/cdmsinfo?file=e014505.cat      
+013503	CH+                                          	April 2010     	/site/vorhersagen/catalog/c013503.cat    /cgi-bin/cdmsinfo?file=e013503.cat      
+014502	13CH+                                        	April 2010     	/site/vorhersagen/catalog/c014502.cat    /cgi-bin/cdmsinfo?file=e014502.cat      
+014503	CD+                                          	April 2010     	/site/vorhersagen/catalog/c014503.cat    /cgi-bin/cdmsinfo?file=e014503.cat      
+015502	13CD+                                        	April 2010     	/site/vorhersagen/catalog/c015502.cat    /cgi-bin/cdmsinfo?file=e015502.cat      
+015503	14CH+                                        	April 2010     	/site/vorhersagen/catalog/c015503.cat    /cgi-bin/cdmsinfo?file=e015503.cat      
+015504	CT+                                          	April 2010     	/site/vorhersagen/catalog/c015504.cat    /cgi-bin/cdmsinfo?file=e015504.cat      
+031507	CF+, v = 0, 1                                	February 2010  	/site/vorhersagen/catalog/c031507.cat    /cgi-bin/cdmsinfo?file=e031507.cat      
+032509	13CF+, v = 0, 1                              	February 2010  	/site/vorhersagen/catalog/c032509.cat    /cgi-bin/cdmsinfo?file=e032509.cat      
+032510	O2, a 1                                      	February 2010  	/site/vorhersagen/catalog/c032510.cat    /cgi-bin/cdmsinfo?file=e032510.cat      
+056515	CaO, v = 0, 1                                	February 2010  	/site/vorhersagen/catalog/c056515.cat    /cgi-bin/cdmsinfo?file=e056515.cat      
+072501	CaS, v = 0, 1                                	February 2010  	/site/vorhersagen/catalog/c072501.cat    /cgi-bin/cdmsinfo?file=e072501.cat      
+026503	C13CH                                        	January 2010   	/site/vorhersagen/catalog/c026503.cat    /cgi-bin/cdmsinfo?file=e026503.cat      
+032508	O2, v = 0                                    	January 2010   	/site/vorhersagen/catalog/c032508.cat    /cgi-bin/cdmsinfo?file=e032508.cat      
+034503	O18O                                         	January 2010   	/site/vorhersagen/catalog/c034503.cat    /cgi-bin/cdmsinfo?file=e034503.cat      
+036505	18O2                                         	January 2010   	/site/vorhersagen/catalog/c036505.cat    /cgi-bin/cdmsinfo?file=e036505.cat      
+050514	C3N                                          	January 2010   	/site/vorhersagen/catalog/c050514.cat    /cgi-bin/cdmsinfo?file=e050514.cat      
+028516	AlH                                          	December 2009  	/site/vorhersagen/catalog/c028516.cat    /cgi-bin/cdmsinfo?file=e028516.cat      
+041505	CH3CN, v = 0                                 	December 2009  	/site/vorhersagen/catalog/c041505.cat    /cgi-bin/cdmsinfo?file=e041505.cat      
+042508	13CH3CN, v = 0                               	December 2009  	/site/vorhersagen/catalog/c042508.cat    /cgi-bin/cdmsinfo?file=e042508.cat      
+042509	CH313CN, v = 0                               	December 2009  	/site/vorhersagen/catalog/c042509.cat    /cgi-bin/cdmsinfo?file=e042509.cat      
+042510	CH3C15N, v = 0                               	December 2009  	/site/vorhersagen/catalog/c042510.cat    /cgi-bin/cdmsinfo?file=e042510.cat      
+043513	13CH313CN                                    	December 2009  	/site/vorhersagen/catalog/c043513.cat    /cgi-bin/cdmsinfo?file=e043513.cat      
+043512	HONC                                         	November 2009  	/site/vorhersagen/catalog/c043512.cat    /cgi-bin/cdmsinfo?file=e043512.cat      
+059505	HSCN                                         	November 2009  	/site/vorhersagen/catalog/c059505.cat    /cgi-bin/cdmsinfo?file=e059505.cat      
+103501	c-C6H5CN                                     	November 2009  	/site/vorhersagen/catalog/c103501.cat    /cgi-bin/cdmsinfo?file=e103501.cat      
+027514	C2H3+                                        	October 2009   	/site/vorhersagen/catalog/c027514.cat    /cgi-bin/cdmsinfo?file=e027514.cat      
+058507	CH3CP                                        	October 2009   	/site/vorhersagen/catalog/c058507.cat    /cgi-bin/cdmsinfo?file=e058507.cat      
+024502	LiOH                                         	September 2009 	/site/vorhersagen/catalog/c024502.cat    /cgi-bin/cdmsinfo?file=e024502.cat      
+028508	DNC                                          	September 2009 	/site/vorhersagen/catalog/c028508.cat    /cgi-bin/cdmsinfo?file=e028508.cat      
+028515	HN13C                                        	September 2009 	/site/vorhersagen/catalog/c028515.cat    /cgi-bin/cdmsinfo?file=e028515.cat      
+030510	DCO+                                         	September 2009 	/site/vorhersagen/catalog/c030510.cat    /cgi-bin/cdmsinfo?file=e030510.cat      
+026507	10BO                                         	August 2009    	/site/vorhersagen/catalog/c026507.cat    /cgi-bin/cdmsinfo?file=e026507.cat      
+027513	BO                                           	August 2009    	/site/vorhersagen/catalog/c027513.cat    /cgi-bin/cdmsinfo?file=e027513.cat      
+040509	NaOH                                         	August 2009    	/site/vorhersagen/catalog/c040509.cat    /cgi-bin/cdmsinfo?file=e040509.cat      
+055502	C2H5CN, v = 0                                	August 2009    	/site/vorhersagen/catalog/c055502.cat    /cgi-bin/cdmsinfo?file=e055502.cat      
+056514	KOH                                          	August 2009    	/site/vorhersagen/catalog/c056514.cat    /cgi-bin/cdmsinfo?file=e056514.cat      
+058506	41KOH                                        	August 2009    	/site/vorhersagen/catalog/c058506.cat    /cgi-bin/cdmsinfo?file=e058506.cat      
+074503	aa-(C2H5)2O                                  	August 2009    	/site/vorhersagen/catalog/c074503.cat    /cgi-bin/cdmsinfo?file=e074503.cat      
+074515	ag-(C2H5)2O                                  	August 2009    	/site/vorhersagen/catalog/c074515.cat    /cgi-bin/cdmsinfo?file=e074515.cat      
+027512	H10BO                                        	July 2009      	/site/vorhersagen/catalog/c027512.cat    /cgi-bin/cdmsinfo?file=e027512.cat      
+028514	HBO                                          	July 2009      	/site/vorhersagen/catalog/c028514.cat    /cgi-bin/cdmsinfo?file=e028514.cat      
+017503	CH3D                                         	June 2009      	/site/vorhersagen/catalog/c017503.cat    /cgi-bin/cdmsinfo?file=e017503.cat      
+018504	13CH3D                                       	June 2009      	/site/vorhersagen/catalog/c018504.cat    /cgi-bin/cdmsinfo?file=e018504.cat      
+039506	l-C3HD                                       	June 2009      	/site/vorhersagen/catalog/c039506.cat    /cgi-bin/cdmsinfo?file=e039506.cat      
+051521	l-C4HD                                       	June 2009      	/site/vorhersagen/catalog/c051521.cat    /cgi-bin/cdmsinfo?file=e051521.cat      
+028512	CO, v = 1   3                                	May 2009       	/site/vorhersagen/catalog/c028512.cat    /cgi-bin/cdmsinfo?file=e028512.cat      
+043510	HOCN                                         	May 2009       	/site/vorhersagen/catalog/c043510.cat    /cgi-bin/cdmsinfo?file=e043510.cat      
+043511	HNCO                                         	May 2009       	/site/vorhersagen/catalog/c043511.cat    /cgi-bin/cdmsinfo?file=e043511.cat      
+046513	HC(O)15NH2                                   	May 2009       	/site/vorhersagen/catalog/c046513.cat    /cgi-bin/cdmsinfo?file=e046513.cat      
+047508	HC(18O)NH2                                   	May 2009       	/site/vorhersagen/catalog/c047508.cat    /cgi-bin/cdmsinfo?file=e047508.cat      
+055503	CCP                                          	April 2009     	/site/vorhersagen/catalog/c055503.cat    /cgi-bin/cdmsinfo?file=e055503.cat      
+056512	13CCP                                        	April 2009     	/site/vorhersagen/catalog/c056512.cat    /cgi-bin/cdmsinfo?file=e056512.cat      
+056513	C13CP                                        	April 2009     	/site/vorhersagen/catalog/c056513.cat    /cgi-bin/cdmsinfo?file=e056513.cat      
+074514	C2H5OCHO                                     	April 2009     	/site/vorhersagen/catalog/c074514.cat    /cgi-bin/cdmsinfo?file=e074514.cat      
+030507	15NNH+                                       	March 2009     	/site/vorhersagen/catalog/c030507.cat    /cgi-bin/cdmsinfo?file=e030507.cat      
+030508	N15NH+                                       	March 2009     	/site/vorhersagen/catalog/c030508.cat    /cgi-bin/cdmsinfo?file=e030508.cat      
+030509	N2D+                                         	March 2009     	/site/vorhersagen/catalog/c030509.cat    /cgi-bin/cdmsinfo?file=e030509.cat      
+031509	15NND+                                       	March 2009     	/site/vorhersagen/catalog/c031509.cat    /cgi-bin/cdmsinfo?file=e031509.cat      
+031510	N15ND+                                       	March 2009     	/site/vorhersagen/catalog/c031510.cat    /cgi-bin/cdmsinfo?file=e031510.cat      
+037501	C3H, v = 0, v4 = 1, 2                        	March 2009     	/site/vorhersagen/catalog/c037501.cat    /cgi-bin/cdmsinfo?file=e037501.cat      
+038503	C3D, v = 0, v4 = 1, 2                        	March 2009     	/site/vorhersagen/catalog/c038503.cat    /cgi-bin/cdmsinfo?file=e038503.cat      
+053516	13CCCO                                       	February 2009  	/site/vorhersagen/catalog/c053516.cat    /cgi-bin/cdmsinfo?file=e053516.cat      
+053517	C13CCO                                       	February 2009  	/site/vorhersagen/catalog/c053517.cat    /cgi-bin/cdmsinfo?file=e053517.cat      
+053518	CC13CO                                       	February 2009  	/site/vorhersagen/catalog/c053518.cat    /cgi-bin/cdmsinfo?file=e053518.cat      
+054511	C318O                                        	February 2009  	/site/vorhersagen/catalog/c054511.cat    /cgi-bin/cdmsinfo?file=e054511.cat      
+056508	C2H5C15N                                     	February 2009  	/site/vorhersagen/catalog/c056508.cat    /cgi-bin/cdmsinfo?file=e056508.cat      
+056509	CH3CHDCN                                     	February 2009  	/site/vorhersagen/catalog/c056509.cat    /cgi-bin/cdmsinfo?file=e056509.cat      
+056510	CH2DipCH2CN                                  	February 2009  	/site/vorhersagen/catalog/c056510.cat    /cgi-bin/cdmsinfo?file=e056510.cat      
+056511	CH2DoopCH2CN                                 	February 2009  	/site/vorhersagen/catalog/c056511.cat    /cgi-bin/cdmsinfo?file=e056511.cat      
+025504	C2H                                          	January 2009   	/site/vorhersagen/catalog/c025504.cat    /cgi-bin/cdmsinfo?file=e025504.cat      
+026506	CN                                           	January 2009   	/site/vorhersagen/catalog/c026506.cat    /cgi-bin/cdmsinfo?file=e026506.cat      
+043509	HCNO                                         	January 2009   	/site/vorhersagen/catalog/c043509.cat    /cgi-bin/cdmsinfo?file=e043509.cat      
+044513	DCNO                                         	January 2009   	/site/vorhersagen/catalog/c044513.cat    /cgi-bin/cdmsinfo?file=e044513.cat      
+044514	H13CNO                                       	January 2009   	/site/vorhersagen/catalog/c044514.cat    /cgi-bin/cdmsinfo?file=e044514.cat      
+044515	HC15NO                                       	January 2009   	/site/vorhersagen/catalog/c044515.cat    /cgi-bin/cdmsinfo?file=e044515.cat      
+049509	C4H                                          	January 2009   	/site/vorhersagen/catalog/c049509.cat    /cgi-bin/cdmsinfo?file=e049509.cat      
+052501	C3O, v = 0                                   	January 2009   	/site/vorhersagen/catalog/c052501.cat    /cgi-bin/cdmsinfo?file=e052501.cat      
+052530	C3O, v5 = 1                                  	January 2009   	/site/vorhersagen/catalog/c052530.cat    /cgi-bin/cdmsinfo?file=e052530.cat      
+038507	D234S                                        	December 2008  	/site/vorhersagen/catalog/c038507.cat    /cgi-bin/cdmsinfo?file=e038507.cat      
+054510	HCCCHO                                       	December 2008  	/site/vorhersagen/catalog/c054510.cat    /cgi-bin/cdmsinfo?file=e054510.cat      
+058505	s-C2H5CHO                                    	December 2008  	/site/vorhersagen/catalog/c058505.cat    /cgi-bin/cdmsinfo?file=e058505.cat      
+035503	H233S                                        	November 2008  	/site/vorhersagen/catalog/c035503.cat    /cgi-bin/cdmsinfo?file=e035503.cat      
+036504	H234S                                        	November 2008  	/site/vorhersagen/catalog/c036504.cat    /cgi-bin/cdmsinfo?file=e036504.cat      
+037503	HD34S                                        	November 2008  	/site/vorhersagen/catalog/c037503.cat    /cgi-bin/cdmsinfo?file=e037503.cat      
+034502	H2S                                          	October 2008   	/site/vorhersagen/catalog/c034502.cat    /cgi-bin/cdmsinfo?file=e034502.cat      
+035502	HDS                                          	October 2008   	/site/vorhersagen/catalog/c035502.cat    /cgi-bin/cdmsinfo?file=e035502.cat      
+036503	D2S                                          	October 2008   	/site/vorhersagen/catalog/c036503.cat    /cgi-bin/cdmsinfo?file=e036503.cat      
+044501	CS, v = 0   4                                	October 2008   	/site/vorhersagen/catalog/c044501.cat    /cgi-bin/cdmsinfo?file=e044501.cat      
+074513	C5N                                          	October 2008   	/site/vorhersagen/catalog/c074513.cat    /cgi-bin/cdmsinfo?file=e074513.cat      
+089502	CH3CHNH2COOH, I                              	October 2008   	/site/vorhersagen/catalog/c089502.cat    /cgi-bin/cdmsinfo?file=e089502.cat      
+089503	CH3CHNH2COOH, II                             	October 2008   	/site/vorhersagen/catalog/c089503.cat    /cgi-bin/cdmsinfo?file=e089503.cat      
+019504	15NH2D                                       	September 2008 	/site/vorhersagen/catalog/c019504.cat    /cgi-bin/cdmsinfo?file=e019504.cat      
+020504	15NHD2                                       	September 2008 	/site/vorhersagen/catalog/c020504.cat    /cgi-bin/cdmsinfo?file=e020504.cat      
+032507	HD13CO                                       	September 2008 	/site/vorhersagen/catalog/c032507.cat    /cgi-bin/cdmsinfo?file=e032507.cat      
+033506	D213CO                                       	September 2008 	/site/vorhersagen/catalog/c033506.cat    /cgi-bin/cdmsinfo?file=e033506.cat      
+050515	C4D                                          	September 2008 	/site/vorhersagen/catalog/c050515.cat    /cgi-bin/cdmsinfo?file=e050515.cat      
+040502	CH3CCH, v = 0                                	August 2008    	/site/vorhersagen/catalog/c040502.cat    /cgi-bin/cdmsinfo?file=e040502.cat      
+064507	CH3C4H                                       	August 2008    	/site/vorhersagen/catalog/c064507.cat    /cgi-bin/cdmsinfo?file=e064507.cat      
+012502	BH                                           	July 2008      	/site/vorhersagen/catalog/c012502.cat    /cgi-bin/cdmsinfo?file=e012502.cat      
+044512	CS+                                          	July 2008      	/site/vorhersagen/catalog/c044512.cat    /cgi-bin/cdmsinfo?file=e044512.cat      
+065509	HS2                                          	July 2008      	/site/vorhersagen/catalog/c065509.cat    /cgi-bin/cdmsinfo?file=e065509.cat      
+053515	C2H3CN, v = 0                                	May 2008       	/site/vorhersagen/catalog/c053515.cat    /cgi-bin/cdmsinfo?file=e053515.cat      
+054506	H213CCHCN, v = 0                             	May 2008       	/site/vorhersagen/catalog/c054506.cat    /cgi-bin/cdmsinfo?file=e054506.cat      
+054507	H2C13CHCN, v = 0                             	May 2008       	/site/vorhersagen/catalog/c054507.cat    /cgi-bin/cdmsinfo?file=e054507.cat      
+054508	H2CCH13CN, v = 0                             	May 2008       	/site/vorhersagen/catalog/c054508.cat    /cgi-bin/cdmsinfo?file=e054508.cat      
+054509	H2CCHC15N                                    	May 2008       	/site/vorhersagen/catalog/c054509.cat    /cgi-bin/cdmsinfo?file=e054509.cat      
+005502	HeH+                                         	April 2008     	/site/vorhersagen/catalog/c005502.cat    /cgi-bin/cdmsinfo?file=e005502.cat      
+045511	PN                                           	April 2008     	/site/vorhersagen/catalog/c045511.cat    /cgi-bin/cdmsinfo?file=e045511.cat      
+046511	P15N                                         	April 2008     	/site/vorhersagen/catalog/c046511.cat    /cgi-bin/cdmsinfo?file=e046511.cat      
+047507	PO                                           	April 2008     	/site/vorhersagen/catalog/c047507.cat    /cgi-bin/cdmsinfo?file=e047507.cat      
+052508	DC3N, v = 0                                  	March 2008     	/site/vorhersagen/catalog/c052508.cat    /cgi-bin/cdmsinfo?file=e052508.cat      
+052513	DC3N, v7 = 1                                 	March 2008     	/site/vorhersagen/catalog/c052513.cat    /cgi-bin/cdmsinfo?file=e052513.cat      
+053511	D13CCCN                                      	March 2008     	/site/vorhersagen/catalog/c053511.cat    /cgi-bin/cdmsinfo?file=e053511.cat      
+053512	DC13CCN                                      	March 2008     	/site/vorhersagen/catalog/c053512.cat    /cgi-bin/cdmsinfo?file=e053512.cat      
+053513	DCC13CN                                      	March 2008     	/site/vorhersagen/catalog/c053513.cat    /cgi-bin/cdmsinfo?file=e053513.cat      
+053514	DC315N                                       	March 2008     	/site/vorhersagen/catalog/c053514.cat    /cgi-bin/cdmsinfo?file=e053514.cat      
+046509	H2CS                                         	February 2008  	/site/vorhersagen/catalog/c046509.cat    /cgi-bin/cdmsinfo?file=e046509.cat      
+027511	HCCD                                         	January 2008   	/site/vorhersagen/catalog/c027511.cat    /cgi-bin/cdmsinfo?file=e027511.cat      
+052528	SiC2, v3 = 1                                 	January 2008   	/site/vorhersagen/catalog/c052528.cat    /cgi-bin/cdmsinfo?file=e052528.cat      
+052529	SiC2, v3 = 2                                 	January 2008   	/site/vorhersagen/catalog/c052529.cat    /cgi-bin/cdmsinfo?file=e052529.cat      
+053509	Si13CC                                       	January 2008   	/site/vorhersagen/catalog/c053509.cat    /cgi-bin/cdmsinfo?file=e053509.cat      
+021501	NeH+                                         	December 2007  	/site/vorhersagen/catalog/c021501.cat    /cgi-bin/cdmsinfo?file=e021501.cat      
+022501	NeD+                                         	December 2007  	/site/vorhersagen/catalog/c022501.cat    /cgi-bin/cdmsinfo?file=e022501.cat      
+023501	22NeH+                                       	December 2007  	/site/vorhersagen/catalog/c023501.cat    /cgi-bin/cdmsinfo?file=e023501.cat      
+028504	HCNH+                                        	December 2007  	/site/vorhersagen/catalog/c028504.cat    /cgi-bin/cdmsinfo?file=e028504.cat      
+029514	H13CNH+                                      	December 2007  	/site/vorhersagen/catalog/c029514.cat    /cgi-bin/cdmsinfo?file=e029514.cat      
+019503	H3O+                                         	October 2007   	/site/vorhersagen/catalog/c019503.cat    /cgi-bin/cdmsinfo?file=e019503.cat      
+029507	HCO+, v = 0                                  	October 2007   	/site/vorhersagen/catalog/c029507.cat    /cgi-bin/cdmsinfo?file=e029507.cat      
+029508	HCO+, v2 = 1                                 	October 2007   	/site/vorhersagen/catalog/c029508.cat    /cgi-bin/cdmsinfo?file=e029508.cat      
+030504	H13CO+                                       	October 2007   	/site/vorhersagen/catalog/c030504.cat    /cgi-bin/cdmsinfo?file=e030504.cat      
+031508	D13CO+                                       	October 2007   	/site/vorhersagen/catalog/c031508.cat    /cgi-bin/cdmsinfo?file=e031508.cat      
+051519	HC3N, v3 = 1                                 	October 2007   	/site/vorhersagen/catalog/c051519.cat    /cgi-bin/cdmsinfo?file=e051519.cat      
+051520	HC3N, v2 = 1                                 	October 2007   	/site/vorhersagen/catalog/c051520.cat    /cgi-bin/cdmsinfo?file=e051520.cat      
+037502	36ArH+                                       	September 2007 	/site/vorhersagen/catalog/c037502.cat    /cgi-bin/cdmsinfo?file=e037502.cat      
+041504	40ArH+                                       	September 2007 	/site/vorhersagen/catalog/c041504.cat    /cgi-bin/cdmsinfo?file=e041504.cat      
+042507	40ArD+                                       	September 2007 	/site/vorhersagen/catalog/c042507.cat    /cgi-bin/cdmsinfo?file=e042507.cat      
+044502	HCP, v = 0                                   	June 2007      	/site/vorhersagen/catalog/c044502.cat    /cgi-bin/cdmsinfo?file=e044502.cat      
+045510	H13CP                                        	June 2007      	/site/vorhersagen/catalog/c045510.cat    /cgi-bin/cdmsinfo?file=e045510.cat      
+026505	C2H2,  5    4                                	May 2007       	/site/vorhersagen/catalog/c026505.cat    /cgi-bin/cdmsinfo?file=e026505.cat      
+027501	HCN, v = 0                                   	May 2007       	/site/vorhersagen/catalog/c027501.cat    /cgi-bin/cdmsinfo?file=e027501.cat      
+058504	NCS                                          	May 2007       	/site/vorhersagen/catalog/c058504.cat    /cgi-bin/cdmsinfo?file=e058504.cat      
+043502	c-C2H4NH                                     	April 2007     	/site/vorhersagen/catalog/c043502.cat    /cgi-bin/cdmsinfo?file=e043502.cat      
+065502	SO17O                                        	April 2007     	/site/vorhersagen/catalog/c065502.cat    /cgi-bin/cdmsinfo?file=e065502.cat      
+065508	KCN, KNC                                     	April 2007     	/site/vorhersagen/catalog/c065508.cat    /cgi-bin/cdmsinfo?file=e065508.cat      
+061508	Si33S, v = 0, 1                              	March 2007     	/site/vorhersagen/catalog/c061508.cat    /cgi-bin/cdmsinfo?file=e061508.cat      
+062508	Si34S, v = 0   2                             	March 2007     	/site/vorhersagen/catalog/c062508.cat    /cgi-bin/cdmsinfo?file=e062508.cat      
+062509	Si34S, v = 1   0 band                        	March 2007     	/site/vorhersagen/catalog/c062509.cat    /cgi-bin/cdmsinfo?file=e062509.cat      
+062511	30SiS, v = 1   0 band                        	March 2007     	/site/vorhersagen/catalog/c062511.cat    /cgi-bin/cdmsinfo?file=e062511.cat      
+062512	29Si33S                                      	March 2007     	/site/vorhersagen/catalog/c062512.cat    /cgi-bin/cdmsinfo?file=e062512.cat      
+063504	29Si34S, v = 0, 1                            	March 2007     	/site/vorhersagen/catalog/c063504.cat    /cgi-bin/cdmsinfo?file=e063504.cat      
+063505	30Si33S                                      	March 2007     	/site/vorhersagen/catalog/c063505.cat    /cgi-bin/cdmsinfo?file=e063505.cat      
+064513	30Si34S, v = 0, 1                            	March 2007     	/site/vorhersagen/catalog/c064513.cat    /cgi-bin/cdmsinfo?file=e064513.cat      
+064514	Si36S                                        	March 2007     	/site/vorhersagen/catalog/c064514.cat    /cgi-bin/cdmsinfo?file=e064514.cat      
+065507	29Si36S                                      	March 2007     	/site/vorhersagen/catalog/c065507.cat    /cgi-bin/cdmsinfo?file=e065507.cat      
+066505	30Si36S                                      	March 2007     	/site/vorhersagen/catalog/c066505.cat    /cgi-bin/cdmsinfo?file=e066505.cat      
+027503	HCN, v2 = 1                                  	February 2007  	/site/vorhersagen/catalog/c027503.cat    /cgi-bin/cdmsinfo?file=e027503.cat      
+027507	HCN, v2 = 2                                  	February 2007  	/site/vorhersagen/catalog/c027507.cat    /cgi-bin/cdmsinfo?file=e027507.cat      
+027508	HCN, v2 = 3                                  	February 2007  	/site/vorhersagen/catalog/c027508.cat    /cgi-bin/cdmsinfo?file=e027508.cat      
+027509	HCN, v3 = 1                                  	February 2007  	/site/vorhersagen/catalog/c027509.cat    /cgi-bin/cdmsinfo?file=e027509.cat      
+027510	HCN, v1 = 1                                  	February 2007  	/site/vorhersagen/catalog/c027510.cat    /cgi-bin/cdmsinfo?file=e027510.cat      
+060506	SiS, v = 0   5                               	February 2007  	/site/vorhersagen/catalog/c060506.cat    /cgi-bin/cdmsinfo?file=e060506.cat      
+060507	SiS, v = 1   0 and v = 2   1 bands           	February 2007  	/site/vorhersagen/catalog/c060507.cat    /cgi-bin/cdmsinfo?file=e060507.cat      
+060508	SiS, v = 2   0 band                          	February 2007  	/site/vorhersagen/catalog/c060508.cat    /cgi-bin/cdmsinfo?file=e060508.cat      
+061506	29SiS, v = 0   2                             	February 2007  	/site/vorhersagen/catalog/c061506.cat    /cgi-bin/cdmsinfo?file=e061506.cat      
+061507	29SiS, v = 1   0 band                        	February 2007  	/site/vorhersagen/catalog/c061507.cat    /cgi-bin/cdmsinfo?file=e061507.cat      
+062510	30SiS, v = 0   2                             	February 2007  	/site/vorhersagen/catalog/c062510.cat    /cgi-bin/cdmsinfo?file=e062510.cat      
+033504	SH                                           	January 2007   	/site/vorhersagen/catalog/c033504.cat    /cgi-bin/cdmsinfo?file=e033504.cat      
+097502	C8H                                          	January 2007   	/site/vorhersagen/catalog/c097502.cat    /cgi-bin/cdmsinfo?file=e097502.cat      
+018502	OD                                           	December 2006  	/site/vorhersagen/catalog/c018502.cat    /cgi-bin/cdmsinfo?file=e018502.cat      
+019502	18OH                                         	December 2006  	/site/vorhersagen/catalog/c019502.cat    /cgi-bin/cdmsinfo?file=e019502.cat      
+029512	H13C15N, v = 0                               	December 2006  	/site/vorhersagen/catalog/c029512.cat    /cgi-bin/cdmsinfo?file=e029512.cat      
+029513	H13C15N, v2 = 1                              	December 2006  	/site/vorhersagen/catalog/c029513.cat    /cgi-bin/cdmsinfo?file=e029513.cat      
+029501	13CO                                         	November 2006  	/site/vorhersagen/catalog/c029501.cat    /cgi-bin/cdmsinfo?file=e029501.cat      
+073502	C6H                                          	November 2006  	/site/vorhersagen/catalog/c073502.cat    /cgi-bin/cdmsinfo?file=e073502.cat      
+031504	H2COH+                                       	October 2006   	/site/vorhersagen/catalog/c031504.cat    /cgi-bin/cdmsinfo?file=e031504.cat      
+032506	H213COH+                                     	October 2006   	/site/vorhersagen/catalog/c032506.cat    /cgi-bin/cdmsinfo?file=e032506.cat      
+032504*	CH3OH, vt = 0, 1                             	September 2006 	/site/vorhersagen/catalog/c032504.cat    /cgi-bin/cdmsinfo?file=e032504.cat      
+042505	SiN                                          	September 2006 	/site/vorhersagen/catalog/c042505.cat    /cgi-bin/cdmsinfo?file=e042505.cat      
+042506	HNCNH                                        	September 2006 	/site/vorhersagen/catalog/c042506.cat    /cgi-bin/cdmsinfo?file=e042506.cat      
+044510	CS, v = 1   0 and v = 2   1 bands            	September 2006 	/site/vorhersagen/catalog/c044510.cat    /cgi-bin/cdmsinfo?file=e044510.cat      
+044511	CS, v = 2   0 band                           	September 2006 	/site/vorhersagen/catalog/c044511.cat    /cgi-bin/cdmsinfo?file=e044511.cat      
+045509	13CS, v = 1   0 band                         	September 2006 	/site/vorhersagen/catalog/c045509.cat    /cgi-bin/cdmsinfo?file=e045509.cat      
+046510	C34S, v = 1   0 band                         	September 2006 	/site/vorhersagen/catalog/c046510.cat    /cgi-bin/cdmsinfo?file=e046510.cat      
+042504	CH3CNH+                                      	August 2006    	/site/vorhersagen/catalog/c042504.cat    /cgi-bin/cdmsinfo?file=e042504.cat      
+080503	S2O, v = 0                                   	August 2006    	/site/vorhersagen/catalog/c080503.cat    /cgi-bin/cdmsinfo?file=e080503.cat      
+030512	NO+                                          	June 2006      	/site/vorhersagen/catalog/c030512.cat    /cgi-bin/cdmsinfo?file=e030512.cat      
+041503	H2CCNH                                       	June 2006      	/site/vorhersagen/catalog/c041503.cat    /cgi-bin/cdmsinfo?file=e041503.cat      
+055501	HC(O)CN                                      	June 2006      	/site/vorhersagen/catalog/c055501.cat    /cgi-bin/cdmsinfo?file=e055501.cat      
+067502	NCHCCO                                       	June 2006      	/site/vorhersagen/catalog/c067502.cat    /cgi-bin/cdmsinfo?file=e067502.cat      
+070504	NCC(O)NH2                                    	June 2006      	/site/vorhersagen/catalog/c070504.cat    /cgi-bin/cdmsinfo?file=e070504.cat      
+029511	DC15N                                        	May 2006       	/site/vorhersagen/catalog/c029511.cat    /cgi-bin/cdmsinfo?file=e029511.cat      
+030511	D13C15N                                      	May 2006       	/site/vorhersagen/catalog/c030511.cat    /cgi-bin/cdmsinfo?file=e030511.cat      
+028509	DCN, v = 0                                   	April 2006     	/site/vorhersagen/catalog/c028509.cat    /cgi-bin/cdmsinfo?file=e028509.cat      
+028510	DCN, v2 = 1                                  	April 2006     	/site/vorhersagen/catalog/c028510.cat    /cgi-bin/cdmsinfo?file=e028510.cat      
+029510	D13CN                                        	April 2006     	/site/vorhersagen/catalog/c029510.cat    /cgi-bin/cdmsinfo?file=e029510.cat      
+075511	H2NCH2COOH, I                                	April 2006     	/site/vorhersagen/catalog/c075511.cat    /cgi-bin/cdmsinfo?file=e075511.cat      
+075512	H2NCH2COOH, II                               	April 2006     	/site/vorhersagen/catalog/c075512.cat    /cgi-bin/cdmsinfo?file=e075512.cat      
+036502	C3,  2                                       	March 2006     	/site/vorhersagen/catalog/c036502.cat    /cgi-bin/cdmsinfo?file=e036502.cat      
+051515	l-13CC3H2                                    	March 2006     	/site/vorhersagen/catalog/c051515.cat    /cgi-bin/cdmsinfo?file=e051515.cat      
+051516	l-C13CC2H2                                   	March 2006     	/site/vorhersagen/catalog/c051516.cat    /cgi-bin/cdmsinfo?file=e051516.cat      
+051517	l-C213CCH2                                   	March 2006     	/site/vorhersagen/catalog/c051517.cat    /cgi-bin/cdmsinfo?file=e051517.cat      
+051518	l-C313CH2                                    	March 2006     	/site/vorhersagen/catalog/c051518.cat    /cgi-bin/cdmsinfo?file=e051518.cat      
+065506	H2CCCHCN                                     	March 2006     	/site/vorhersagen/catalog/c065506.cat    /cgi-bin/cdmsinfo?file=e065506.cat      
+029509	N2H+, v2 = 1                                 	February 2006  	/site/vorhersagen/catalog/c029509.cat    /cgi-bin/cdmsinfo?file=e029509.cat      
+035501	NaC                                          	February 2006  	/site/vorhersagen/catalog/c035501.cat    /cgi-bin/cdmsinfo?file=e035501.cat      
+047505	H213CS                                       	February 2006  	/site/vorhersagen/catalog/c047505.cat    /cgi-bin/cdmsinfo?file=e047505.cat      
+047506	H2C33S                                       	February 2006  	/site/vorhersagen/catalog/c047506.cat    /cgi-bin/cdmsinfo?file=e047506.cat      
+048507	D2CS                                         	February 2006  	/site/vorhersagen/catalog/c048507.cat    /cgi-bin/cdmsinfo?file=e048507.cat      
+048508	H2C34S                                       	February 2006  	/site/vorhersagen/catalog/c048508.cat    /cgi-bin/cdmsinfo?file=e048508.cat      
+043507	HDCCO                                        	January 2006   	/site/vorhersagen/catalog/c043507.cat    /cgi-bin/cdmsinfo?file=e043507.cat      
+044509	D2CCO                                        	January 2006   	/site/vorhersagen/catalog/c044509.cat    /cgi-bin/cdmsinfo?file=e044509.cat      
+052521	H13CCCN, v6 = 1                              	January 2006   	/site/vorhersagen/catalog/c052521.cat    /cgi-bin/cdmsinfo?file=e052521.cat      
+052522	HC13CCN, v6 = 1                              	January 2006   	/site/vorhersagen/catalog/c052522.cat    /cgi-bin/cdmsinfo?file=e052522.cat      
+052523	HCC13CN, v6 = 1                              	January 2006   	/site/vorhersagen/catalog/c052523.cat    /cgi-bin/cdmsinfo?file=e052523.cat      
+052524	H13CCCN, v5 = 1 / v7 = 3                     	January 2006   	/site/vorhersagen/catalog/c052524.cat    /cgi-bin/cdmsinfo?file=e052524.cat      
+052525	HC13CCN, v5 = 1 / v7 = 3                     	January 2006   	/site/vorhersagen/catalog/c052525.cat    /cgi-bin/cdmsinfo?file=e052525.cat      
+052526	HCC13CN, v5 = 1 / v7 = 3                     	January 2006   	/site/vorhersagen/catalog/c052526.cat    /cgi-bin/cdmsinfo?file=e052526.cat      
+052518	H13CCCN, v7 = 2                              	December 2005  	/site/vorhersagen/catalog/c052518.cat    /cgi-bin/cdmsinfo?file=e052518.cat      
+052519	HC13CCN, v7 = 2                              	December 2005  	/site/vorhersagen/catalog/c052519.cat    /cgi-bin/cdmsinfo?file=e052519.cat      
+052520	HCC13CN, v7 = 2                              	December 2005  	/site/vorhersagen/catalog/c052520.cat    /cgi-bin/cdmsinfo?file=e052520.cat      
+068504	C3O2,  7                                     	December 2005  	/site/vorhersagen/catalog/c068504.cat    /cgi-bin/cdmsinfo?file=e068504.cat      
+074506	13CC5H                                       	December 2005  	/site/vorhersagen/catalog/c074506.cat    /cgi-bin/cdmsinfo?file=e074506.cat      
+074507	C13CC4H                                      	December 2005  	/site/vorhersagen/catalog/c074507.cat    /cgi-bin/cdmsinfo?file=e074507.cat      
+074508	C213CC3H                                     	December 2005  	/site/vorhersagen/catalog/c074508.cat    /cgi-bin/cdmsinfo?file=e074508.cat      
+074509	C313CC2H                                     	December 2005  	/site/vorhersagen/catalog/c074509.cat    /cgi-bin/cdmsinfo?file=e074509.cat      
+074510	C413CCH                                      	December 2005  	/site/vorhersagen/catalog/c074510.cat    /cgi-bin/cdmsinfo?file=e074510.cat      
+074511	C513CH                                       	December 2005  	/site/vorhersagen/catalog/c074511.cat    /cgi-bin/cdmsinfo?file=e074511.cat      
+074512	C6D                                          	December 2005  	/site/vorhersagen/catalog/c074512.cat    /cgi-bin/cdmsinfo?file=e074512.cat      
+060503	OCS, v = 0                                   	November 2005  	/site/vorhersagen/catalog/c060503.cat    /cgi-bin/cdmsinfo?file=e060503.cat      
+073501	C6H                                          	November 2005  	/site/vorhersagen/catalog/c073501.cat    /cgi-bin/cdmsinfo?file=e073501.cat      
+032505	DC18O+                                       	October 2005   	/site/vorhersagen/catalog/c032505.cat    /cgi-bin/cdmsinfo?file=e032505.cat      
+065505	CH3CCNC                                      	October 2005   	/site/vorhersagen/catalog/c065505.cat    /cgi-bin/cdmsinfo?file=e065505.cat      
+075510	HC5N,  7                                     	October 2005   	/site/vorhersagen/catalog/c075510.cat    /cgi-bin/cdmsinfo?file=e075510.cat      
+012501	C                                            	September 2005 	/site/vorhersagen/catalog/c012501.cat    /cgi-bin/cdmsinfo?file=e012501.cat      
+013501	13C                                          	September 2005 	/site/vorhersagen/catalog/c013501.cat    /cgi-bin/cdmsinfo?file=e013501.cat      
+014501	CH2                                          	September 2005 	/site/vorhersagen/catalog/c014501.cat    /cgi-bin/cdmsinfo?file=e014501.cat      
+043504	C2H3NH2, within 0+ & 0                       	September 2005 	/site/vorhersagen/catalog/c043504.cat    /cgi-bin/cdmsinfo?file=e043504.cat      
+043508	C2H3NH2, 0    0+                             	September 2005 	/site/vorhersagen/catalog/c043508.cat    /cgi-bin/cdmsinfo?file=e043508.cat      
+050506	C4D                                          	September 2005 	/site/vorhersagen/catalog/c050506.cat    /cgi-bin/cdmsinfo?file=e050506.cat      
+028506	HC15N, v = 0                                 	August 2005    	/site/vorhersagen/catalog/c028506.cat    /cgi-bin/cdmsinfo?file=e028506.cat      
+028507	HC15N, v2 = 1                                	August 2005    	/site/vorhersagen/catalog/c028507.cat    /cgi-bin/cdmsinfo?file=e028507.cat      
+030501	H2CO                                         	August 2005    	/site/vorhersagen/catalog/c030501.cat    /cgi-bin/cdmsinfo?file=e030501.cat      
+077501	29SiC4                                       	August 2005    	/site/vorhersagen/catalog/c077501.cat    /cgi-bin/cdmsinfo?file=e077501.cat      
+077502	Si13CC3                                      	August 2005    	/site/vorhersagen/catalog/c077502.cat    /cgi-bin/cdmsinfo?file=e077502.cat      
+077503	SiC13CC2                                     	August 2005    	/site/vorhersagen/catalog/c077503.cat    /cgi-bin/cdmsinfo?file=e077503.cat      
+077504	SiC213CC                                     	August 2005    	/site/vorhersagen/catalog/c077504.cat    /cgi-bin/cdmsinfo?file=e077504.cat      
+077505	SiC313C                                      	August 2005    	/site/vorhersagen/catalog/c077505.cat    /cgi-bin/cdmsinfo?file=e077505.cat      
+078501	30SiC4                                       	August 2005    	/site/vorhersagen/catalog/c078501.cat    /cgi-bin/cdmsinfo?file=e078501.cat      
+064502	SO2, v = 0                                   	July 2005      	/site/vorhersagen/catalog/c064502.cat    /cgi-bin/cdmsinfo?file=e064502.cat      
+064503	SO2, v2 = 1                                  	July 2005      	/site/vorhersagen/catalog/c064503.cat    /cgi-bin/cdmsinfo?file=e064503.cat      
+064512	SO2,  2                                      	July 2005      	/site/vorhersagen/catalog/c064512.cat    /cgi-bin/cdmsinfo?file=e064512.cat      
+026504	CN, v = 0, 1                                 	May 2005       	/site/vorhersagen/catalog/c026504.cat    /cgi-bin/cdmsinfo?file=e026504.cat      
+027505	13CN                                         	May 2005       	/site/vorhersagen/catalog/c027505.cat    /cgi-bin/cdmsinfo?file=e027505.cat      
+027506	C15N                                         	May 2005       	/site/vorhersagen/catalog/c027506.cat    /cgi-bin/cdmsinfo?file=e027506.cat      
+028505	13C15N                                       	May 2005       	/site/vorhersagen/catalog/c028505.cat    /cgi-bin/cdmsinfo?file=e028505.cat      
+040507	CH3CCH,  10                                  	May 2005       	/site/vorhersagen/catalog/c040507.cat    /cgi-bin/cdmsinfo?file=e040507.cat      
+040508	CH3CCH,  9                                   	May 2005       	/site/vorhersagen/catalog/c040508.cat    /cgi-bin/cdmsinfo?file=e040508.cat      
+060504	OCS, v2 = 1                                  	April 2005     	/site/vorhersagen/catalog/c060504.cat    /cgi-bin/cdmsinfo?file=e060504.cat      
+061502	O13CS                                        	April 2005     	/site/vorhersagen/catalog/c061502.cat    /cgi-bin/cdmsinfo?file=e061502.cat      
+061503	OC33S                                        	April 2005     	/site/vorhersagen/catalog/c061503.cat    /cgi-bin/cdmsinfo?file=e061503.cat      
+061504	17OCS                                        	April 2005     	/site/vorhersagen/catalog/c061504.cat    /cgi-bin/cdmsinfo?file=e061504.cat      
+062505	OC34S                                        	April 2005     	/site/vorhersagen/catalog/c062505.cat    /cgi-bin/cdmsinfo?file=e062505.cat      
+062506	18OCS                                        	April 2005     	/site/vorhersagen/catalog/c062506.cat    /cgi-bin/cdmsinfo?file=e062506.cat      
+062507	O13C33S                                      	April 2005     	/site/vorhersagen/catalog/c062507.cat    /cgi-bin/cdmsinfo?file=e062507.cat      
+063502	O13C34S                                      	April 2005     	/site/vorhersagen/catalog/c063502.cat    /cgi-bin/cdmsinfo?file=e063502.cat      
+063503	18O13CS                                      	April 2005     	/site/vorhersagen/catalog/c063503.cat    /cgi-bin/cdmsinfo?file=e063503.cat      
+064510	OC36S                                        	April 2005     	/site/vorhersagen/catalog/c064510.cat    /cgi-bin/cdmsinfo?file=e064510.cat      
+064511	18OC34S                                      	April 2005     	/site/vorhersagen/catalog/c064511.cat    /cgi-bin/cdmsinfo?file=e064511.cat      
+040505	H2CCN                                        	March 2005     	/site/vorhersagen/catalog/c040505.cat    /cgi-bin/cdmsinfo?file=e040505.cat      
+052514	H13CCCN, v7 = 1                              	March 2005     	/site/vorhersagen/catalog/c052514.cat    /cgi-bin/cdmsinfo?file=e052514.cat      
+052515	HC13CCN, v7 = 1                              	March 2005     	/site/vorhersagen/catalog/c052515.cat    /cgi-bin/cdmsinfo?file=e052515.cat      
+052516	HCC13CN, v7 = 1                              	March 2005     	/site/vorhersagen/catalog/c052516.cat    /cgi-bin/cdmsinfo?file=e052516.cat      
+052517	HCCC15N, v7 = 1                              	March 2005     	/site/vorhersagen/catalog/c052517.cat    /cgi-bin/cdmsinfo?file=e052517.cat      
+064509	H2C4N                                        	March 2005     	/site/vorhersagen/catalog/c064509.cat    /cgi-bin/cdmsinfo?file=e064509.cat      
+027502	HNC, v = 0                                   	February 2005  	/site/vorhersagen/catalog/c027502.cat    /cgi-bin/cdmsinfo?file=e027502.cat      
+027504	HNC, v2 = 1                                  	February 2005  	/site/vorhersagen/catalog/c027504.cat    /cgi-bin/cdmsinfo?file=e027504.cat      
+059503	HNCS, a-type                                 	February 2005  	/site/vorhersagen/catalog/c059503.cat    /cgi-bin/cdmsinfo?file=e059503.cat      
+059504	HNCS, b-type                                 	February 2005  	/site/vorhersagen/catalog/c059504.cat    /cgi-bin/cdmsinfo?file=e059504.cat      
+031506	HC18O+                                       	December 2004  	/site/vorhersagen/catalog/c031506.cat    /cgi-bin/cdmsinfo?file=e031506.cat      
+052509	H13CCCN, v = 0                               	December 2004  	/site/vorhersagen/catalog/c052509.cat    /cgi-bin/cdmsinfo?file=e052509.cat      
+052510	HC13CCN, v = 0                               	December 2004  	/site/vorhersagen/catalog/c052510.cat    /cgi-bin/cdmsinfo?file=e052510.cat      
+052511	HCC13CN, v = 0                               	December 2004  	/site/vorhersagen/catalog/c052511.cat    /cgi-bin/cdmsinfo?file=e052511.cat      
+052512	HCCC15N, v = 0                               	December 2004  	/site/vorhersagen/catalog/c052512.cat    /cgi-bin/cdmsinfo?file=e052512.cat      
+053508	H13C13CCN, v = 0                             	December 2004  	/site/vorhersagen/catalog/c053508.cat    /cgi-bin/cdmsinfo?file=e053508.cat      
+063501	l-HC4N                                       	December 2004  	/site/vorhersagen/catalog/c063501.cat    /cgi-bin/cdmsinfo?file=e063501.cat      
+087501	l-HC6N                                       	December 2004  	/site/vorhersagen/catalog/c087501.cat    /cgi-bin/cdmsinfo?file=e087501.cat      
+075504	HC5N, v11 = 1                                	November 2004  	/site/vorhersagen/catalog/c075504.cat    /cgi-bin/cdmsinfo?file=e075504.cat      
+075505	HC5N, v11 = 2                                	November 2004  	/site/vorhersagen/catalog/c075505.cat    /cgi-bin/cdmsinfo?file=e075505.cat      
+075506	HC5N, v10 = 1                                	November 2004  	/site/vorhersagen/catalog/c075506.cat    /cgi-bin/cdmsinfo?file=e075506.cat      
+075507	HC5N, v11 = 3                                	November 2004  	/site/vorhersagen/catalog/c075507.cat    /cgi-bin/cdmsinfo?file=e075507.cat      
+075508	HC5N, v11 = 4                                	November 2004  	/site/vorhersagen/catalog/c075508.cat    /cgi-bin/cdmsinfo?file=e075508.cat      
+075509	HC5N, v9 = 1                                 	November 2004  	/site/vorhersagen/catalog/c075509.cat    /cgi-bin/cdmsinfo?file=e075509.cat      
+032502	D2CO                                         	October 2004   	/site/vorhersagen/catalog/c032502.cat    /cgi-bin/cdmsinfo?file=e032502.cat      
+076507	H13CC4N                                      	October 2004   	/site/vorhersagen/catalog/c076507.cat    /cgi-bin/cdmsinfo?file=e076507.cat      
+076508	HC13CC3N                                     	October 2004   	/site/vorhersagen/catalog/c076508.cat    /cgi-bin/cdmsinfo?file=e076508.cat      
+076509	HC213CC2N                                    	October 2004   	/site/vorhersagen/catalog/c076509.cat    /cgi-bin/cdmsinfo?file=e076509.cat      
+076510	HC313CCN                                     	October 2004   	/site/vorhersagen/catalog/c076510.cat    /cgi-bin/cdmsinfo?file=e076510.cat      
+076511	HC413CN                                      	October 2004   	/site/vorhersagen/catalog/c076511.cat    /cgi-bin/cdmsinfo?file=e076511.cat      
+076512	HC515N                                       	October 2004   	/site/vorhersagen/catalog/c076512.cat    /cgi-bin/cdmsinfo?file=e076512.cat      
+099501	HC7N, v = 0                                  	October 2004   	/site/vorhersagen/catalog/c099501.cat    /cgi-bin/cdmsinfo?file=e099501.cat      
+099502	HC7N, v15 = 1                                	October 2004   	/site/vorhersagen/catalog/c099502.cat    /cgi-bin/cdmsinfo?file=e099502.cat      
+099503	HC7N, v15 = 2                                	October 2004   	/site/vorhersagen/catalog/c099503.cat    /cgi-bin/cdmsinfo?file=e099503.cat      
+123501	HC9N                                         	October 2004   	/site/vorhersagen/catalog/c123501.cat    /cgi-bin/cdmsinfo?file=e123501.cat      
+147501	HC11N                                        	October 2004   	/site/vorhersagen/catalog/c147501.cat    /cgi-bin/cdmsinfo?file=e147501.cat      
+100502	DC7N                                         	September 2004 	/site/vorhersagen/catalog/c100502.cat    /cgi-bin/cdmsinfo?file=e100502.cat      
+100503	H13CC6N                                      	September 2004 	/site/vorhersagen/catalog/c100503.cat    /cgi-bin/cdmsinfo?file=e100503.cat      
+100504	HC13CC5N                                     	September 2004 	/site/vorhersagen/catalog/c100504.cat    /cgi-bin/cdmsinfo?file=e100504.cat      
+100505	HC213CC4N                                    	September 2004 	/site/vorhersagen/catalog/c100505.cat    /cgi-bin/cdmsinfo?file=e100505.cat      
+100506	HC313CC3N                                    	September 2004 	/site/vorhersagen/catalog/c100506.cat    /cgi-bin/cdmsinfo?file=e100506.cat      
+100507	HC413CC2N                                    	September 2004 	/site/vorhersagen/catalog/c100507.cat    /cgi-bin/cdmsinfo?file=e100507.cat      
+100508	HC513CCN                                     	September 2004 	/site/vorhersagen/catalog/c100508.cat    /cgi-bin/cdmsinfo?file=e100508.cat      
+100509	HC613CN                                      	September 2004 	/site/vorhersagen/catalog/c100509.cat    /cgi-bin/cdmsinfo?file=e100509.cat      
+100510	HC715N                                       	September 2004 	/site/vorhersagen/catalog/c100510.cat    /cgi-bin/cdmsinfo?file=e100510.cat      
+038504	13CCCH, v = 0, v4 = 1, 2                     	August 2004    	/site/vorhersagen/catalog/c038504.cat    /cgi-bin/cdmsinfo?file=e038504.cat      
+038505	C13CCH, v = 0, v4 = 1, 2                     	August 2004    	/site/vorhersagen/catalog/c038505.cat    /cgi-bin/cdmsinfo?file=e038505.cat      
+038506	CC13CH, v = 0, v4 = 1, 2                     	August 2004    	/site/vorhersagen/catalog/c038506.cat    /cgi-bin/cdmsinfo?file=e038506.cat      
+075503	HC5N, v = 0                                  	August 2004    	/site/vorhersagen/catalog/c075503.cat    /cgi-bin/cdmsinfo?file=e075503.cat      
+076506	DC5N                                         	August 2004    	/site/vorhersagen/catalog/c076506.cat    /cgi-bin/cdmsinfo?file=e076506.cat      
+076504	K37Cl, v = 0, 1                              	July 2004      	/site/vorhersagen/catalog/c076504.cat    /cgi-bin/cdmsinfo?file=e076504.cat      
+076505	41KCl, v = 0, 1                              	July 2004      	/site/vorhersagen/catalog/c076505.cat    /cgi-bin/cdmsinfo?file=e076505.cat      
+040506	c-C3H4                                       	June 2004      	/site/vorhersagen/catalog/c040506.cat    /cgi-bin/cdmsinfo?file=e040506.cat      
+052506	H2CCHCCH (C4H4)                              	June 2004      	/site/vorhersagen/catalog/c052506.cat    /cgi-bin/cdmsinfo?file=e052506.cat      
+052507	(c-C3H2)CH2 (C4H4)                           	June 2004      	/site/vorhersagen/catalog/c052507.cat    /cgi-bin/cdmsinfo?file=e052507.cat      
+015501	NH                                           	May 2004       	/site/vorhersagen/catalog/c015501.cat    /cgi-bin/cdmsinfo?file=e015501.cat      
+018501	NH2D                                         	May 2004       	/site/vorhersagen/catalog/c018501.cat    /cgi-bin/cdmsinfo?file=e018501.cat      
+047504	HDCS                                         	May 2004       	/site/vorhersagen/catalog/c047504.cat    /cgi-bin/cdmsinfo?file=e047504.cat      
+062504	gGg'-(CH2OH)2                                	May 2004       	/site/vorhersagen/catalog/c062504.cat    /cgi-bin/cdmsinfo?file=e062504.cat      
+046508	13C33S                                       	April 2004     	/site/vorhersagen/catalog/c046508.cat    /cgi-bin/cdmsinfo?file=e046508.cat      
+049508	13C36S                                       	April 2004     	/site/vorhersagen/catalog/c049508.cat    /cgi-bin/cdmsinfo?file=e049508.cat      
+065503	CH3C3N                                       	April 2004     	/site/vorhersagen/catalog/c065503.cat    /cgi-bin/cdmsinfo?file=e065503.cat      
+112501	CH3C8H                                       	April 2004     	/site/vorhersagen/catalog/c112501.cat    /cgi-bin/cdmsinfo?file=e112501.cat      
+113501	CH3C7N                                       	April 2004     	/site/vorhersagen/catalog/c113501.cat    /cgi-bin/cdmsinfo?file=e113501.cat      
+137501	CH3C9N                                       	April 2004     	/site/vorhersagen/catalog/c137501.cat    /cgi-bin/cdmsinfo?file=e137501.cat      
+029504	HOC+, v2 = 0                                 	March 2004     	/site/vorhersagen/catalog/c029504.cat    /cgi-bin/cdmsinfo?file=e029504.cat      
+029505	HOC+, v2 = 1                                 	March 2004     	/site/vorhersagen/catalog/c029505.cat    /cgi-bin/cdmsinfo?file=e029505.cat      
+030506	DOC+                                         	March 2004     	/site/vorhersagen/catalog/c030506.cat    /cgi-bin/cdmsinfo?file=e030506.cat      
+070501	NiC                                          	March 2004     	/site/vorhersagen/catalog/c070501.cat    /cgi-bin/cdmsinfo?file=e070501.cat      
+071501	CoC                                          	March 2004     	/site/vorhersagen/catalog/c071501.cat    /cgi-bin/cdmsinfo?file=e071501.cat      
+074504	NiO                                          	March 2004     	/site/vorhersagen/catalog/c074504.cat    /cgi-bin/cdmsinfo?file=e074504.cat      
+084501	FeCO                                         	March 2004     	/site/vorhersagen/catalog/c084501.cat    /cgi-bin/cdmsinfo?file=e084501.cat      
+086502	NiCO                                         	March 2004     	/site/vorhersagen/catalog/c086502.cat    /cgi-bin/cdmsinfo?file=e086502.cat      
+016502	ND                                           	February 2004  	/site/vorhersagen/catalog/c016502.cat    /cgi-bin/cdmsinfo?file=e016502.cat      
+030505	HC17O+                                       	February 2004  	/site/vorhersagen/catalog/c030505.cat    /cgi-bin/cdmsinfo?file=e030505.cat      
+076503	c-C6H4                                       	February 2004  	/site/vorhersagen/catalog/c076503.cat    /cgi-bin/cdmsinfo?file=e076503.cat      
+039505	H2C3H                                        	January 2004   	/site/vorhersagen/catalog/c039505.cat    /cgi-bin/cdmsinfo?file=e039505.cat      
+045501	13CS, v = 0, 1                               	January 2004   	/site/vorhersagen/catalog/c045501.cat    /cgi-bin/cdmsinfo?file=e045501.cat      
+045502	C33S, v = 0, 1                               	January 2004   	/site/vorhersagen/catalog/c045502.cat    /cgi-bin/cdmsinfo?file=e045502.cat      
+046501	C34S, v = 0, 1                               	January 2004   	/site/vorhersagen/catalog/c046501.cat    /cgi-bin/cdmsinfo?file=e046501.cat      
+047501	13C34S                                       	January 2004   	/site/vorhersagen/catalog/c047501.cat    /cgi-bin/cdmsinfo?file=e047501.cat      
+048503	C36S                                         	January 2004   	/site/vorhersagen/catalog/c048503.cat    /cgi-bin/cdmsinfo?file=e048503.cat      
+050511	C3N, v = 0                                   	December 2003  	/site/vorhersagen/catalog/c050511.cat    /cgi-bin/cdmsinfo?file=e050511.cat      
+050512	C3N, v5 = 1                                  	December 2003  	/site/vorhersagen/catalog/c050512.cat    /cgi-bin/cdmsinfo?file=e050512.cat      
+051511	13CCCN                                       	December 2003  	/site/vorhersagen/catalog/c051511.cat    /cgi-bin/cdmsinfo?file=e051511.cat      
+051512	C13CCN                                       	December 2003  	/site/vorhersagen/catalog/c051512.cat    /cgi-bin/cdmsinfo?file=e051512.cat      
+051513	CC13CN                                       	December 2003  	/site/vorhersagen/catalog/c051513.cat    /cgi-bin/cdmsinfo?file=e051513.cat      
+051514	C315N                                        	December 2003  	/site/vorhersagen/catalog/c051514.cat    /cgi-bin/cdmsinfo?file=e051514.cat      
+053501	AlNC                                         	December 2003  	/site/vorhersagen/catalog/c053501.cat    /cgi-bin/cdmsinfo?file=e053501.cat      
+053505	AlCN                                         	December 2003  	/site/vorhersagen/catalog/c053505.cat    /cgi-bin/cdmsinfo?file=e053505.cat      
+042501	H2CCO                                        	November 2003  	/site/vorhersagen/catalog/c042501.cat    /cgi-bin/cdmsinfo?file=e042501.cat      
+043505	H2C13CO                                      	November 2003  	/site/vorhersagen/catalog/c043505.cat    /cgi-bin/cdmsinfo?file=e043505.cat      
+043506	H213CCO                                      	November 2003  	/site/vorhersagen/catalog/c043506.cat    /cgi-bin/cdmsinfo?file=e043506.cat      
+044508	H2CC18O                                      	November 2003  	/site/vorhersagen/catalog/c044508.cat    /cgi-bin/cdmsinfo?file=e044508.cat      
+062503	aGg'-(CH2OH)2                                	September 2003 	/site/vorhersagen/catalog/c062503.cat    /cgi-bin/cdmsinfo?file=e062503.cat      
+038502	C2N                                          	August 2003    	/site/vorhersagen/catalog/c038502.cat    /cgi-bin/cdmsinfo?file=e038502.cat      
+045507	HCS                                          	August 2003    	/site/vorhersagen/catalog/c045507.cat    /cgi-bin/cdmsinfo?file=e045507.cat      
+045508	HSC                                          	August 2003    	/site/vorhersagen/catalog/c045508.cat    /cgi-bin/cdmsinfo?file=e045508.cat      
+048506	HPO                                          	August 2003    	/site/vorhersagen/catalog/c048506.cat    /cgi-bin/cdmsinfo?file=e048506.cat      
+056503	ONCN                                         	August 2003    	/site/vorhersagen/catalog/c056503.cat    /cgi-bin/cdmsinfo?file=e056503.cat      
+042503	NCO                                          	July 2003      	/site/vorhersagen/catalog/c042503.cat    /cgi-bin/cdmsinfo?file=e042503.cat      
+046506	t-HCOOH                                      	July 2003      	/site/vorhersagen/catalog/c046506.cat    /cgi-bin/cdmsinfo?file=e046506.cat      
+046507	c-HCOOH                                      	July 2003      	/site/vorhersagen/catalog/c046507.cat    /cgi-bin/cdmsinfo?file=e046507.cat      
+047503	t-H13COOH                                    	July 2003      	/site/vorhersagen/catalog/c047503.cat    /cgi-bin/cdmsinfo?file=e047503.cat      
+062502	TiN                                          	July 2003      	/site/vorhersagen/catalog/c062502.cat    /cgi-bin/cdmsinfo?file=e062502.cat      
+045506	HCS+                                         	June 2003      	/site/vorhersagen/catalog/c045506.cat    /cgi-bin/cdmsinfo?file=e045506.cat      
+046504	H13CS+                                       	June 2003      	/site/vorhersagen/catalog/c046504.cat    /cgi-bin/cdmsinfo?file=e046504.cat      
+046505	DCS+                                         	June 2003      	/site/vorhersagen/catalog/c046505.cat    /cgi-bin/cdmsinfo?file=e046505.cat      
+047502	HC34S+                                       	June 2003      	/site/vorhersagen/catalog/c047502.cat    /cgi-bin/cdmsinfo?file=e047502.cat      
+017501	OH+                                          	April 2003     	/site/vorhersagen/catalog/c017501.cat    /cgi-bin/cdmsinfo?file=e017501.cat      
+053507	t-HC3O                                       	April 2003     	/site/vorhersagen/catalog/c053507.cat    /cgi-bin/cdmsinfo?file=e053507.cat      
+080502	ScCl                                         	April 2003     	/site/vorhersagen/catalog/c080502.cat    /cgi-bin/cdmsinfo?file=e080502.cat      
+082501	Sc37Cl                                       	April 2003     	/site/vorhersagen/catalog/c082501.cat    /cgi-bin/cdmsinfo?file=e082501.cat      
+171501	HC13N                                        	April 2003     	/site/vorhersagen/catalog/c171501.cat    /cgi-bin/cdmsinfo?file=e171501.cat      
+033503	NH2OH                                        	March 2003     	/site/vorhersagen/catalog/c033503.cat    /cgi-bin/cdmsinfo?file=e033503.cat      
+064508	ScF                                          	March 2003     	/site/vorhersagen/catalog/c064508.cat    /cgi-bin/cdmsinfo?file=e064508.cat      
+042502	NaF, v = 0, 1                                	February 2003  	/site/vorhersagen/catalog/c042502.cat    /cgi-bin/cdmsinfo?file=e042502.cat      
+053504	H13CC13CN, v = 0                             	February 2003  	/site/vorhersagen/catalog/c053504.cat    /cgi-bin/cdmsinfo?file=e053504.cat      
+058503	KF, v = 0, 1                                 	February 2003  	/site/vorhersagen/catalog/c058503.cat    /cgi-bin/cdmsinfo?file=e058503.cat      
+029503	C17O                                         	January 2003   	/site/vorhersagen/catalog/c029503.cat    /cgi-bin/cdmsinfo?file=e029503.cat      
+030503	13C17O                                       	January 2003   	/site/vorhersagen/catalog/c030503.cat    /cgi-bin/cdmsinfo?file=e030503.cat      
+040504	CH3CCH, v10 = 1                              	January 2003   	/site/vorhersagen/catalog/c040504.cat    /cgi-bin/cdmsinfo?file=e040504.cat      
+053503	HC13C13CN, v = 0                             	January 2003   	/site/vorhersagen/catalog/c053503.cat    /cgi-bin/cdmsinfo?file=e053503.cat      
+053506	HCC13C15N                                    	January 2003   	/site/vorhersagen/catalog/c053506.cat    /cgi-bin/cdmsinfo?file=e053506.cat      
+033502*	13CH3OH, vt = 0, 1                           	December 2002  	/site/vorhersagen/catalog/c033502.cat    /cgi-bin/cdmsinfo?file=e033502.cat      
+052505	CaC                                          	October 2002   	/site/vorhersagen/catalog/c052505.cat    /cgi-bin/cdmsinfo?file=e052505.cat      
+054504	c-H2C3O                                      	October 2002   	/site/vorhersagen/catalog/c054504.cat    /cgi-bin/cdmsinfo?file=e054504.cat      
+070503	H2C3S                                        	October 2002   	/site/vorhersagen/catalog/c070503.cat    /cgi-bin/cdmsinfo?file=e070503.cat      
+060502	Na37Cl, v = 0, 1                             	September 2002 	/site/vorhersagen/catalog/c060502.cat    /cgi-bin/cdmsinfo?file=e060502.cat      
+088502	CH3C6H                                       	September 2002 	/site/vorhersagen/catalog/c088502.cat    /cgi-bin/cdmsinfo?file=e088502.cat      
+089501	CH3C5N                                       	September 2002 	/site/vorhersagen/catalog/c089501.cat    /cgi-bin/cdmsinfo?file=e089501.cat      
+020501	ND3                                          	June 2002      	/site/vorhersagen/catalog/c020501.cat    /cgi-bin/cdmsinfo?file=e020501.cat      
+038501	l-C3H2                                       	June 2002      	/site/vorhersagen/catalog/c038501.cat    /cgi-bin/cdmsinfo?file=e038501.cat      
+039502	l-13CCCH2                                    	June 2002      	/site/vorhersagen/catalog/c039502.cat    /cgi-bin/cdmsinfo?file=e039502.cat      
+039503	l-C13CCH2                                    	June 2002      	/site/vorhersagen/catalog/c039503.cat    /cgi-bin/cdmsinfo?file=e039503.cat      
+039504	l-CC13CH2                                    	June 2002      	/site/vorhersagen/catalog/c039504.cat    /cgi-bin/cdmsinfo?file=e039504.cat      
+058501	H2C2S                                        	June 2002      	/site/vorhersagen/catalog/c058501.cat    /cgi-bin/cdmsinfo?file=e058501.cat      
+050503	l-C4H2                                       	May 2002       	/site/vorhersagen/catalog/c050503.cat    /cgi-bin/cdmsinfo?file=e050503.cat      
+062501	l-C5H2                                       	May 2002       	/site/vorhersagen/catalog/c062501.cat    /cgi-bin/cdmsinfo?file=e062501.cat      
+074502	l-C6H2                                       	May 2002       	/site/vorhersagen/catalog/c074502.cat    /cgi-bin/cdmsinfo?file=e074502.cat      
+086501	l-C7H2                                       	May 2002       	/site/vorhersagen/catalog/c086501.cat    /cgi-bin/cdmsinfo?file=e086501.cat      
+041501	CH3CCD                                       	April 2002     	/site/vorhersagen/catalog/c041501.cat    /cgi-bin/cdmsinfo?file=e041501.cat      
+041502	CH2DCCH                                      	April 2002     	/site/vorhersagen/catalog/c041502.cat    /cgi-bin/cdmsinfo?file=e041502.cat      
+054503	l-H2C3O                                      	February 2002  	/site/vorhersagen/catalog/c054503.cat    /cgi-bin/cdmsinfo?file=e054503.cat      
+064506	CuH                                          	February 2002  	/site/vorhersagen/catalog/c064506.cat    /cgi-bin/cdmsinfo?file=e064506.cat      
+065504	ZnH                                          	February 2002  	/site/vorhersagen/catalog/c065504.cat    /cgi-bin/cdmsinfo?file=e065504.cat      
+066504	65CuH                                        	February 2002  	/site/vorhersagen/catalog/c066504.cat    /cgi-bin/cdmsinfo?file=e066504.cat      
+067501	66ZnH                                        	February 2002  	/site/vorhersagen/catalog/c067501.cat    /cgi-bin/cdmsinfo?file=e067501.cat      
+069504	68ZnH                                        	February 2002  	/site/vorhersagen/catalog/c069504.cat    /cgi-bin/cdmsinfo?file=e069504.cat      
+053502	SiCCH                                        	January 2002   	/site/vorhersagen/catalog/c053502.cat    /cgi-bin/cdmsinfo?file=e053502.cat      
+054501	SiCN                                         	January 2002   	/site/vorhersagen/catalog/c054501.cat    /cgi-bin/cdmsinfo?file=e054501.cat      
+054502	SiNC                                         	January 2002   	/site/vorhersagen/catalog/c054502.cat    /cgi-bin/cdmsinfo?file=e054502.cat      
+033501	PH2                                          	November 2001  	/site/vorhersagen/catalog/c033501.cat    /cgi-bin/cdmsinfo?file=e033501.cat      
+056502	CCS                                          	November 2001  	/site/vorhersagen/catalog/c056502.cat    /cgi-bin/cdmsinfo?file=e056502.cat      
+080501	C4S                                          	November 2001  	/site/vorhersagen/catalog/c080501.cat    /cgi-bin/cdmsinfo?file=e080501.cat      
+016501	NH2                                          	October 2001   	/site/vorhersagen/catalog/c016501.cat    /cgi-bin/cdmsinfo?file=e016501.cat      
+044506	s-H2C=CHOH                                   	October 2001   	/site/vorhersagen/catalog/c044506.cat    /cgi-bin/cdmsinfo?file=e044506.cat      
+044507	a-H2C=CHOH                                   	October 2001   	/site/vorhersagen/catalog/c044507.cat    /cgi-bin/cdmsinfo?file=e044507.cat      
+059502	CaF                                          	September 2001 	/site/vorhersagen/catalog/c059502.cat    /cgi-bin/cdmsinfo?file=e059502.cat      
+075502	CaCl                                         	September 2001 	/site/vorhersagen/catalog/c075502.cat    /cgi-bin/cdmsinfo?file=e075502.cat      
+032501	PH                                           	August 2001    	/site/vorhersagen/catalog/c032501.cat    /cgi-bin/cdmsinfo?file=e032501.cat      
+045505	H2CP                                         	August 2001    	/site/vorhersagen/catalog/c045505.cat    /cgi-bin/cdmsinfo?file=e045505.cat      
+061501	PNO                                          	August 2001    	/site/vorhersagen/catalog/c061501.cat    /cgi-bin/cdmsinfo?file=e061501.cat      
+050507	13CCCCH                                      	July 2001      	/site/vorhersagen/catalog/c050507.cat    /cgi-bin/cdmsinfo?file=e050507.cat      
+050508	C13CCCH                                      	July 2001      	/site/vorhersagen/catalog/c050508.cat    /cgi-bin/cdmsinfo?file=e050508.cat      
+050509	CC13CCH                                      	July 2001      	/site/vorhersagen/catalog/c050509.cat    /cgi-bin/cdmsinfo?file=e050509.cat      
+050510	CCC13CH                                      	July 2001      	/site/vorhersagen/catalog/c050510.cat    /cgi-bin/cdmsinfo?file=e050510.cat      
+030502	C18O                                         	June 2001      	/site/vorhersagen/catalog/c030502.cat    /cgi-bin/cdmsinfo?file=e030502.cat      
+060501	CH2(OH)CHO                                   	June 2001      	/site/vorhersagen/catalog/c060501.cat    /cgi-bin/cdmsinfo?file=e060501.cat      
+025502	MgH                                          	May 2001       	/site/vorhersagen/catalog/c025502.cat    /cgi-bin/cdmsinfo?file=e025502.cat      
+029502	HCND+                                        	May 2001       	/site/vorhersagen/catalog/c029502.cat    /cgi-bin/cdmsinfo?file=e029502.cat      
+075501	HC4NC                                        	May 2001       	/site/vorhersagen/catalog/c075501.cat    /cgi-bin/cdmsinfo?file=e075501.cat      
+024501	NaH                                          	January 2001   	/site/vorhersagen/catalog/c024501.cat    /cgi-bin/cdmsinfo?file=e024501.cat      
+036501	NaCH                                         	January 2001   	/site/vorhersagen/catalog/c036501.cat    /cgi-bin/cdmsinfo?file=e036501.cat      
+040503	KH                                           	January 2001   	/site/vorhersagen/catalog/c040503.cat    /cgi-bin/cdmsinfo?file=e040503.cat      
+051510	KC                                           	January 2001   	/site/vorhersagen/catalog/c051510.cat    /cgi-bin/cdmsinfo?file=e051510.cat      
+052504	KCH                                          	January 2001   	/site/vorhersagen/catalog/c052504.cat    /cgi-bin/cdmsinfo?file=e052504.cat      
+052503	HC3NH+                                       	December 2000  	/site/vorhersagen/catalog/c052503.cat    /cgi-bin/cdmsinfo?file=e052503.cat      
+051508	HC3N, (0,1,0,0)/(0,0,0,3)                    	November 2000  	/site/vorhersagen/catalog/c051508.cat    /cgi-bin/cdmsinfo?file=e051508.cat      
+064505	l-SiC3                                       	November 2000  	/site/vorhersagen/catalog/c064505.cat    /cgi-bin/cdmsinfo?file=e064505.cat      
+076502	SiC4                                         	November 2000  	/site/vorhersagen/catalog/c076502.cat    /cgi-bin/cdmsinfo?file=e076502.cat      
+088501	SiC5                                         	November 2000  	/site/vorhersagen/catalog/c088501.cat    /cgi-bin/cdmsinfo?file=e088501.cat      
+100501	SiC6                                         	November 2000  	/site/vorhersagen/catalog/c100501.cat    /cgi-bin/cdmsinfo?file=e100501.cat      
+028503	CO, v = 0                                    	October 2000   	/site/vorhersagen/catalog/c028503.cat    /cgi-bin/cdmsinfo?file=e028503.cat      
+051501	HC3N, (0,0,0,0)                              	October 2000   	/site/vorhersagen/catalog/c051501.cat    /cgi-bin/cdmsinfo?file=e051501.cat      
+051502	HC3N, (0,0,0,1)                              	October 2000   	/site/vorhersagen/catalog/c051502.cat    /cgi-bin/cdmsinfo?file=e051502.cat      
+051503	HC3N, (0,0,0,2)                              	October 2000   	/site/vorhersagen/catalog/c051503.cat    /cgi-bin/cdmsinfo?file=e051503.cat      
+051504	HC3N, (0,0,1,0)                              	October 2000   	/site/vorhersagen/catalog/c051504.cat    /cgi-bin/cdmsinfo?file=e051504.cat      
+051507	HC3N, (1,0,0,1)                              	October 2000   	/site/vorhersagen/catalog/c051507.cat    /cgi-bin/cdmsinfo?file=e051507.cat      
+051509	HC3N, (1,0,0,2)/(0,2,0,0)0e                  	October 2000   	/site/vorhersagen/catalog/c051509.cat    /cgi-bin/cdmsinfo?file=e051509.cat      
+068502	HC3P                                         	October 2000   	/site/vorhersagen/catalog/c068502.cat    /cgi-bin/cdmsinfo?file=e068502.cat      
+069501	NC2P                                         	October 2000   	/site/vorhersagen/catalog/c069501.cat    /cgi-bin/cdmsinfo?file=e069501.cat      
+049503	C4H, v = 0                                   	September 2000 	/site/vorhersagen/catalog/c049503.cat    /cgi-bin/cdmsinfo?file=e049503.cat      
+049504	C4H, v7 = 1                                  	September 2000 	/site/vorhersagen/catalog/c049504.cat    /cgi-bin/cdmsinfo?file=e049504.cat      
+049505	C4H, v7 = 20                                 	September 2000 	/site/vorhersagen/catalog/c049505.cat    /cgi-bin/cdmsinfo?file=e049505.cat      
+049506	C4H, v7 = 22                                 	September 2000 	/site/vorhersagen/catalog/c049506.cat    /cgi-bin/cdmsinfo?file=e049506.cat      
+068501	FeC                                          	August 2000    	/site/vorhersagen/catalog/c068501.cat    /cgi-bin/cdmsinfo?file=e068501.cat      
+028502	H2CN                                         	July 2000      	/site/vorhersagen/catalog/c028502.cat    /cgi-bin/cdmsinfo?file=e028502.cat      
+031502	13C18O                                       	July 2000      	/site/vorhersagen/catalog/c031502.cat    /cgi-bin/cdmsinfo?file=e031502.cat      
+085501	C7H                                          	July 2000      	/site/vorhersagen/catalog/c085501.cat    /cgi-bin/cdmsinfo?file=e085501.cat      
+097501	C8H                                          	July 2000      	/site/vorhersagen/catalog/c097501.cat    /cgi-bin/cdmsinfo?file=e097501.cat      
+109501	C9H                                          	July 2000      	/site/vorhersagen/catalog/c109501.cat    /cgi-bin/cdmsinfo?file=e109501.cat      
+121501	C10H                                         	July 2000      	/site/vorhersagen/catalog/c121501.cat    /cgi-bin/cdmsinfo?file=e121501.cat      
+043503	MgF                                          	June 2000      	/site/vorhersagen/catalog/c043503.cat    /cgi-bin/cdmsinfo?file=e043503.cat      
+059501	MgCl                                         	June 2000      	/site/vorhersagen/catalog/c059501.cat    /cgi-bin/cdmsinfo?file=e059501.cat      
+026502	13CCH                                        	May 2000       	/site/vorhersagen/catalog/c026502.cat    /cgi-bin/cdmsinfo?file=e026502.cat      
+031503	H213CO                                       	May 2000       	/site/vorhersagen/catalog/c031503.cat    /cgi-bin/cdmsinfo?file=e031503.cat      
+031505	CF                                           	May 2000       	/site/vorhersagen/catalog/c031505.cat    /cgi-bin/cdmsinfo?file=e031505.cat      
+050505	MgNC, v2 = 1                                 	May 2000       	/site/vorhersagen/catalog/c050505.cat    /cgi-bin/cdmsinfo?file=e050505.cat      
+026501	CCD                                          	April 2000     	/site/vorhersagen/catalog/c026501.cat    /cgi-bin/cdmsinfo?file=e026501.cat      
+032503	H2C18O                                       	March 2000     	/site/vorhersagen/catalog/c032503.cat    /cgi-bin/cdmsinfo?file=e032503.cat      
+043501	CP                                           	March 2000     	/site/vorhersagen/catalog/c043501.cat    /cgi-bin/cdmsinfo?file=e043501.cat      
+050504	MgNC, v = 0                                  	March 2000     	/site/vorhersagen/catalog/c050504.cat    /cgi-bin/cdmsinfo?file=e050504.cat      
+066503	CaNC                                         	March 2000     	/site/vorhersagen/catalog/c066503.cat    /cgi-bin/cdmsinfo?file=e066503.cat      
+031501	HDCO                                         	February 2000  	/site/vorhersagen/catalog/c031501.cat    /cgi-bin/cdmsinfo?file=e031501.cat      
+040501	SiC, v = 0                                   	February 2000  	/site/vorhersagen/catalog/c040501.cat    /cgi-bin/cdmsinfo?file=e040501.cat      
+044503	HCP, v2 = 1                                  	February 2000  	/site/vorhersagen/catalog/c044503.cat    /cgi-bin/cdmsinfo?file=e044503.cat      
+045503	DCP                                          	February 2000  	/site/vorhersagen/catalog/c045503.cat    /cgi-bin/cdmsinfo?file=e045503.cat      
+064501	p-c-SiC3                                     	January 2000   	/site/vorhersagen/catalog/c064501.cat    /cgi-bin/cdmsinfo?file=e064501.cat      
+074501	C5N                                          	January 2000   	/site/vorhersagen/catalog/c074501.cat    /cgi-bin/cdmsinfo?file=e074501.cat      
+065501	33SO2                                        	December 1999  	/site/vorhersagen/catalog/c065501.cat    /cgi-bin/cdmsinfo?file=e065501.cat      
+066501	34SO2                                        	December 1999  	/site/vorhersagen/catalog/c066501.cat    /cgi-bin/cdmsinfo?file=e066501.cat      
+066502	SO18O                                        	December 1999  	/site/vorhersagen/catalog/c066502.cat    /cgi-bin/cdmsinfo?file=e066502.cat      
+076501	NC3NC                                        	October 1999   	/site/vorhersagen/catalog/c076501.cat    /cgi-bin/cdmsinfo?file=e076501.cat      
+048504	SO, a 1 , v = 0, 1                           	July 1999      	/site/vorhersagen/catalog/c048504.cat    /cgi-bin/cdmsinfo?file=e048504.cat      
+048501	SO, v = 0                                    	August 1998    	/site/vorhersagen/catalog/c048501.cat    /cgi-bin/cdmsinfo?file=e048501.cat      
+048502	SO, v = 1                                    	August 1998    	/site/vorhersagen/catalog/c048502.cat    /cgi-bin/cdmsinfo?file=e048502.cat      
+049501	33SO                                         	August 1998    	/site/vorhersagen/catalog/c049501.cat    /cgi-bin/cdmsinfo?file=e049501.cat      
+049502	S17O                                         	August 1998    	/site/vorhersagen/catalog/c049502.cat    /cgi-bin/cdmsinfo?file=e049502.cat      
+050501	34SO                                         	August 1998    	/site/vorhersagen/catalog/c050501.cat    /cgi-bin/cdmsinfo?file=e050501.cat      
+050502	S18O                                         	August 1998    	/site/vorhersagen/catalog/c050502.cat    /cgi-bin/cdmsinfo?file=e050502.cat      
+052502	36SO                                         	August 1998    	/site/vorhersagen/catalog/c052502.cat    /cgi-bin/cdmsinfo?file=e052502.cat      
+056501	HCCP                                         	May 1998       	/site/vorhersagen/catalog/c056501.cat    /cgi-bin/cdmsinfo?file=e056501.cat      
