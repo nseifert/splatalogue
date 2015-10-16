@@ -24,13 +24,13 @@ if __name__ == "__main__":
     page = urllib2.urlopen(BASE_URL+"/cdms/entries")
     soup = BeautifulSoup(page.read(), "lxml")
 
-    urls = [] # URLs to CAT and Documentation (metadata) files
-    des = [] # Text from table entries
+    urls = []  # URLs to CAT and Documentation (metadata) files
+    des = []  # Text from table entries
     for tr in soup.find_all('tr')[1:]:
         des.append([col.text for col in tr.find_all('td')])
         urls.append([a['href'] for a in tr.find_all('a')])
 
-    compiled = [] # 0 --> tag, 1 --> Molecule, 2 --> struct_time obj, 4 --> cat file, 5 --> metadata
+    compiled = []  # 0 --> tag, 1 --> Molecule, 2 --> struct_time obj, 4 --> cat file, 5 --> metadata
     for i, entry in enumerate(urls):
         date = des[i][6].strip()
 
