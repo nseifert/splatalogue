@@ -1,8 +1,14 @@
-__author__ = 'nseifert'
 import urllib2
 from bs4 import BeautifulSoup
 import time
 import re
+
+__author__ = 'Nathan Seifert'
+
+
+def unidrop(text): # Strips any non-ASCII unicode text from string
+    return re.sub(r'[^\x00-\x7F]+',' ', x)
+
 
 def pretty_print(comp):
     form = "{:5}\t{:45}\t{:15}\t{:40} {:40}"
@@ -12,9 +18,7 @@ def pretty_print(comp):
     return output
 
 
-
 if __name__ == "__main__":
-    unidrop = lambda x: re.sub(r'[^\x00-\x7F]+',' ', x) # Gets rid of any non-ASCII unicode symbols in a string
 
     BASE_URL = "http://www.astro.uni-koeln.de"
     page = urllib2.urlopen(BASE_URL+"/cdms/entries")
