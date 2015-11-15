@@ -6,13 +6,15 @@ import pandas as pd
 from itertools import izip_longest
 import re
 import random
+import MySQLdb as sqldb
+import easygui as eg
 
 __author__ = 'Nathan Seifert'
 
 
 class CDMSMolecule:
 
-    BASE_URL = "http://www.astro.uni-koeln.de"
+
 
     def parse_cat(self, cat_url):
 
@@ -159,6 +161,7 @@ class CDMSMolecule:
         return formula, metadata
 
     def __init__(self, cdms_inp):
+        BASE_URL = "http://www.astro.uni-koeln.de"
 
         self.tag = cdms_inp[0]
         self.name = cdms_inp[1]
@@ -168,6 +171,26 @@ class CDMSMolecule:
 
         self.cat = self.parse_cat(BASE_URL+self.cat_url)
         self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
+
+class SplatSpeciesResultList(list):
+    def __new__(cls, data=None):
+        obj = super(SplatSpeciesResultList, cls).__new__(cls, data)
+        return obj
+
+    def __str__(self):
+        it = list(self)
+        it[0] = "0"*(4-len(str(it[0])))+str(it[0])
+        return "{:5} {:10} {:10} {:>25} {:>15}".format(it[0], it[1], it[5], it[3], it[4])
+
+class CDMSChoiceList(list):
+    def __new__(cls, data=None):
+        obj = super(CDMSChoiceList, cls).__new__(cls, data)
+        return obj
+
+    def __str__(self):
+        it = list(self)
+        it[0] = "0"*(4-len(it[0]))+it[0]
+        return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y",it[3]))
 
 
 def unidrop(x): # Strips any non-ASCII unicode text from string
@@ -182,8 +205,8 @@ def pretty_print(comp):
     return output
 
 
+def pull_updates():
 
-if __name__ == "__main__":
     BASE_URL = "http://www.astro.uni-koeln.de"
     page = urllib2.urlopen(BASE_URL+"/cdms/entries")
     soup = BeautifulSoup(page.read(), "lxml")
@@ -212,9 +235,54 @@ if __name__ == "__main__":
                          formatted_date, urls[i][1], urls[i][2]])
 
     compiled.sort(key=lambda x: x[2], reverse=True)
+    return compiled
 
-    rand_entry = random.randint(0, len(compiled)-1)
+if __name__ == "__main__":
 
-    cat_entry = CDMSMolecule(compiled[rand_entry])
+    print 'Pulling updates from CDMS...'
+    update_list = pull_updates()
+    print 'CDMS Update Completed.'
+
+    choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
+
+    print '\nLogging into MySQL database...'
+    # SQL login
+    def rd_pass():
+        return open('pass.pass').read()
+
+    HOST = "127.0.0.1"
+    LOGIN = "nseifert"
+    PASS = rd_pass()
+    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
+    print 'MySQL Login Successful.'
+    cursor = db.cursor()
+    cursor.execute("USE splat")
+
+    ProgramLoopFinished = False
+
+    while not ProgramLoopFinished:
+
+        choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
+        cat_entry = CDMSMolecule(update_list[int(choice[0:5])])
+
+        cmd = "SELECT * FROM species " \
+            "WHERE SPLAT_ID LIKE '%s%%'" % cat_entry.tag[:3]
+
+        cursor.execute(cmd)
+        res = cursor.fetchall()
+        print res
+        SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+        SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
+                                                    'X','','','','','',''])]
+        choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                               "Current choice is:\n %s" %choice, "Splatalogue Search Results",
+                               SplatMolResults)
+        if choice2[68] == 'X':
+            print 'Its a new molecule!'
+        else:
+            print res[int(choice2[0:5])]
 
 
+        ProgramLoopFinished = True
+
+    db.close()
