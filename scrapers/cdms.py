@@ -8,15 +8,18 @@ import re
 import random
 import MySQLdb as sqldb
 import easygui as eg
+from QNFormat import *
 
 __author__ = 'Nathan Seifert'
 
 
+class CustomMolecule:  # With loaded CAT file from disk
+    pass
+
+
 class CDMSMolecule:
 
-
-
-    def parse_cat(self, cat_url):
+    def parse_cat(self, cat_url=None, local=0):
 
         def l_to_idx(letter):  # For when a QN > 99
                 _abet = 'abcdefghijklmnopqrstuvwxyz'
@@ -44,7 +47,10 @@ class CDMSMolecule:
         w_sum = sum(widths)
         parser = make_parser(tuple(widths))
 
-        cat_inp = urllib2.urlopen(cat_url).read().split('\n')
+        if local == 0:
+            cat_inp = urllib2.urlopen(cat_url).read().split('\n')
+        else:
+            cat_inp = cat_url.read().split('\n')
 
         initial_list = []
 
@@ -172,6 +178,7 @@ class CDMSMolecule:
         self.cat = self.parse_cat(BASE_URL+self.cat_url)
         self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
 
+
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
         obj = super(SplatSpeciesResultList, cls).__new__(cls, data)
@@ -181,6 +188,7 @@ class SplatSpeciesResultList(list):
         it = list(self)
         it[0] = "0"*(4-len(str(it[0])))+str(it[0])
         return "{:5} {:10} {:10} {:>25} {:>15}".format(it[0], it[1], it[5], it[3], it[4])
+
 
 class CDMSChoiceList(list):
     def __new__(cls, data=None):
@@ -237,16 +245,48 @@ def pull_updates():
     compiled.sort(key=lambda x: x[2], reverse=True)
     return compiled
 
+
+def process_update(mol, entry=None, sql_cur=None):
+    """
+    Flow for process_update:
+    1) Check metadata, update if needed
+    2) Set QN formatting (????)
+    3) Delete CDMS-related linelist from Splatalogue
+    4) Push new linelist and metadata to Splatalogue
+    """
+
+    # Metadata updating and checking here
+    print entry
+
+
+    # QN formatting --- let's just do it on a case-by-case basis
+    qn_fmt = mol.cat['qn_fmt'][0]
+
+    fmtted_QNs = []
+
+    # Iterate through rows and add formatted QN
+    for idx, row in mol.cat.iterrows():
+        fmtted_QNs.append(format_it(qn_fmt, row[8:]))
+
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+    print mol.cat
+
+
 if __name__ == "__main__":
 
+    # ------------------
+    # POPULATE CDMS LIST
+    # ------------------
     print 'Pulling updates from CDMS...'
     update_list = pull_updates()
+    choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
     print 'CDMS Update Completed.'
 
-    choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
-
+    # ---------
+    # SQL LOGIN
+    # ---------
     print '\nLogging into MySQL database...'
-    # SQL login
+
     def rd_pass():
         return open('pass.pass').read()
 
@@ -258,30 +298,39 @@ if __name__ == "__main__":
     cursor = db.cursor()
     cursor.execute("USE splat")
 
+    # ------------
+    # GUI RUN LOOP
+    # ------------
     ProgramLoopFinished = False
 
     while not ProgramLoopFinished:
 
-        choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
-        cat_entry = CDMSMolecule(update_list[int(choice[0:5])])
+        up_or_down = eg.buttonbox(msg='Do you want to pull a molecule from CDMS or load custom cat file?',
+                                  title='Initialize', choices=['CDMS List', 'Custom File'])
 
-        cmd = "SELECT * FROM species " \
-            "WHERE SPLAT_ID LIKE '%s%%'" % cat_entry.tag[:3]
+        if up_or_down == 'CDMS List':
 
-        cursor.execute(cmd)
-        res = cursor.fetchall()
-        print res
-        SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-        SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
-                                                    'X','','','','','',''])]
-        choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                               "Current choice is:\n %s" %choice, "Splatalogue Search Results",
-                               SplatMolResults)
-        if choice2[68] == 'X':
-            print 'Its a new molecule!'
-        else:
-            print res[int(choice2[0:5])]
+            choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
+            cat_entry = CDMSMolecule(update_list[int(choice[0:5])])
 
+            cmd = "SELECT * FROM species " \
+                "WHERE SPLAT_ID LIKE '%s%%'" % cat_entry.tag[:3]
+
+            cursor.execute(cmd)
+            res = cursor.fetchall()
+            SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+            SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
+                                                        'X','','','','','',''])]
+            choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                                   "Current choice is:\n %s" %choice, "Splatalogue Search Results",
+                                   SplatMolResults)
+            if choice2[68] == 'X':
+                print 'Its a new molecule!'
+            else:  # Molecule already exists in Splatalogue database
+                process_update(cat_entry, res[int(choice2[0:5])])
+
+        else:  # Open custom molecule
+            cat_path = eg.fileopenbox()
 
         ProgramLoopFinished = True
 
