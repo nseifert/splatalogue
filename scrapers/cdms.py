@@ -166,6 +166,15 @@ class CDMSMolecule:
 
         return formula, metadata
 
+    def calc_derived_params(self, cat, metadata):
+        Q_spinrot = float(metadata['Q_300_0'])
+        kt_300_cm1 = 208.50908
+
+        cat['sijmu2'] = 2.40251E4 * 10**(cat['int']) * Q_spinrot * (1./cat['freq']) * (1./(np.exp(-1.0*cat['Elow']/kt_300_cm1) - np.exp(-1.0*(cat['freq']/29979.2458+cat['Elow'])/kt_300_cm1)))
+        cat['aij'] = np.log10(1.16395E-20*cat['freq']**3*cat['sijmu2']/cat['g_up'])
+
+        return cat
+
     def __init__(self, cdms_inp):
         BASE_URL = "http://www.astro.uni-koeln.de"
 
@@ -178,6 +187,7 @@ class CDMSMolecule:
         self.cat = self.parse_cat(BASE_URL+self.cat_url)
         self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
 
+        self.cat = self.calc_derived_params(self.cat, self.metadata)
 
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
@@ -246,7 +256,7 @@ def pull_updates():
     return compiled
 
 
-def process_update(mol, entry=None, sql_cur=None):
+def process_update(mol, entry=None, sql_conn=None):
     """
     Flow for process_update:
     1) Check metadata, update if needed
@@ -254,9 +264,42 @@ def process_update(mol, entry=None, sql_cur=None):
     3) Delete CDMS-related linelist from Splatalogue
     4) Push new linelist and metadata to Splatalogue
     """
+    sql_cur = sql_conn.cursor()
+    sql_cur.execute("USE splat")
 
-    # Metadata updating and checking here
-    print entry
+    # ----------------------------
+    # METADATA PULL CHECK & UPDATE
+    # ----------------------------
+    #meta_cmd = "SELECT * from species_metadata " \
+    #      "WHERE species_id=%s" %str(entry[0])
+    #print meta_cmd
+
+    sql_cur.execute("SHOW columns FROM species_metadata")
+    db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
+    sql_cur.execute("SELECT * from species_metadata WHERE (species_id=%s", (int(entry[0]),))
+
+    with sql_cur.fetchall() as results:
+        if len(results) == 1:
+            db_meta = results[0]
+        else:  # There's more than one linelist associated with the chosen species_id
+            chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[55]) for a in results]
+            user_chc = eg.choicebox("Choose an entry to update", "Entry list", chc)
+            idx = 0
+            for i, entry in chc:
+                if user_chc == entry:
+                    idx = i
+                    break
+            db_meta = results[idx]
+
+    meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
+    meta_vals = eg.multenterbox('Enter stuff', 'Metadata', meta_fields)
+
+    sql_cur.execute("SHOW columns FROM species")
+    db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (int(entry[0]),))
+    db_species = sql_cur.fetchall()
+
+    # TO DO: Process metadata and get it ready
 
 
     # QN formatting --- let's just do it on a case-by-case basis
@@ -269,10 +312,11 @@ def process_update(mol, entry=None, sql_cur=None):
         fmtted_QNs.append(format_it(qn_fmt, row[8:]))
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+
     print mol.cat
 
 
-if __name__ == "__main__":
+def main():
 
     # ------------------
     # POPULATE CDMS LIST
@@ -294,6 +338,7 @@ if __name__ == "__main__":
     LOGIN = "nseifert"
     PASS = rd_pass()
     db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
+    db.autocommit(True)
     print 'MySQL Login Successful.'
     cursor = db.cursor()
     cursor.execute("USE splat")
@@ -314,7 +359,7 @@ if __name__ == "__main__":
             cat_entry = CDMSMolecule(update_list[int(choice[0:5])])
 
             cmd = "SELECT * FROM species " \
-                "WHERE SPLAT_ID LIKE '%s%%'" % cat_entry.tag[:3]
+                "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
 
             cursor.execute(cmd)
             res = cursor.fetchall()
@@ -324,10 +369,12 @@ if __name__ == "__main__":
             choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
                                    "Current choice is:\n %s" %choice, "Splatalogue Search Results",
                                    SplatMolResults)
+            cursor.close()
+
             if choice2[68] == 'X':
                 print 'Its a new molecule!'
             else:  # Molecule already exists in Splatalogue database
-                process_update(cat_entry, res[int(choice2[0:5])])
+                process_update(cat_entry, res[int(choice2[0:5])], db)
 
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
@@ -335,3 +382,9 @@ if __name__ == "__main__":
         ProgramLoopFinished = True
 
     db.close()
+
+
+if __name__ == "__main__":
+    main()
+
+
