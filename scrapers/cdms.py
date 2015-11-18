@@ -161,7 +161,8 @@ class CDMSMolecule:
                     if 'C' in temp:
                         metadata['C'] = pull_float(temp)[0].encode('utf-8')
 
-        metadata['Ref1'] = soup.find_all('p')[0].get_text()
+        metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
+        print metadata
 
 
         return formula, metadata
@@ -276,28 +277,31 @@ def process_update(mol, entry=None, sql_conn=None):
 
     sql_cur.execute("SHOW columns FROM species_metadata")
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species_metadata WHERE (species_id=%s", (int(entry[0]),))
+    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (int(entry[0]),))
 
-    with sql_cur.fetchall() as results:
-        if len(results) == 1:
-            db_meta = results[0]
-        else:  # There's more than one linelist associated with the chosen species_id
-            chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[55]) for a in results]
-            user_chc = eg.choicebox("Choose an entry to update", "Entry list", chc)
-            idx = 0
-            for i, entry in chc:
-                if user_chc == entry:
-                    idx = i
-                    break
-            db_meta = results[idx]
+    results = sql_cur.fetchall()
+    if len(results) == 1:
+        db_meta = results[0]
+    else:  # There's more than one linelist associated with the chosen species_id
+        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[55]) for a in results]
+        user_chc = eg.choicebox("Choose an entry to update", "Entry list", chc)
+        idx = 0
+        for i, entry in chc:
+            if user_chc == entry:
+                idx = i
+                break
+        db_meta = results[idx]
 
-    meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
-    meta_vals = eg.multenterbox('Enter stuff', 'Metadata', meta_fields)
+    # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
+
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
     sql_cur.execute("SELECT * from species WHERE species_id=%s", (int(entry[0]),))
-    db_species = sql_cur.fetchall()
+    db_species = sql_cur.fetchall()[0]
+
+    # for row in zip(db_meta_cols, db_meta):
+    #     print row[0],'\t',row[1]
 
     # TO DO: Process metadata and get it ready
 
@@ -312,8 +316,6 @@ def process_update(mol, entry=None, sql_conn=None):
         fmtted_QNs.append(format_it(qn_fmt, row[8:]))
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
-
-    print mol.cat
 
 
 def main():
