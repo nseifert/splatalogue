@@ -95,8 +95,8 @@ class CDMSMolecule:
             except ValueError:  # Get blank line
                 continue
 
-        dtypes = [('freq', 'f8'), ('err', 'f8'), ('int', 'f8'), ('dof', 'i4'),
-                  ('Elow', 'f8'),('g_up', 'i4'), ('tag', 'i4'), ('qn_fmt', 'i4')]
+        dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
+                  ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'), ('qn_code', 'i4')]
         dtypes.extend([('qn_up_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
         dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
 
@@ -162,7 +162,7 @@ class CDMSMolecule:
                         metadata['C'] = pull_float(temp)[0].encode('utf-8')
 
         metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
-        print metadata
+        #print metadata
 
 
         return formula, metadata
@@ -171,8 +171,16 @@ class CDMSMolecule:
         Q_spinrot = float(metadata['Q_300_0'])
         kt_300_cm1 = 208.50908
 
-        cat['sijmu2'] = 2.40251E4 * 10**(cat['int']) * Q_spinrot * (1./cat['freq']) * (1./(np.exp(-1.0*cat['Elow']/kt_300_cm1) - np.exp(-1.0*(cat['freq']/29979.2458+cat['Elow'])/kt_300_cm1)))
-        cat['aij'] = np.log10(1.16395E-20*cat['freq']**3*cat['sijmu2']/cat['g_up'])
+        cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) - np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
+        cat['aij'] = np.log10(1.16395E-20*cat['frequency']**3*cat['sijmu2']/cat['upper_state_degeneracy'])
+        cat['lower_state_energy_K'] = cat['lower_state_energy']*1.4387863
+        cat['upper_state_energy'] = cat['lower_state_energy'] + cat['frequency']/29979.2458
+        cat['upper_state_energy_K'] = cat['upper_state_energy']*1.4387863
+        cat['error'] = cat['uncertainty']
+        cat['roundedfreq'] = np.round(cat['frequency'], 0)
+
+        qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
+        cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
 
         return cat
 
@@ -283,40 +291,72 @@ def process_update(mol, entry=None, sql_conn=None):
     if len(results) == 1:
         db_meta = results[0]
     else:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[55]) for a in results]
+        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update", "Entry list", chc)
         idx = 0
-        for i, entry in chc:
+        for i, entry in enumerate(chc):
             if user_chc == entry:
                 idx = i
                 break
         db_meta = results[idx]
+    print db_meta
 
+    # Check to see first column to place reference info
+    ref_idx = 23
+    while True:
+        if db_meta[ref_idx] == None:
+            break
+        ref_idx += 1
+
+    mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
+    mol.metadata['Name'] = db_meta[2]
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
 
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species WHERE species_id=%s", (int(entry[0]),))
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta[0],))
     db_species = sql_cur.fetchall()[0]
 
     # for row in zip(db_meta_cols, db_meta):
     #     print row[0],'\t',row[1]
 
-    # TO DO: Process metadata and get it ready
+    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s", (db_meta[0], db_meta[53], db_meta[54]))
+    print '----\n',sql_cur.fetchall()
 
+    metadata_to_push = {}
+    for i,col_name in enumerate(db_meta_cols):
+        if col_name in mol.metadata.keys():
+            metadata_to_push[col_name] = mol.metadata[col_name]
+        elif db_meta[i] is not None:
+            metadata_to_push[col_name] = db_meta[i]
+        else:
+            continue
+
+    # for key in metadata_to_push:
+    #     print '%s: %s' %(key, metadata_to_push[key])
 
     # QN formatting --- let's just do it on a case-by-case basis
-    qn_fmt = mol.cat['qn_fmt'][0]
+    qn_fmt = mol.cat['qn_code'][0]
 
     fmtted_QNs = []
 
     # Iterate through rows and add formatted QN
     for idx, row in mol.cat.iterrows():
-        fmtted_QNs.append(format_it(qn_fmt, row[8:]))
+        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
 
+    # Prep linelist for submission to database
+    sql_cur.execute("SHOW columns FROM main")
+    ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
+    ll_col_list = mol.cat.columns.values.tolist()
+    final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
+
+    return final_cat, metadata_to_push
+
+def new_molecule(mol, sql_conn=None):
+    pass
 
 def main():
 
@@ -340,10 +380,10 @@ def main():
     LOGIN = "nseifert"
     PASS = rd_pass()
     db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
-    db.autocommit(True)
+    db.autocommit(False)
     print 'MySQL Login Successful.'
     cursor = db.cursor()
-    cursor.execute("USE splat")
+    cursor.execute("USE splattest")
 
     # ------------
     # GUI RUN LOOP
@@ -374,9 +414,9 @@ def main():
             cursor.close()
 
             if choice2[68] == 'X':
-                print 'Its a new molecule!'
+                linelist, species_final, metadata_final = new_molecule(cat_entry, db)
             else:  # Molecule already exists in Splatalogue database
-                process_update(cat_entry, res[int(choice2[0:5])], db)
+                linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
 
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
