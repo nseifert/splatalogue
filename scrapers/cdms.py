@@ -232,7 +232,6 @@ def pretty_print(comp):
         output += form.format(*(row[0], row[1], time.strftime("%B %Y", row[2]), row[3], row[4]))+'\n'
     return output
 
-
 def pull_updates():
 
     BASE_URL = "http://www.astro.uni-koeln.de"
@@ -264,7 +263,6 @@ def pull_updates():
 
     compiled.sort(key=lambda x: x[2], reverse=True)
     return compiled
-
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -311,6 +309,7 @@ def process_update(mol, entry=None, sql_conn=None):
 
     mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
     mol.metadata['Name'] = db_meta[2]
+    mol.metadata['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
@@ -369,9 +368,20 @@ def new_molecule(mol, sql_conn=None):
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
     metadata_to_push = {}
 
+    for i, col_name in enumerate(db_meta_cols):
+        if col_name in mol.metadata.keys():
+            metadata_to_push[col_name] = mol.metadata[col_name]
+        else:
+            continue
+
     # Generate new species_id
     sql_cur.execute('SELECT MAX(species_id) FROM species')
     metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    metadata_to_push['v1_0'] = '1'
+    metadata_to_push['v2_0'] = '2'
+    # metadata_to_push['v3_0'] = '3'
+    metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
+    metadata_to_push['LineList'] = '10'
 
     # Generate new splat_id
     cmd = "SELECT SPLAT_ID FROM species " \
@@ -383,7 +393,6 @@ def new_molecule(mol, sql_conn=None):
     else:
         splat_id = mol.tag[:3] + '01'
 
-
     species_to_push = OrderedDict([('species_id', metadata_to_push['species_id']),
                                    ('name', mol.formula), ('chemical_name', None), ('s_name', mol.formula),
                                    ('s_name_noparens', mol.formula.replace('(','').replace(')','')), ('SPLAT_ID', splat_id),
@@ -393,8 +402,36 @@ def new_molecule(mol, sql_conn=None):
 
     species_choices_fieldnames = ['%s (%s)'%(key, value) for key, value in species_to_push.items()]
     species_choices = eg.multenterbox('Set species entries','species entry', species_choices_fieldnames)
-    print species_choices
 
+    idx = 0
+    for key in species_to_push:
+        if species_choices[idx] == '':
+            continue
+        else:
+            species_to_push[key] = species_choices[idx]
+        idx +=1
+
+    ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
+    for tag in ism_overlap_tags:
+        metadata_to_push[tag] = species_to_push[tag]
+
+    # Format quantum numbers
+    qn_fmt = mol.cat['qn_code'][0]
+    fmtted_QNs = []
+
+    # Iterate through rows and add formatted QN
+    for idx, row in mol.cat.iterrows():
+        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
+
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+
+    # Prep linelist for submission to database
+    sql_cur.execute("SHOW columns FROM main")
+    ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
+    ll_col_list = mol.cat.columns.values.tolist()
+    final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
+
+    return final_cat, species_to_push, metadata_to_push
 
 def main():
 
