@@ -4,6 +4,7 @@ import time
 import numpy as np
 import pandas as pd
 from itertools import izip_longest
+from collections import OrderedDict
 import re
 import random
 import MySQLdb as sqldb
@@ -356,7 +357,44 @@ def process_update(mol, entry=None, sql_conn=None):
     return final_cat, metadata_to_push
 
 def new_molecule(mol, sql_conn=None):
-    pass
+
+    sql_cur = sql_conn.cursor()
+    sql_cur.execute("USE splattest")
+
+    # ----------------------------
+    # METADATA ADD
+    # ----------------------------
+
+    sql_cur.execute("SHOW columns FROM species_metadata")
+    db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
+    metadata_to_push = {}
+
+    # Generate new species_id
+    sql_cur.execute('SELECT MAX(species_id) FROM species')
+    metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+
+    # Generate new splat_id
+    cmd = "SELECT SPLAT_ID FROM species " \
+        "WHERE SPLAT_ID LIKE '%s%%'" % str(mol.tag[:3])
+    sql_cur.execute(cmd)
+    splat_id_list = sql_cur.fetchall()
+    if len(splat_id_list) > 0:
+        splat_id = mol.tag[:3]+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
+    else:
+        splat_id = mol.tag[:3] + '01'
+
+
+    species_to_push = OrderedDict([('species_id', metadata_to_push['species_id']),
+                                   ('name', mol.formula), ('chemical_name', None), ('s_name', mol.formula),
+                                   ('s_name_noparens', mol.formula.replace('(','').replace(')','')), ('SPLAT_ID', splat_id),
+                                   ('atmos', '0'), ('potential', '1'), ('probable', '0'), ('known_ast_molecules', '0'),
+                                   ('planet', '0'), ('ism_hotcore', '0'), ('ism_diffusecloud', '0'), ('comet', '0'),
+                                   ('extragalactic', '0'), ('AGB_PPN_PN', '0'), ('SLiSE_IT', '0'), ('Top20', '0')])
+
+    species_choices_fieldnames = ['%s (%s)'%(key, value) for key, value in species_to_push.items()]
+    species_choices = eg.multenterbox('Set species entries','species entry', species_choices_fieldnames)
+    print species_choices
+
 
 def main():
 
@@ -415,8 +453,14 @@ def main():
 
             if choice2[68] == 'X':
                 linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+
             else:  # Molecule already exists in Splatalogue database
                 linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+
+                """ TO DO:
+                Implement SQL commands to delete old content and push new data into database.
+                """
+
 
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
