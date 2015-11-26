@@ -6,7 +6,6 @@ import pandas as pd
 from itertools import izip_longest
 from collections import OrderedDict
 import re
-import random
 import MySQLdb as sqldb
 import easygui as eg
 from QNFormat import *
@@ -180,8 +179,21 @@ class CDMSMolecule:
         cat['error'] = cat['uncertainty']
         cat['roundedfreq'] = np.round(cat['frequency'], 0)
 
+
         qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
         cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
+
+        # Add measured freqs and then ordered frequencies
+        cat['measfreq'] = np.nan
+        cat['orderedfreq'] = np.nan
+        cat['measerrfreq'] = np.nan
+        mask_meas = (cat['molecule_tag'] < 0)
+        mask_pred = (cat['molecule_tag'] > 0)
+        cat['measfreq'][mask_meas] = cat['frequency'][mask_meas]
+        cat['frequency'][mask_meas] = np.nan
+        cat['orderedfreq'][mask_meas] = cat['measfreq'][mask_meas]
+        cat['measerrfreq'][mask_meas] = cat['uncertainty'][mask_meas]
+        cat['orderedfreq'][mask_pred] = cat['frequency'][mask_pred]
 
         return cat
 
@@ -220,10 +232,8 @@ class CDMSChoiceList(list):
         it[0] = "0"*(4-len(it[0]))+it[0]
         return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y",it[3]))
 
-
 def unidrop(x): # Strips any non-ASCII unicode text from string
     return re.sub(r'[^\x00-\x7F]+',' ', x)
-
 
 def pretty_print(comp):
     form = "{:5}\t{:45}\t{:15}\t{:40} {:40}"
@@ -438,6 +448,7 @@ def main():
     # ------------------
     # POPULATE CDMS LIST
     # ------------------
+    pd.options.mode.chained_assignment = None
     print 'Pulling updates from CDMS...'
     update_list = pull_updates()
     choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
@@ -490,6 +501,7 @@ def main():
 
             if choice2[68] == 'X':
                 linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+                linelist.to_excel('test.xlsx')
 
             else:  # Molecule already exists in Splatalogue database
                 linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
@@ -498,7 +510,7 @@ def main():
                 Implement SQL commands to delete old content and push new data into database.
                 """
 
-
+ 
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
 
