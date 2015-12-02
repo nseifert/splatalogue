@@ -9,6 +9,7 @@ import re
 import MySQLdb as sqldb
 import easygui as eg
 from QNFormat import *
+import progressbar
 
 __author__ = 'Nathan Seifert'
 
@@ -178,6 +179,7 @@ class CDMSMolecule:
         cat['upper_state_energy_K'] = cat['upper_state_energy']*1.4387863
         cat['error'] = cat['uncertainty']
         cat['roundedfreq'] = np.round(cat['frequency'], 0)
+        cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
 
 
         qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
@@ -194,6 +196,7 @@ class CDMSMolecule:
         cat['orderedfreq'][mask_meas] = cat['measfreq'][mask_meas]
         cat['measerrfreq'][mask_meas] = cat['uncertainty'][mask_meas]
         cat['orderedfreq'][mask_pred] = cat['frequency'][mask_pred]
+        cat['transition_in_space'] = '0'
 
         return cat
 
@@ -393,6 +396,11 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     metadata_to_push['LineList'] = '10'
 
+    new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
+                               % metadata_to_push['Name'], title="Metadata Name Change")
+    if new_name is not '':
+        metadata_to_push['Name'] = new_name
+
     # Generate new splat_id
     cmd = "SELECT SPLAT_ID FROM species " \
         "WHERE SPLAT_ID LIKE '%s%%'" % str(mol.tag[:3])
@@ -413,13 +421,19 @@ def new_molecule(mol, sql_conn=None):
     species_choices_fieldnames = ['%s (%s)'%(key, value) for key, value in species_to_push.items()]
     species_choices = eg.multenterbox('Set species entries','species entry', species_choices_fieldnames)
 
+    ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
+    ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
+    if any(val == '1' for val in ism_set_dict.values()):
+        metadata_to_push['ism'] = 1
+
     idx = 0
     for key in species_to_push:
-        if species_choices[idx] == '':
-            continue
+        if not species_choices[idx]:
+            pass
         else:
             species_to_push[key] = species_choices[idx]
-        idx +=1
+        idx += 1
+
 
     ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
@@ -434,6 +448,7 @@ def new_molecule(mol, sql_conn=None):
         fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+    mol.cat['species_id'] = metadata_to_push['species_id']
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")
@@ -442,6 +457,74 @@ def new_molecule(mol, sql_conn=None):
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
 
     return final_cat, species_to_push, metadata_to_push
+
+def push_new_molecule(db, ll, spec_dict, meta_dict):
+
+    for key in meta_dict:
+        print key, '\t', meta_dict[key]
+    cursor = db.cursor()
+
+    # Create new species entry in database
+
+    placeholders = lambda inp: ', '.join(['%s'] * len(inp))
+    placeholders_err = lambda inp: ', '.join(['{}'] * len(inp))
+    columns = lambda inp: ', '.join(inp.keys())
+
+    query = lambda table, inp: "INSERT INTO %s ( %s ) VALUES ( %s )" % (table, columns(inp), placeholders(inp))
+    query_err = lambda table, inp: "INSERT INTO %s ( %s ) VALUES ( %s )" % \
+                                        (table, columns(inp), placeholders_err(inp))
+
+    # Add some last minute entries to dictionaries
+    spec_dict['created'] = time.strftime('%Y-%m-%d %H:%M:%S')
+    spec_dict['nlines'] = str(len(ll.index))
+    spec_dict['version'] = '1'
+    spec_dict['resolved'] = '1'
+
+    print 'Creating new entry in species table...'
+    try:
+        cursor.execute(query("species", spec_dict), spec_dict.values())
+    except sqldb.ProgrammingError:
+        print "The following query failed: "
+        print query_err("species", spec_dict).format(*spec_dict.values())
+    print 'Finished successfully. Created entry for %s with species_id: %s \n' \
+          % (spec_dict['name'], spec_dict['species_id'])
+    cursor.close()
+
+    cursor = db.cursor()
+    # Create new metadata entry in database
+    print 'Creating new entry in metadata table...'
+    try:
+        cursor.execute(query("species_metadata", meta_dict), meta_dict.values())
+    except sqldb.ProgrammingError:
+        print "The folllowing query failed: "
+        print query_err("species_metadata", meta_dict).format(*meta_dict.values())
+    print 'Finished successfully.\n'
+    cursor.close()
+
+    # Push linelist to database
+    col_names = ll.columns.values
+    print 'Converting linelist for SQL insertion...'
+
+    ll_dict = [(None if pd.isnull(y) else y for y in x) for x in ll.values]
+
+    num_entries = len(ll_dict)
+    for i in range(10):
+        print ll_dict[i]
+
+    print 'Pushing linelist (%s entries) to database...' %(num_entries)
+    cursor = db.cursor()
+    query_ll = "INSERT INTO %s ( %s ) VALUES ( %s )" % ("main", ', '.join(ll.columns.values), placeholders(ll.columns.values))
+
+    try:
+        cursor.executemany(query_ll, ll_dict)
+    except sqldb.ProgrammingError:
+        print 'Pushing linelist failed.'
+
+    cursor.close()
+    db.commit()
+
+    print 'Finished with linelist push.'
+
 
 def main():
 
@@ -501,7 +584,7 @@ def main():
 
             if choice2[68] == 'X':
                 linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-                linelist.to_excel('test.xlsx')
+                push_new_molecule(db, linelist, species_final, metadata_final)
 
             else:  # Molecule already exists in Splatalogue database
                 linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
