@@ -200,7 +200,7 @@ class CDMSMolecule:
 
         return cat
 
-    def __init__(self, cdms_inp):
+    def __init__(self, cdms_inp, ll_id='10'):
         BASE_URL = "http://www.astro.uni-koeln.de"
 
         self.tag = cdms_inp[0]
@@ -208,11 +208,13 @@ class CDMSMolecule:
         self.date = cdms_inp[2]
         self.cat_url = cdms_inp[3]
         self.meta_url = cdms_inp[4]
+        self.ll_id = ll_id
 
         self.cat = self.parse_cat(BASE_URL+self.cat_url)
         self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
+        self.cat['ll_id'] = self.ll_id
 
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
@@ -286,7 +288,6 @@ def process_update(mol, entry=None, sql_conn=None):
     4) Push new linelist and metadata to Splatalogue
     """
     sql_cur = sql_conn.cursor()
-    sql_cur.execute("USE splat")
 
     # ----------------------------
     # METADATA PULL CHECK & UPDATE
@@ -297,31 +298,43 @@ def process_update(mol, entry=None, sql_conn=None):
 
     sql_cur.execute("SHOW columns FROM species_metadata")
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (int(entry[0]),))
+    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
 
     results = sql_cur.fetchall()
     if len(results) == 1:
         db_meta = results[0]
+
     else:  # There's more than one linelist associated with the chosen species_id
         chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
-        user_chc = eg.choicebox("Choose an entry to update", "Entry list", chc)
+        user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
             if user_chc == entry:
                 idx = i
                 break
         db_meta = results[idx]
-    print db_meta
 
-    # Check to see first column to place reference info
-    ref_idx = 23
-    while True:
-        if db_meta[ref_idx] == None:
-            break
-        ref_idx += 1
+    if db_meta[52] != mol.ll_id:
+        # Only entry in database isn't from the linelist of the entry that user wants to update
+        ref_idx = 23
+        mol.metadata['v1_0'] = '1'
+        mol.metadata['v2_0'] = '2'
+        mol.metadata['LineList'] = mol.ll_id
+        new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
+                               % mol.metadata['Name'], title="Metadata Name Change")
+        if new_name is not '':
+            mol.metadata['Name'] = new_name
+    else:
+        mol.metadata['Name'] = db_meta[2]
+        # Check to see first column to place reference info
+        ref_idx = 23
+        while True:
+            if db_meta[ref_idx] == None:
+                break
+            ref_idx += 1
 
-    mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
-    mol.metadata['Name'] = db_meta[2]
+        mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
+
     mol.metadata['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
@@ -331,20 +344,38 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta[0],))
     db_species = sql_cur.fetchall()[0]
 
+    if db_meta[52] != mol.ll_id:
+        species_entry_dict = {key: value for (key,value) in [(db_species_cols[i], val) for i, val in enumerate(db_species)]}
+        ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
+        ism_set_dict = {key: value for (key, value) in [(key, species_entry_dict[key]) for key in ism_set]}
+        if any(val == '1' for val in ism_set_dict.values()):
+            mol.metadata['ism'] = 1
+        else:
+            mol.metadata['ism'] = 0
+
+        ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
+        for tag in ism_overlap_tags:
+            mol.metadata[tag] = species_entry_dict[tag]
+        mol.metadata['ism_diffuse'] = species_entry_dict['ism_diffusecloud']
+        mol.metadata['species_id'] = species_entry_dict['species_id']
+
     # for row in zip(db_meta_cols, db_meta):
     #     print row[0],'\t',row[1]
 
-    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s", (db_meta[0], db_meta[53], db_meta[54]))
-    print '----\n',sql_cur.fetchall()
+    # sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s",
+    #                 (db_meta[0], mol.ll_id, db_meta[53], db_meta[54]))
 
-    metadata_to_push = {}
-    for i,col_name in enumerate(db_meta_cols):
-        if col_name in mol.metadata.keys():
-            metadata_to_push[col_name] = mol.metadata[col_name]
-        elif db_meta[i] is not None:
-            metadata_to_push[col_name] = db_meta[i]
-        else:
-            continue
+    if db_meta[52] == mol.ll_id:
+        metadata_to_push = {}
+        for i,col_name in enumerate(db_meta_cols):
+            if col_name in mol.metadata.keys():
+                metadata_to_push[col_name] = mol.metadata[col_name]
+            elif db_meta[i] is not None:
+                metadata_to_push[col_name] = db_meta[i]
+            else:
+                continue
+    else:
+        metadata_to_push = mol.metadata
 
     # for key in metadata_to_push:
     #     print '%s: %s' %(key, metadata_to_push[key])
@@ -394,7 +425,7 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['v2_0'] = '2'
     # metadata_to_push['v3_0'] = '3'
     metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
-    metadata_to_push['LineList'] = '10'
+    metadata_to_push['LineList'] = mol.ll_id
 
     new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
                                % metadata_to_push['Name'], title="Metadata Name Change")
@@ -425,6 +456,8 @@ def new_molecule(mol, sql_conn=None):
     ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
     if any(val == '1' for val in ism_set_dict.values()):
         metadata_to_push['ism'] = 1
+    else:
+        metadata_to_push['ism'] = 0
 
     idx = 0
     for key in species_to_push:
@@ -448,7 +481,6 @@ def new_molecule(mol, sql_conn=None):
         fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
-    mol.cat['species_id'] = metadata_to_push['species_id']
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")
@@ -458,14 +490,16 @@ def new_molecule(mol, sql_conn=None):
 
     return final_cat, species_to_push, metadata_to_push
 
-def push_new_molecule(db, ll, spec_dict, meta_dict):
+def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
     for key in meta_dict:
         print key, '\t', meta_dict[key]
-    cursor = db.cursor()
+
+    print 'Converting linelist for SQL insertion...'
+    ll_dict = [(None if pd.isnull(y) else y for y in x) for x in ll.values]
+    num_entries = len(ll_dict)
 
     # Create new species entry in database
-
     placeholders = lambda inp: ', '.join(['%s'] * len(inp))
     placeholders_err = lambda inp: ', '.join(['{}'] * len(inp))
     columns = lambda inp: ', '.join(inp.keys())
@@ -480,15 +514,39 @@ def push_new_molecule(db, ll, spec_dict, meta_dict):
     spec_dict['version'] = '1'
     spec_dict['resolved'] = '1'
 
-    print 'Creating new entry in species table...'
-    try:
-        cursor.execute(query("species", spec_dict), spec_dict.values())
-    except sqldb.ProgrammingError:
-        print "The following query failed: "
-        print query_err("species", spec_dict).format(*spec_dict.values())
-    print 'Finished successfully. Created entry for %s with species_id: %s \n' \
-          % (spec_dict['name'], spec_dict['species_id'])
-    cursor.close()
+    if update:
+        # Update a few things in species column
+        print 'Updating species table...'
+        cursor = db.cursor()
+        cursor.execute('UPDATE species SET created=%s WHERE species_id=%s',
+                       (spec_dict['created'], meta_dict['species_id']))
+        cursor.execute('UPDATE species SET nlines=%s WHERE species_id=%s',
+                       (spec_dict['nlines'], meta_dict['species_id']))
+        cursor.close()
+
+
+    else:
+        cursor = db.cursor()
+        print 'Creating new entry in species table...'
+        try:
+            cursor.execute(query("species", spec_dict), spec_dict.values())
+        except sqldb.ProgrammingError:
+            print "The following query failed: "
+            print query_err("species", spec_dict).format(*spec_dict.values())
+        print 'Finished successfully. Created entry for %s with species_id: %s \n' \
+              % (spec_dict['name'], spec_dict['species_id'])
+        cursor.close()
+
+    # Replace metadata content if updating an entry
+    if update:
+        cursor = db.cursor()
+        print 'Removing original metadata entry for replacing with new data...'
+        cursor.execute('DELETE from species_metadata WHERE species_id=%s AND v1_0=%s AND v2_0=%s AND LineList=%s',
+                       (meta_dict['species_id'], meta_dict['v1_0'], meta_dict['v2_0'], meta_dict['LineList']))
+        print 'Removing original linelist for replacement...'
+        cursor.execute('DELETE from main WHERE species_id=%s AND ll_id=%s',
+                       (meta_dict['species_id'], meta_dict['LineList']))
+        cursor.close()
 
     cursor = db.cursor()
     # Create new metadata entry in database
@@ -503,13 +561,7 @@ def push_new_molecule(db, ll, spec_dict, meta_dict):
 
     # Push linelist to database
     col_names = ll.columns.values
-    print 'Converting linelist for SQL insertion...'
 
-    ll_dict = [(None if pd.isnull(y) else y for y in x) for x in ll.values]
-
-    num_entries = len(ll_dict)
-    for i in range(10):
-        print ll_dict[i]
 
     print 'Pushing linelist (%s entries) to database...' %(num_entries)
     cursor = db.cursor()
@@ -584,10 +636,11 @@ def main():
 
             if choice2[68] == 'X':
                 linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-                push_new_molecule(db, linelist, species_final, metadata_final)
+                push_molecule(db, linelist, species_final, metadata_final, update=0)
 
             else:  # Molecule already exists in Splatalogue database
                 linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+                push_molecule(db, linelist, {}, metadata_final, update=1)
 
                 """ TO DO:
                 Implement SQL commands to delete old content and push new data into database.
@@ -597,7 +650,11 @@ def main():
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
 
-        ProgramLoopFinished = True
+        cont = eg.buttonbox(msg='Do you want to process another molecule?', title='More work???', choices=['Yes', 'No'])
+        if cont == 'Yes':
+            ProgramLoopFinished = False
+        else:
+            ProgramLoopFinished = True
 
     db.close()
 
