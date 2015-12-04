@@ -138,7 +138,10 @@ class CDMSMolecule:
             metadata['Name'] = self.name
             metadata['Date'] = time.strftime('%b. %Y',self.date)
             if 'Contributor' in temp:
-                metadata['Contributor'] = temp.split('Contributor')[1].encode('utf-8')
+                if self.ll_id == '10':
+                    metadata['Contributor'] = 'H. S. P. Mueller'
+                else:
+                    metadata['Contributor'] = temp.split('Contributor')[1].encode('utf-8')
 
             # Pull out spin-rotation partiton function values
             for key in Q_temps:
@@ -164,7 +167,6 @@ class CDMSMolecule:
 
         metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
         #print metadata
-
 
         return formula, metadata
 
@@ -209,7 +211,6 @@ class CDMSMolecule:
         self.cat_url = cdms_inp[3]
         self.meta_url = cdms_inp[4]
         self.ll_id = ll_id
-
         self.cat = self.parse_cat(BASE_URL+self.cat_url)
         self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
 
@@ -333,7 +334,7 @@ def process_update(mol, entry=None, sql_conn=None):
                 break
             ref_idx += 1
 
-        mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
+    mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
@@ -402,7 +403,7 @@ def process_update(mol, entry=None, sql_conn=None):
 def new_molecule(mol, sql_conn=None):
 
     sql_cur = sql_conn.cursor()
-    sql_cur.execute("USE splattest")
+    #sql_cur.execute("USE splattest")
 
     # ----------------------------
     # METADATA ADD
@@ -496,6 +497,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         print key, '\t', meta_dict[key]
 
     print 'Converting linelist for SQL insertion...'
+    ll['species_id'] = meta_dict['species_id']
     ll_dict = [(None if pd.isnull(y) else y for y in x) for x in ll.values]
     num_entries = len(ll_dict)
 
@@ -533,8 +535,8 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         except sqldb.ProgrammingError:
             print "The following query failed: "
             print query_err("species", spec_dict).format(*spec_dict.values())
-        print 'Finished successfully. Created entry for %s with species_id: %s \n' \
-              % (spec_dict['name'], spec_dict['species_id'])
+        print 'Finished successfully. Created entry for %s with species_id %s and SPLAT_ID %s \n' \
+              % (spec_dict['name'], spec_dict['species_id'], spec_dict['SPLAT_ID'])
         cursor.close()
 
     # Replace metadata content if updating an entry
@@ -603,8 +605,6 @@ def main():
     db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
     db.autocommit(False)
     print 'MySQL Login Successful.'
-    cursor = db.cursor()
-    cursor.execute("USE splattest")
 
     # ------------
     # GUI RUN LOOP
@@ -612,6 +612,8 @@ def main():
     ProgramLoopFinished = False
 
     while not ProgramLoopFinished:
+        cursor = db.cursor()
+        cursor.execute("USE splat")
 
         up_or_down = eg.buttonbox(msg='Do you want to pull a molecule from CDMS or load custom cat file?',
                                   title='Initialize', choices=['CDMS List', 'Custom File'])
