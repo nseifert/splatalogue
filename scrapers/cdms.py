@@ -171,7 +171,10 @@ class CDMSMolecule:
         return formula, metadata
 
     def calc_derived_params(self, cat, metadata):
-        Q_spinrot = float(metadata['Q_300_0'])
+        try:
+            Q_spinrot = float(metadata['Q_300_0'])
+        except ValueError:  # in case there's multiple numbers
+            Q_spinrot = float(metadata['Q_300_0'].split('(')[0])
         kt_300_cm1 = 208.50908
 
         cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) - np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
