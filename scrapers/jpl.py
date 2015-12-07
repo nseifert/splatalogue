@@ -1,3 +1,4 @@
+__author__ = 'nate'
 import urllib2
 from bs4 import BeautifulSoup
 import time
@@ -10,16 +11,21 @@ import MySQLdb as sqldb
 import easygui as eg
 from QNFormat import *
 
-__author__ = 'Nathan Seifert'
+
+class SplatSpeciesResultList(list):
+    def __new__(cls, data=None):
+        obj = super(SplatSpeciesResultList, cls).__new__(cls, data)
+        return obj
+
+    def __str__(self):
+        it = list(self)
+        it[0] = "0"*(4-len(str(it[0])))+str(it[0])
+        return "{:5} {:10} {:10} {:>25} {:>15}".format(it[0], it[1], it[5], it[3], it[4])
 
 
-class CustomMolecule:  # With loaded CAT file from disk
-    pass
-
-
-class CDMSMolecule:
-
+class JPLMolecule:
     def parse_cat(self, cat_url=None, local=0):
+        num_qns = 0
 
         def l_to_idx(letter):  # For when a QN > 99
                 _abet = 'abcdefghijklmnopqrstuvwxyz'
@@ -67,28 +73,67 @@ class CDMSMolecule:
 
         # Let's put everything together to put into a dataframe
         parsed_list = []
+        qn_parser = make_parser((2,)*12)
         for row in initial_list:
+            if num_qns == 0:  # Get number of quantum numbers per state
+                num_qns = int(row[7][-1])
 
-            qns = re.findall('..', row[-1])  # splits QN entry into pairs
+            qns = qn_parser(row[-1])  # splits QN entry into pairs
             up_done = False
+            in_middle = False
+            down_done = False
             qns_up = []
             qns_down = []
-            for val in qns:
-                if val.strip() == '':
+            down_idx = 0
+            for i, val in enumerate(qns):
+
+
+                if i == num_qns:
                     up_done = True
+                    in_middle = True
+
+                if up_done and in_middle and val.strip() == '':
                     continue
-                if not up_done:
+                if up_done and in_middle and val.strip() != '':
+                    in_middle = False
+
+                if down_idx == num_qns:
+                    down_done = True
+
+                if not up_done and not in_middle:
                     try:
                         qns_up.append(int(val))
-                    except ValueError:  # QN > 99
-                        temp = list(val)
-                        qns_up.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
-                else:
+                    except ValueError:
+                        try:
+                            if val.strip() == '+': # For parity symbols in CH3OH, for instance
+                                qns_up.append(1)
+                            elif val.strip() == '-':
+                                qns_up.append(-1)
+                            elif val.strip() == '': # No parity symbol?
+                                qns_up.append(0)
+                            elif re.search('[a-zA-Z]', val.strip()):  # QN > 99
+                                temp = list(val)
+                                qns_up.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                        except TypeError:
+                            print i, val, [x.strip() for x in qns]
+
+                if up_done and (not down_done and not in_middle):
+                    down_idx += 1
                     try:
                         qns_down.append(int(val))
-                    except:
-                        temp = list(val)
-                        qns_down.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                    except ValueError:
+                        try:
+                            if val.strip() == '+':
+                                qns_down.append(1)
+                            elif val.strip() == '-':
+                                qns_down.append(-1)
+                            elif val.strip() == '':
+                                qns_down.append(0)
+                            else:
+                                temp = list(val)
+                                qns_down.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                        except TypeError:
+                            print i, val, [x.strip() for x in qns]
 
             try:
                 parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
@@ -97,77 +142,51 @@ class CDMSMolecule:
 
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
                   ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'), ('qn_code', 'i4')]
-        dtypes.extend([('qn_up_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
-        dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
+        dtypes.extend([('qn_up_%s' %i,'i4') for i in range(num_qns)])
+        dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(num_qns)])
 
         final_list = []
         for row in parsed_list:
             final_list.append(tuple(row[:-2]+row[-2]+row[-1]))
 
         nplist = np.zeros((len(final_list),), dtype=dtypes)
+
         nplist[:] = final_list
 
         return pd.DataFrame(nplist)
 
     def get_metadata(self, meta_url):
-        print self.name
-        metadata = {}  # Dictionary for metadata, keys are consistent with columns in SQL
+        metadata = {}
 
-        # Dictionaries to connect string values in CDMS metadata to SQL columns
-        Q_temps = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.0': 'Q_500_0', '300.0': 'Q_300_0',
-                     '225.0': 'Q_225_0', '150.0': 'Q_150_0', '75.00': 'Q_75_00', '37.50': 'Q_37_50',
-                     '18.75': 'Q_18_75'}
-        dipoles = {'a / D': 'MU_A', 'b / D': 'MU_B', 'c / D': 'MU_C'}
+        # Dictionaries to connect string values in JPL metadata to SQL columns
+        tags = {'Name:': 'Name', 'Q(300.0)=': 'Q_300_0', 'Q(225.0)=': 'Q_225_0', 'Q(150.0)=': 'Q_150_0',
+                'Q(75.00)=': 'Q_75_00', 'Q(37.50)=': 'Q_37_50', 'Q(18.75)=': 'Q_18_75', 'Q(9.375)=': 'Q_9_375',
+                'A=': 'A', 'B=': 'B', 'C=': 'C', '$\\mu_a$ =': 'MU_A',  '$\\mu_b$ =': 'MU_B', '$\\mu_c$ =': 'MU_C',
+                'Contributor:': 'Contributor'}
+        ref_data_start = False
+        ref_data = ""
 
-        # Initialize scraper
-        meta_page = urllib2.urlopen(meta_url)
-        soup = BeautifulSoup(meta_page.read(), 'lxml')
+        for line in urllib2.urlopen(meta_url).read().split('\n'):
+            temp = line.split()
+            if not temp:
+                continue
+            if temp[0] == '\\\\':
+                temp2 = ' '.join(temp[1:]).split('&')
+                for i, val in enumerate(temp2):
+                    if val.strip() in tags.keys():
+                        metadata[tags[val.strip()]] = temp2[i+1].strip()
+            if temp[0] == '\\headend':
+                ref_data_start = True
+                continue
+            if ref_data_start:
+                temp3 = re.sub('[${}}^]', '', re.sub('\bf', '', line.split('\n')[0]))
+                temp3 = re.sub('\r', '', temp3)
+                temp3 = re.sub('\le', '=', temp3)
+                ref_data += temp3 + ' '
 
-        # Grab formula
-        formula = soup.find_all('caption')[0].get_text().split('\n')[0].encode('utf-8')
+        metadata['Ref1'] = ref_data
 
-        # Need to add lit data / dipoles etc
-
-        meta_page.close()
-
-        table = soup.find_all('tr')
-        for entry in table:  # Right now it seems the best way is to brute force this
-            temp = entry.get_text()
-
-            metadata['Name'] = self.name
-            metadata['Date'] = time.strftime('%b. %Y',self.date)
-            if 'Contributor' in temp:
-                if self.ll_id == '10':
-                    metadata['Contributor'] = 'H. S. P. Mueller'
-                else:
-                    metadata['Contributor'] = temp.split('Contributor')[1].encode('utf-8')
-
-            # Pull out spin-rotation partiton function values
-            for key in Q_temps:
-                if 'Q(%s)' % key in temp:
-                    metadata[Q_temps[key].encode('utf-8')] = temp.split('Q(%s)' % key)[1].encode('utf-8')
-
-            value_check = lambda x: any(i.isdigit() for i in x)
-            pull_float = lambda x: re.findall(r'\d+.\d+', x)
-
-            for key in dipoles:
-                if key in temp:
-                    if value_check(temp) and 'Q(' not in temp:
-                            metadata[dipoles[key]] = pull_float(temp)[0].encode('utf-8')
-
-            if ('/ MHz' in temp or re.findall(r'[A-C]\d.\d+', temp)) and 'Q(' not in temp:
-                if value_check(temp):
-                    if 'A' in temp:
-                        metadata['A'] = pull_float(temp)[0].encode('utf-8')
-                    if 'B' in temp:
-                        metadata['B'] = pull_float(temp)[0].encode('utf-8')
-                    if 'C' in temp:
-                        metadata['C'] = pull_float(temp)[0].encode('utf-8')
-
-        metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
-        #print metadata
-
-        return formula, metadata
+        return metadata
 
     def calc_derived_params(self, cat, metadata):
         try:
@@ -184,7 +203,6 @@ class CDMSMolecule:
         cat['error'] = cat['uncertainty']
         cat['roundedfreq'] = np.round(cat['frequency'], 0)
         cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
-
 
         qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
         cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
@@ -204,83 +222,64 @@ class CDMSMolecule:
 
         return cat
 
-    def __init__(self, cdms_inp, ll_id='10'):
-        BASE_URL = "http://www.astro.uni-koeln.de"
+    def __init__(self, listing_entry):
+        self.date = listing_entry[0]
+        self.id = str(listing_entry[1])
+        self.name = listing_entry[2]
 
-        self.tag = cdms_inp[0]
-        self.name = cdms_inp[1]
-        self.date = cdms_inp[2]
-        self.cat_url = cdms_inp[3]
-        self.meta_url = cdms_inp[4]
-        self.ll_id = ll_id
-        self.cat = self.parse_cat(BASE_URL+self.cat_url)
-        self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
+        self.ll_id = '12'
+
+        if len(self.id) == 5:
+            self.cat_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/c0"+self.id+".cat"
+            self.meta_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/doc/d0"+self.id+".cat"
+        elif len(self.id) == 6:
+            self.cat_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/c"+self.id+".cat"
+            self.meta_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/doc/d"+self.id+".cat"
+        else:
+            self.cat_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/c00"+self.id+".cat"
+            self.meta_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/doc/d00"+self.id+".cat"
+
+        print 'Pulling metadata...'
+        self.metadata = self.get_metadata(self.meta_url)
+        print self.metadata
+        print 'Parsing cat file...'
+        self.cat = self.parse_cat(self.cat_url)
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
 
-class SplatSpeciesResultList(list):
-    def __new__(cls, data=None):
-        obj = super(SplatSpeciesResultList, cls).__new__(cls, data)
-        return obj
+def get_updates():
+    BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
 
-    def __str__(self):
-        it = list(self)
-        it[0] = "0"*(4-len(str(it[0])))+str(it[0])
-        return "{:5} {:10} {:10} {:>25} {:>15}".format(it[0], it[1], it[5], it[3], it[4])
+    # Pull new update list
+    update_page = urllib2.urlopen(BASE_URL+"/whats.new")
 
+    i = 0
+    updates = []
+    for line in urllib2.urlopen(BASE_URL+"/whats.new"):
+        if i == 0:
+            i += 1
+            continue
+        elif line != '\n':
+            temp = line.split()
+            updates.append([time.strptime(temp[0], '%Y/%m/%d'), int(temp[1]), temp[2]])
 
-class CDMSChoiceList(list):
-    def __new__(cls, data=None):
-        obj = super(CDMSChoiceList, cls).__new__(cls, data)
-        return obj
+    update_page.close()
+    return updates
 
-    def __str__(self):
-        it = list(self)
-        it[0] = "0"*(4-len(it[0]))+it[0]
-        return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y",it[3]))
+def initiate_sql_db():
+    def rd_pass():
+        return open('pass.pass').read()
 
-def unidrop(x): # Strips any non-ASCII unicode text from string
-    return re.sub(r'[^\x00-\x7F]+',' ', x)
+    print '\nLogging into MySQL database...'
 
-def pretty_print(comp):
-    form = "{:5}\t{:45}\t{:15}\t{:40} {:40}"
-    output = form.format(*('Tag', 'Molecule', 'Date','Cat Link', 'Metadata Link'))+'\n'
-    for row in comp:
-        output += form.format(*(row[0], row[1], time.strftime("%B %Y", row[2]), row[3], row[4]))+'\n'
-    return output
-
-def pull_updates():
-
-    BASE_URL = "http://www.astro.uni-koeln.de"
-    page = urllib2.urlopen(BASE_URL+"/cdms/entries")
-    soup = BeautifulSoup(page.read(), "lxml")
-
-    urls = []  # URLs to CAT and Documentation (metadata) files
-    des = []  # Text from table entries
-    for tr in soup.find_all('tr')[1:]:
-        des.append([col.text for col in tr.find_all('td')])
-        urls.append([a['href'] for a in tr.find_all('a')])
-
-    page.close()  # Close HTML sock
-
-    compiled = []  # 0 --> tag, 1 --> Molecule, 2 --> struct_time obj, 3 --> cat file, 4 --> metadata
-    for i, entry in enumerate(urls):
-        date = des[i][6].strip()
-
-        try:  # Because Holger isn't consistent with his date formatting
-            formatted_date = time.strptime(date, "%b. %Y")
-        except ValueError:
-            try:
-                formatted_date = time.strptime(date, "%B %Y")
-            except ValueError:
-                formatted_date = time.strptime(date, "%b %Y")
-
-        compiled.append([unidrop(des[i][0]).encode('utf-8'), unidrop(des[i][1]).encode('utf-8'),
-                         formatted_date, urls[i][1], urls[i][2]])
-
-    compiled.sort(key=lambda x: x[2], reverse=True)
-    return compiled
+    HOST = "127.0.0.1"
+    LOGIN = "nseifert"
+    PASS = rd_pass()
+    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
+    db.autocommit(False)
+    print 'MySQL Login Successful.'
+    return db
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -338,7 +337,7 @@ def process_update(mol, entry=None, sql_conn=None):
 
     mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
 
-    mol.metadata['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
+    mol.metadata['Ref20'] = +mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
@@ -436,14 +435,16 @@ def new_molecule(mol, sql_conn=None):
         metadata_to_push['Name'] = new_name
 
     # Generate new splat_id
+    tag_num = mol.id
+    tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
     cmd = "SELECT SPLAT_ID FROM species " \
-        "WHERE SPLAT_ID LIKE '%s%%'" % str(mol.tag[:3])
+        "WHERE SPLAT_ID LIKE '%s%%'" % tag_prefix
     sql_cur.execute(cmd)
     splat_id_list = sql_cur.fetchall()
     if len(splat_id_list) > 0:
-        splat_id = mol.tag[:3]+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
+        splat_id = tag_prefix+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
     else:
-        splat_id = mol.tag[:3] + '01'
+        splat_id = tag_prefix + '01'
 
     species_to_push = OrderedDict([('species_id', metadata_to_push['species_id']),
                                    ('name', mol.formula), ('chemical_name', None), ('s_name', mol.formula),
@@ -469,7 +470,6 @@ def new_molecule(mol, sql_conn=None):
         else:
             species_to_push[key] = species_choices[idx]
         idx += 1
-
 
     ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
@@ -583,83 +583,52 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
 def main():
 
-    # ------------------
-    # POPULATE CDMS LIST
-    # ------------------
+    # Get JPL update listing
+    listing = get_updates()
+
+    # Initiate SQL database connection
+    # sql_conn = initiate_sql_db()
+    # cursor = db.cursor()
+    # cursor.execute("USE splat")
+
+    choice_list = ["%s  %s  %s" % (time.strftime('%Y/%m/%d', x[0]), x[1], x[2]) for x in listing]
+    choice = eg.choicebox('Choose a Molecule to Update', 'Choice', choice_list)
+
+    choice_idx = 0
+    for idx, ent in enumerate(listing):
+        if int(choice.split()[1]) == ent[1]:
+            choice_idx = idx
+
+    cat_entry = JPLMolecule(listing[choice_idx])
+
+    tag_num = str(cat_entry.id)
+    print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]
+    cmd = "SELECT * FROM species " \
+         "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
+    print cmd
+
+    cursor = initiate_sql_db().cursor()
+    cursor.execute("USE splat")
+    cursor.execute(cmd)
+    res = cursor.fetchall()
+
+    SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+    SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
+                                                'X','','','','','',''])]
+    choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                           "Current choice is:\n %s" %choice, "Splatalogue Search Results",
+                           SplatMolResults)
+    cursor.close()
+
+    if choice2[68] == 'X':
+        linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+        push_molecule(db, linelist, species_final, metadata_final, update=0)
+
+    else:  # Molecule already exists in Splatalogue database
+        linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+        push_molecule(db, linelist, {}, metadata_final, update=1)
+
+
+if __name__ == '__main__':
     pd.options.mode.chained_assignment = None
-    print 'Pulling updates from CDMS...'
-    update_list = pull_updates()
-    choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
-    print 'CDMS Update Completed.'
-
-    # ---------
-    # SQL LOGIN
-    # ---------
-    print '\nLogging into MySQL database...'
-
-    def rd_pass():
-        return open('pass.pass').read()
-
-    HOST = "127.0.0.1"
-    LOGIN = "nseifert"
-    PASS = rd_pass()
-    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
-    db.autocommit(False)
-    print 'MySQL Login Successful.'
-
-    # ------------
-    # GUI RUN LOOP
-    # ------------
-    ProgramLoopFinished = False
-
-    while not ProgramLoopFinished:
-        cursor = db.cursor()
-        cursor.execute("USE splat")
-
-        up_or_down = eg.buttonbox(msg='Do you want to pull a molecule from CDMS or load custom cat file?',
-                                  title='Initialize', choices=['CDMS List', 'Custom File'])
-
-        if up_or_down == 'CDMS List':
-
-            choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
-            cat_entry = CDMSMolecule(update_list[int(choice[0:5])])
-
-            cmd = "SELECT * FROM species " \
-                "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
-
-            cursor.execute(cmd)
-            res = cursor.fetchall()
-            SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-            SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
-                                                        'X','','','','','',''])]
-            choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                                   "Current choice is:\n %s" %choice, "Splatalogue Search Results",
-                                   SplatMolResults)
-            cursor.close()
-
-            if choice2[68] == 'X':
-                linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-                push_molecule(db, linelist, species_final, metadata_final, update=0)
-
-            else:  # Molecule already exists in Splatalogue database
-                linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-                push_molecule(db, linelist, {}, metadata_final, update=1)
-
-
- 
-        else:  # Open custom molecule
-            cat_path = eg.fileopenbox()
-
-        cont = eg.buttonbox(msg='Do you want to process another molecule?', title='More work???', choices=['Yes', 'No'])
-        if cont == 'Yes':
-            ProgramLoopFinished = False
-        else:
-            ProgramLoopFinished = True
-
-    db.close()
-
-
-if __name__ == "__main__":
     main()
-
-
