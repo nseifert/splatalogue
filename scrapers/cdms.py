@@ -645,8 +645,6 @@ def main():
                 linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
                 push_molecule(db, linelist, {}, metadata_final, update=1)
 
-
- 
         else:  # Open custom molecule
             cat_path = eg.fileopenbox()
 

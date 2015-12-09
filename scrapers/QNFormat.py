@@ -14,13 +14,62 @@ def format_it(fmt_idx, qn_series):
                 314: ('{:d}({:d},{:d}) - {:d}({:d},{:d}), 2F = {:d} - {:d}', [0, 1, 2, 4, 5, 6, 3, 7]),
                 112: ('N = {:d} - {:d}, 2J = {:d} - {:d}', [0, 2, 1, 3]), # Hund's case A (?) linear
                 113: ('N = {:d} - {:d}, J = {:d} - {:d}, F+1/2 = {:d} - {:d}', [1, 4, 0, 3, 2, 5]),
+                123: ('N = {:d} - {:d}, J + 1/2 = {:d} - {:d}, F = {:d} - {:d}', [0, 3, 1, 4, 2, 5]),
                 1404: ('{:d}({:d},{:d}) - {:d}({:d},{:d}), v= {:d} - {:d}', [0, 1, 2, 4, 5, 6, 3, 7]),
                 #  224: ('N = {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F = {:d} - {:d}', [0, 2, 6, 1, 5, 3, 7]),
                 255: ('J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', [2, 7, 1, 6, 3, 8, 4, 9]),
-                102: ('N = {:d} - {:d}, J = {:d} - {:d}', [0, 2, 1, 3])
+                102: ('N = {:d} - {:d}, J = {:d} - {:d}', [0, 2, 1, 3]),
+                1202: ('J = {:d} - {:d}, v = {:d} - {:d}', [0, 2, 1, 3]),
+                325: ('N(KaKc) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J+1/2 = {:d} - {:d}, F = {:d} - {:d}', [0, 1, 2, 5, 6, 7, 3, 8, 4, 9])
                 }
 
-    if fmt_idx == 213:  # For Hund's case (b) with Lambda doubling
+    if fmt_idx == 203:
+
+        if int(qn_series[1]) < 0 and int(qn_series[4]) > 0:
+            if int(qn_series[0]) - int(qn_series[2]) == 1:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>f</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>f</i>'.encode('utf-8')
+            elif int(qn_series[0]) - int(qn_series[2]) == 0:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>f</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>f</i>'.encode('utf-8')
+            else:
+                fmt = u'J = {:d} - {:d}, O = 3, <i>f</i>'.encode('utf-8')
+        elif int(qn_series[1]) > 0 and int(qn_series[4]) < 0:
+
+            if int(qn_series[0]) - int(qn_series[2]) == 1:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>e</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
+            elif int(qn_series[0]) - int(qn_series[2]) == 0:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>e</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
+            else:
+                fmt = u'J = {:d} - {:d}, O = 3, <i>e</i>'.encode('utf-8')
+        else:
+
+            if int(qn_series[0]) - int(qn_series[2]) == 1:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>e/f</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>e/f</i>'.encode('utf-8')
+            elif int(qn_series[0]) - int(qn_series[2]) == 0:
+                if int(qn_series[2]) % 2 == 1 :
+                    fmt = u'J = {:d} - {:d}, O = 2, <i>e/f</i>'.encode('utf-8')
+                else:
+                    fmt = u'J = {:d} - {:d}, O = 1, <i>e/f</i>'.encode('utf-8')
+            else:
+                fmt = u'J = {:d} - {:d}, O = 3, <i>e/f</i>'.encode('utf-8')
+        order = [2, 5]
+
+
+    elif fmt_idx == 213:  # For Hund's case (b) with Lambda doubling
         if qn_series[1] == '1':
             if int(qn_series[2])-int(qn_series[0]) == 1:
                 fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, <i>e</i>'.encode('utf-8')

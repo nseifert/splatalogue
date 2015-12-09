@@ -179,9 +179,8 @@ class JPLMolecule:
                 ref_data_start = True
                 continue
             if ref_data_start:
-                temp3 = re.sub('[${}}^]', '', re.sub('\bf', '', line.split('\n')[0]))
+                temp3 = re.sub('[${}^]', '', re.sub('\bf', '', line.split('\n')[0]))
                 temp3 = re.sub('\r', '', temp3)
-                temp3 = re.sub('\le', '=', temp3)
                 ref_data += temp3 + ' '
 
         metadata['Ref1'] = ref_data
@@ -607,7 +606,8 @@ def main():
          "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
     print cmd
 
-    cursor = initiate_sql_db().cursor()
+    db = initiate_sql_db().cursor()
+    cursor = db.cursor()
     cursor.execute("USE splat")
     cursor.execute(cmd)
     res = cursor.fetchall()
