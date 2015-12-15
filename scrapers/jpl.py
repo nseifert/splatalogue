@@ -87,7 +87,6 @@ class JPLMolecule:
             down_idx = 0
             for i, val in enumerate(qns):
 
-
                 if i == num_qns:
                     up_done = True
                     in_middle = True
@@ -184,6 +183,7 @@ class JPLMolecule:
                 ref_data += temp3 + ' '
 
         metadata['Ref1'] = ref_data
+        metadata['Name'] = self.name
 
         return metadata
 
@@ -225,6 +225,7 @@ class JPLMolecule:
         self.date = listing_entry[0]
         self.id = str(listing_entry[1])
         self.name = listing_entry[2]
+        self.formula = self.name
 
         self.ll_id = '12'
 
@@ -240,7 +241,6 @@ class JPLMolecule:
 
         print 'Pulling metadata...'
         self.metadata = self.get_metadata(self.meta_url)
-        print self.metadata
         print 'Parsing cat file...'
         self.cat = self.parse_cat(self.cat_url)
 
@@ -336,7 +336,7 @@ def process_update(mol, entry=None, sql_conn=None):
 
     mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
 
-    mol.metadata['Ref20'] = +mol.meta_url
+    mol.metadata['Ref20'] = mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
@@ -385,7 +385,7 @@ def process_update(mol, entry=None, sql_conn=None):
     qn_fmt = mol.cat['qn_code'][0]
 
     fmtted_QNs = []
-
+    print 'Preparing linelist...'
     # Iterate through rows and add formatted QN
     for idx, row in mol.cat.iterrows():
         fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
@@ -396,6 +396,7 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SHOW columns FROM main")
     ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
     ll_col_list = mol.cat.columns.values.tolist()
+
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
 
     return final_cat, metadata_to_push
@@ -425,7 +426,7 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['v1_0'] = '1'
     metadata_to_push['v2_0'] = '2'
     # metadata_to_push['v3_0'] = '3'
-    metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
+    metadata_to_push['Ref20'] = mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
     new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
@@ -438,6 +439,7 @@ def new_molecule(mol, sql_conn=None):
     tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
     cmd = "SELECT SPLAT_ID FROM species " \
         "WHERE SPLAT_ID LIKE '%s%%'" % tag_prefix
+    print 'Tag prefix, '+tag_prefix
     sql_cur.execute(cmd)
     splat_id_list = sql_cur.fetchall()
     if len(splat_id_list) > 0:
@@ -527,7 +529,6 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
                        (spec_dict['nlines'], meta_dict['species_id']))
         cursor.close()
 
-
     else:
         cursor = db.cursor()
         print 'Creating new entry in species table...'
@@ -565,7 +566,6 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     # Push linelist to database
     col_names = ll.columns.values
 
-
     print 'Pushing linelist (%s entries) to database...' %(num_entries)
     cursor = db.cursor()
     query_ll = "INSERT INTO %s ( %s ) VALUES ( %s )" % ("main", ', '.join(ll.columns.values), placeholders(ll.columns.values))
@@ -585,11 +585,6 @@ def main():
     # Get JPL update listing
     listing = get_updates()
 
-    # Initiate SQL database connection
-    # sql_conn = initiate_sql_db()
-    # cursor = db.cursor()
-    # cursor.execute("USE splat")
-
     choice_list = ["%s  %s  %s" % (time.strftime('%Y/%m/%d', x[0]), x[1], x[2]) for x in listing]
     choice = eg.choicebox('Choose a Molecule to Update', 'Choice', choice_list)
 
@@ -606,7 +601,7 @@ def main():
          "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
     print cmd
 
-    db = initiate_sql_db().cursor()
+    db = initiate_sql_db()
     cursor = db.cursor()
     cursor.execute("USE splat")
     cursor.execute(cmd)
