@@ -85,6 +85,7 @@ class JPLMolecule:
             qns_up = []
             qns_down = []
             down_idx = 0
+
             for i, val in enumerate(qns):
 
                 if i == num_qns:
@@ -133,7 +134,6 @@ class JPLMolecule:
                                 qns_down.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
                         except TypeError:
                             print i, val, [x.strip() for x in qns]
-
             try:
                 parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
             except ValueError:  # Get blank line
@@ -145,6 +145,7 @@ class JPLMolecule:
         dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(num_qns)])
 
         final_list = []
+
         for row in parsed_list:
             final_list.append(tuple(row[:-2]+row[-2]+row[-1]))
 
@@ -302,12 +303,13 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
 
     results = sql_cur.fetchall()
+    print results
     if len(results) == 1:
         db_meta = results[0]
 
-    else:  # There's more than one linelist associated with the chosen species_id
+    elif len(results) > 1:  # There's more than one linelist associated with the chosen species_id
         chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
-        user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
+        user_chc = eg.choicebox("Choose an entry to update (JPL linelist = 12)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
             if user_chc == entry:
@@ -434,7 +436,6 @@ def new_molecule(mol, sql_conn=None):
     if new_name is not '':
         metadata_to_push['Name'] = new_name
 
-    # Generate new splat_id
     tag_num = mol.id
     tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
     cmd = "SELECT SPLAT_ID FROM species " \
