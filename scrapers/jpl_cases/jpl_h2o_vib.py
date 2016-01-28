@@ -160,7 +160,7 @@ class JPLMolecule:
         tags = {'Name:': 'Name', 'Q(300.0)=': 'Q_300_0', 'Q(225.0)=': 'Q_225_0', 'Q(150.0)=': 'Q_150_0',
                 'Q(75.00)=': 'Q_75_00', 'Q(37.50)=': 'Q_37_50', 'Q(18.75)=': 'Q_18_75', 'Q(9.375)=': 'Q_9_375',
                 'A=': 'A', 'B=': 'B', 'C=': 'C', '$\\mu_a$ =': 'MU_A',  '$\\mu_b$ =': 'MU_B', '$\\mu_c$ =': 'MU_C',
-                'Contributor:': 'Contributor'}
+                'Contributor:': 'Contributor', 'Date:': 'Date'}
         ref_data_start = False
         ref_data = ""
 
@@ -265,7 +265,20 @@ def process(mol, id_dict, db):
     vib_states_ids = id_dict[1][key]
 
     def qn_format(qn_series, extra):
+        vibs = {0: 'g.s.', 1: 'v<sub>2</sub> = 1', 2: 'v<sub>2</sub> = 2', 3: 'v<sub>1</sub> = 1', 4: 'v<sub>3</sub> = 1'}
         fmt = u'{:d}({:d}, {:d}) - {:d}({:d}, {:d})'
+        try:
+            if qn_series[3] != qn_series[7]:
+                if qn_series[7] == 1 and qn_series[3] == 2:
+                    fmt += u' v<sub>2</sub> = 1 <- 2'
+                elif qn_series[7] == 2 and qn_series[3] == 1:
+                    fmt += u' v<sub>2</sub> = 2 <- 1'
+                else:
+                    fmt += u' %s <- %s' % (vibs[qn_series[3]], vibs[qn_series[7]])
+        except KeyError:  # State is "5" --- not sure what this refers to
+            print 'Blah'
+            pass
+
         order = [0, 1, 2, 4, 5, 6]
         return fmt.format(*[int(qn_series[j]) for j in order])
 
@@ -368,7 +381,11 @@ def process(mol, id_dict, db):
         species_to_push = {}  # Create empty species dictionary. For control statement later.
 
     # FILTER CAT FILE AND PREPARE FOR UPLOAD
-    mask = (mol.cat['qn_up_3'].isin(vib_states_ids)) & (mol.cat['qn_dwn_3'].isin(vib_states_ids)) & (mol.cat['qn_up_3'] == mol.cat['qn_dwn_3'])
+
+    if 0 in vib_states_ids:
+        mask = mol.cat['qn_up_3'] != mol.cat['qn_dwn_3']
+    else:
+        mask = mol.cat['qn_up_3'].isin(vib_states_ids) & (mol.cat['qn_up_3'] == mol.cat['qn_dwn_3'])
 
     qn_fmt = mol.cat['qn_code'][0]
     temp_cat = mol.cat[mask]
@@ -482,7 +499,7 @@ def main():
 
     """ vib_states is dict, where the key is the state and the values are a list of integers
      which correspond to the state identifying (Q.N. #3) in the CAT file """
-    vib_states = {'v1 = 1': [3], 'v2 = 1': [1], 'v2 = 2':[2], 'v3 = 1':[1]}
+    vib_states = {'v1 = 1': [3], 'v2 = 1': [1], 'v2 = 2':[2], 'v3 = 1': [4], 'cross state': [0]}
 
     for key in vib_states:
         process(molecule, (key, vib_states), db)
