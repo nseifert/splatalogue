@@ -400,6 +400,9 @@ def process_update(mol, entry=None, sql_conn=None):
     ll_col_list = mol.cat.columns.values.tolist()
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
 
+    metadata_to_push['v3_0'] = 3
+    final_cat['`v3.0`'] = 3
+
     return final_cat, metadata_to_push
 
 def new_molecule(mol, sql_conn=None):
