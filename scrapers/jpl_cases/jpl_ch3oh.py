@@ -269,6 +269,10 @@ def process(mol, id_dict, db):
             fmt = u'{:d}({:d})<sup>+</sup> - {:d}({:d})<sup>-</sup>'.encode('utf-8')
         elif int(qn_series[2]) == -1 and int(qn_series[6]) == 1:
             fmt = u'{:d}({:d})<sup>-</sup> - {:d}({:d})<sup>+</sup>'.encode('utf-8')
+        elif int(qn_series[2]) == -1 and int(qn_series[6]) == -1:
+            fmt = u'{:d}({:d})<sup>-</sup> - {:d}({:d})<sup>-</sup>'.encode('utf-8')
+        elif int(qn_series[2]) == 1 and int(qn_series[6]) == 1:
+            fmt = u'{:d}({:d})<sup>+</sup> - {:d}({:d})<sup>+</sup>'.encode('utf-8')
         elif int(qn_series[2]) == 0:
             if int(qn_series[1]) > 0:
                 fmt = u'{:d}({:d}) - {:d}({:d}), E1'.encode('utf-8')
@@ -367,15 +371,25 @@ def process(mol, id_dict, db):
 
     else:  # Replace entry
         cursor.execute("SELECT * FROM species_metadata WHERE species_id=%s and LineList=12", (species_id,))
-        db_meta = cursor.fetchall()[0]
-
-        for i, col_name in enumerate(db_meta_cols):
-            if col_name in mol.metadata.keys():
-                metadata_to_push[col_name] = mol.metadata[col_name]
-            elif db_meta[i] is not None:
-                metadata_to_push[col_name] = db_meta[i]
-            else:
-                continue
+        try:
+            db_meta = cursor.fetchall()[0]
+        except IndexError: # No metadata entry for some reason
+            for i, col_name in enumerate(db_meta_cols):
+                if col_name in mol.metadata.keys():
+                    metadata_to_push[col_name] = mol.metadata[col_name]
+            metadata_to_push['species_id'] = species_id
+            metadata_to_push['v1_0'] = '1'
+            metadata_to_push['v2_0'] = '2'    
+            metadata_to_push['Ref20'] = mol.meta_url
+            metadata_to_push['LineList'] = mol.ll_id
+        else:
+            for i, col_name in enumerate(db_meta_cols):
+                if col_name in mol.metadata.keys():
+                    metadata_to_push[col_name] = mol.metadata[col_name]
+                elif db_meta[i] is not None:
+                    metadata_to_push[col_name] = db_meta[i]
+                else:
+                    continue
         species_to_push = {}  # Create empty species dictionary. For control statement later.
 
     # FILTER CAT FILE AND PREPARE FOR UPLOAD
