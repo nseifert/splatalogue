@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import MySQLdb as mysqldb
 from MySQLdb import cursors
@@ -14,7 +15,7 @@ def init_sql_db():
     HOST = "127.0.0.1"
     LOGIN = "nseifert"
     PASS = rd_pass()
-    db = mysqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3307, cursorclass=cursors.SSCursor)
+    db = mysqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306, cursorclass=cursors.SSCursor)
     db.autocommit(False)
     print 'MySQL Login Successful.'
 
@@ -65,7 +66,10 @@ def read_vizier_file(inp, fmt, delimiter):
         if atLineList:
             try:
                 for i, key in enumerate(fmt):
-                    linelist[key].append(line.strip().split(delimiter)[i])
+                    if len(line.strip().split(delimiter)) != len(fmt):
+                        continue
+                    else:
+                        linelist[key].append(line.strip().split(delimiter)[i])
             except IndexError:
                 print "\"" + line + "\""
                 raise
@@ -175,25 +179,30 @@ def push_vizier_to_splat(astro_ll, meta, db, use_qn_mult=1, use_qn_sing=0, freq_
     if verbose:
         filename.close()
 
+    # Update linelist list with ref
+    curs3 = db.cursor()
+    curs3.execute("INSERT INTO lovas_references (Lovas_shortref, Lovas_fullref) VALUES (\"%s\", \"%s\")" %(meta['ref_short'], meta['ref_full']))
     print 'Update completed successfully.'
 
 if __name__ == "__main__":
 
-    path = "/home/nate/Downloads/Belloche_3mm.tsv"
-    fmt = ['El', 'qNu', 'qNl', 'Freq']
+    path = "/home/nate/Downloads/Patel 2015.tsv"
+    fmt = ['El', 'qNu', 'Freq']
     TOLERANCE = 1.0  # In units of linelist frequency, typically MHz.
 
     linelist = read_vizier_file(open(path, 'r'), fmt, '\t')
+    linelist['El'] = linelist['El'].apply(lambda x: x.replace('_','')).apply(lambda x: re.sub('\\^.*?\\^', '', x)).apply(lambda x: x.strip())
+    linelist['qNu'] = linelist['qNu'].apply(lambda x: re.findall(r'\d+', x)[0])
 
     def parse_formula(row):
         return ''.join([x[0] if x[1] == '' else x[0]+x[1]
                                         for x in re.findall(r'([A-Z][a-z]*)(\d*)', row)])
 
 
-
     linelist['El_parse'] = linelist['El'].apply(parse_formula)
     linelist['rough_mass'] = linelist['El_parse'].apply(calc_rough_mass)
 
+    print linelist
     db = init_sql_db()
     print 'Connected to database successfully.'
 
@@ -208,15 +217,14 @@ if __name__ == "__main__":
     # metadata = {'tele': fieldValues[0], 'source': fieldValues[1],
     #            'ref_full': fieldValues[2], 'ref_short': fieldValues[3]}
 
-    metadata = {'tele': 'IRAM 30m', 'source': 'Sgr B2(M)',
-                'ref_full': 'A. Belloche, H. S. P. Mueller, K. M. Menten, P. Schilke, C. Comito, <b>2013</b>,'
-                            ' <i>Astron. Astrophys.</i>, 559A, 47.',
-                'ref_short': 'Belloche 2013'}
+    metadata = {'tele': 'SMA', 'source': 'IRC+10216',
+                'ref_full': 'Patel, Nimesh A.; Young, Ken H.; Gottlieb, Carl A.; Thaddeus, Patrick; Wilson, Robert W.; Menten, Karl M.; Reid, Mark J.; McCarthy, Michael C.; Cernicharo, José; He, Jinhua; Brünken, Sandra; Trung, Dinh-V.; Keto, Eric, <b>2011</b>, <i>ApJ. Suppl. Series</i>, 193, 17.',
+                'ref_short': 'Patel 2011'}
 
     print 'Pushing updates from %s, telescope: %s, source: %s...' \
           % (metadata['ref_short'], metadata['tele'], metadata['source'])
 
-    push_vizier_to_splat(astro_ll=linelist, meta=metadata, db=db)
+    push_vizier_to_splat(astro_ll=linelist, meta=metadata, db=db, use_qn_mult=1, mass_tol=4, freq_tol=1.0)
 
 
 
