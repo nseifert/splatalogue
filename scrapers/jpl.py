@@ -245,8 +245,9 @@ class JPLMolecule:
         print 'Parsing cat file...'
         self.cat = self.parse_cat(self.cat_url)
 
-        self.cat = self.calc_derived_params(self.cat, self.metadata)
+
         self.cat['ll_id'] = self.ll_id
+        self.cat['`v3.0`'] = 3
 
 def get_updates():
     BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
@@ -320,8 +321,9 @@ def process_update(mol, entry=None, sql_conn=None):
     if db_meta[52] != mol.ll_id:
         # Only entry in database isn't from the linelist of the entry that user wants to update
         ref_idx = 23
-        mol.metadata['v1_0'] = '1'
-        mol.metadata['v2_0'] = '2'
+        mol.metadata['v1_0'] = '0'
+        mol.metadata['v2_0'] = '0'
+        mol.metadata['v3_0'] = '3'
         mol.metadata['LineList'] = mol.ll_id
         new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
                                % mol.metadata['Name'], title="Metadata Name Change")
@@ -425,9 +427,9 @@ def new_molecule(mol, sql_conn=None):
     # Generate new species_id
     sql_cur.execute('SELECT MAX(species_id) FROM species')
     metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
-    metadata_to_push['v1_0'] = '1'
-    metadata_to_push['v2_0'] = '2'
-    # metadata_to_push['v3_0'] = '3'
+    metadata_to_push['v1_0'] = '0'
+    metadata_to_push['v2_0'] = '0'
+    metadata_to_push['v3_0'] = '3'
     metadata_to_push['Ref20'] = mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
@@ -543,15 +545,15 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         cursor.close()
 
     # Replace metadata content if updating an entry
-    if update:
-        cursor = db.cursor()
-        print 'Removing original metadata entry for replacing with new data...'
-        cursor.execute('DELETE from species_metadata WHERE species_id=%s AND v1_0=%s AND v2_0=%s AND LineList=%s',
-                       (meta_dict['species_id'], meta_dict['v1_0'], meta_dict['v2_0'], meta_dict['LineList']))
-        print 'Removing original linelist for replacement...'
-        cursor.execute('DELETE from main WHERE species_id=%s AND ll_id=%s',
-                       (meta_dict['species_id'], meta_dict['LineList']))
-        cursor.close()
+    # if update:
+    #     cursor = db.cursor()
+    #     print 'Removing original metadata entry for replacing with new data...'
+    #     cursor.execute('DELETE from species_metadata WHERE species_id=%s AND v1_0=%s AND v2_0=%s AND LineList=%s',
+    #                    (meta_dict['species_id'], meta_dict['v1_0'], meta_dict['v2_0'], meta_dict['LineList']))
+    #     print 'Removing original linelist for replacement...'
+    #     cursor.execute('DELETE from main WHERE species_id=%s AND ll_id=%s',
+    #                    (meta_dict['species_id'], meta_dict['LineList']))
+    #     cursor.close()
 
     cursor = db.cursor()
     # Create new metadata entry in database
