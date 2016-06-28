@@ -14,13 +14,14 @@ import sys
 __author__ = 'Nathan Seifert'
 
 
-class CustomMolecule:  # With loaded CAT file from disk
-    pass
+# class CustomMolecule:  # With loaded CAT file from disk
+#     pass
 
 
 class CDMSMolecule:
 
-    def parse_cat(self, cat_url=None, local=0):
+    @staticmethod
+    def parse_cat(cat_url=None, local=0):
         num_qns = 0
 
         def l_to_idx(letter):  # For when a QN > 99
@@ -36,9 +37,10 @@ class CDMSMolecule:
                     yield total
 
             cuts = tuple(cut for cut in accumulate(abs(fw) for fw in fieldwidths))
-            pads = tuple(fw < 0 for fw in fieldwidths) # bool for padding
-            flds = tuple(izip_longest(pads, (0,)+cuts, cuts))[:-1] # don't need final one
-            parse = lambda line: tuple(line[i:j] for pad, i, j in flds if not pad)
+            pads = tuple(fw < 0 for fw in fieldwidths)  # bool for padding
+            flds = tuple(izip_longest(pads, (0,)+cuts, cuts))[:-1]  # don't need final one
+
+            def parse(lyne): return tuple(lyne[i:j] for pad, i, j in flds if not pad)
 
             parse.size = sum(abs(fw) for fw in fieldwidths)
             parse.fmtstring = ' '.join('{}{}'.format(abs(fw), 'x' if fw < 0 else 's') for fw in fieldwidths)
@@ -101,11 +103,11 @@ class CDMSMolecule:
                         qns_up.append(int(val))
                     except ValueError:
                         try:
-                            if val.strip() == '+': # For parity symbols in CH3OH, for instance
+                            if val.strip() == '+':  # For parity symbols in CH3OH, for instance
                                 qns_up.append(1)
                             elif val.strip() == '-':
                                 qns_up.append(-1)
-                            elif val.strip() == '': # No parity symbol?
+                            elif val.strip() == '':  # No parity symbol?
                                 qns_up.append(0)
                             elif re.search('[a-zA-Z]', val.strip()):  # QN > 99
                                 temp = list(val)
@@ -136,9 +138,10 @@ class CDMSMolecule:
                 continue
 
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
-                  ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'), ('qn_code', 'i4')]
-        dtypes.extend([('qn_up_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
-        dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(len(parsed_list[0][-2]))])
+                  ('lower_state_energy', 'f8'), ('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'),
+                  ('qn_code', 'i4')]
+        dtypes.extend([('qn_up_%s' % i, 'i4') for i in range(len(parsed_list[0][-2]))])
+        dtypes.extend([('qn_dwn_%s' % i, 'i4') for i in range(len(parsed_list[0][-2]))])
 
         final_list = []
         for row in parsed_list:
@@ -148,15 +151,26 @@ class CDMSMolecule:
         nplist[:] = final_list
 
         return pd.DataFrame(nplist)
-
+    
+    
+    def add_row(self, row_name, value):
+        
+        @staticmethod
+        def add(cat, row, val):
+            cat[row] = val
+            return cat
+        
+        add(self.cat, row_name, value)
+        
+        
     def get_metadata(self, meta_url):
         print self.name
         metadata = {}  # Dictionary for metadata, keys are consistent with columns in SQL
 
         # Dictionaries to connect string values in CDMS metadata to SQL columns
-        Q_temps = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.0': 'Q_500_0', '300.0': 'Q_300_0',
-                     '225.0': 'Q_225_0', '150.0': 'Q_150_0', '75.00': 'Q_75_00', '37.50': 'Q_37_50',
-                     '18.75': 'Q_18_75'}
+        q_temps = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.0': 'Q_500_0', '300.0': 'Q_300_0',
+                   '225.0': 'Q_225_0', '150.0': 'Q_150_0', '75.00': 'Q_75_00', '37.50': 'Q_37_50',
+                   '18.75': 'Q_18_75'}
         dipoles = {'a / D': 'MU_A', 'b / D': 'MU_B', 'c / D': 'MU_C'}
 
         # Initialize scraper
@@ -175,20 +189,21 @@ class CDMSMolecule:
             temp = entry.get_text()
 
             metadata['Name'] = self.name
-            metadata['Date'] = time.strftime('%b. %Y',self.date)
+            metadata['Date'] = time.strftime('%b. %Y', self.date)
             if 'Contributor' in temp:
                 if self.ll_id == '10':
                     metadata['Contributor'] = 'H. S. P. Mueller'
                 else:
                     metadata['Contributor'] = temp.split('Contributor')[1].encode('utf-8')
 
-            # Pull out spin-rotation partiton function values
-            for key in Q_temps:
+            # Pull out spin-rotation partition function values
+            for key in q_temps:
                 if 'Q(%s)' % key in temp:
-                    metadata[Q_temps[key].encode('utf-8')] = temp.split('Q(%s)' % key)[1].encode('utf-8')
+                    metadata[q_temps[key].encode('utf-8')] = temp.split('Q(%s)' % key)[1].encode('utf-8')
 
-            value_check = lambda x: any(i.isdigit() for i in x)
-            pull_float = lambda x: re.findall(r'\d+.\d+', x)
+            def value_check(x): return any(i.isdigit() for i in x)
+
+            def pull_float(x): return re.findall(r'\d+.\d+', x)
 
             for key in dipoles:
                 if key in temp:
@@ -205,18 +220,20 @@ class CDMSMolecule:
                         metadata['C'] = pull_float(temp)[0].encode('utf-8')
 
         metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
-        #print metadata
 
         return formula, metadata
 
-    def calc_derived_params(self, cat, metadata):
+    @staticmethod
+    def calc_derived_params(cat, metadata):
         try:
-            Q_spinrot = float(metadata['Q_300_0'])
+            q_spinrot = float(metadata['Q_300_0'])
         except ValueError:  # in case there's multiple numbers
-            Q_spinrot = float(metadata['Q_300_0'].split('(')[0])
+            q_spinrot = float(metadata['Q_300_0'].split('(')[0])
         kt_300_cm1 = 208.50908
 
-        cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) - np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
+        cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * q_spinrot * (1./cat['frequency']) * \
+                        (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) -
+                             np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
         cat['aij'] = np.log10(1.16395E-20*cat['frequency']**3*cat['sijmu2']/cat['upper_state_degeneracy'])
         cat['lower_state_energy_K'] = cat['lower_state_energy']*1.4387863
         cat['upper_state_energy'] = cat['lower_state_energy'] + cat['frequency']/29979.2458
@@ -224,7 +241,6 @@ class CDMSMolecule:
         cat['error'] = cat['uncertainty']
         cat['roundedfreq'] = cat['frequency'].round(0)
         cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
-
 
         qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
         cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
@@ -244,8 +260,8 @@ class CDMSMolecule:
 
         return cat
 
-    def __init__(self, cdms_inp, custom=False, ll_id='10', custom_path = ""):
-        BASE_URL = "http://www.astro.uni-koeln.de"
+    def __init__(self, cdms_inp, custom=False, ll_id='10', custom_path=""):
+        base_url = "http://www.astro.uni-koeln.de"
 
         self.tag = cdms_inp[0]
         self.name = cdms_inp[1]
@@ -256,13 +272,14 @@ class CDMSMolecule:
         if custom:
             self.cat = self.parse_cat(cat_url=open(custom_path, 'r'))
         else:
-            self.cat = self.parse_cat(cat_url=BASE_URL+self.cat_url)
+            self.cat = self.parse_cat(cat_url=base_url+self.cat_url)
 
-        self.formula, self.metadata = self.get_metadata(BASE_URL+self.meta_url)
+        self.formula, self.metadata = self.get_metadata(base_url+self.meta_url)
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
         self.cat['`v3.0`'] = '3'
+
 
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
@@ -283,22 +300,25 @@ class CDMSChoiceList(list):
     def __str__(self):
         it = list(self)
         it[0] = "0"*(4-len(it[0]))+it[0]
-        return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y",it[3]))
+        return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y", it[3]))
 
-def unidrop(x): # Strips any non-ASCII unicode text from string
-    return re.sub(r'[^\x00-\x7F]+',' ', x)
+
+def unidrop(x):  # Strips any non-ASCII unicode text from string
+    return re.sub(r'[^\x00-\x7F]+', ' ', x)
+
 
 def pretty_print(comp):
     form = "{:5}\t{:45}\t{:15}\t{:40} {:40}"
-    output = form.format(*('Tag', 'Molecule', 'Date','Cat Link', 'Metadata Link'))+'\n'
+    output = form.format(*('Tag', 'Molecule', 'Date', 'Cat Link', 'Metadata Link'))+'\n'
     for row in comp:
         output += form.format(*(row[0], row[1], time.strftime("%B %Y", row[2]), row[3], row[4]))+'\n'
     return output
 
+
 def pull_updates():
 
-    BASE_URL = "http://www.astro.uni-koeln.de"
-    page = urllib2.urlopen(BASE_URL+"/cdms/entries")
+    base_url = "http://www.astro.uni-koeln.de"
+    page = urllib2.urlopen(base_url+"/cdms/entries")
     soup = BeautifulSoup(page.read(), "lxml")
 
     urls = []  # URLs to CAT and Documentation (metadata) files
@@ -327,6 +347,7 @@ def pull_updates():
     compiled.sort(key=lambda x: x[2], reverse=True)
     return compiled
 
+
 def process_update(mol, entry=None, sql_conn=None):
     """
     Flow for process_update:
@@ -335,14 +356,12 @@ def process_update(mol, entry=None, sql_conn=None):
     3) Delete CDMS-related linelist from Splatalogue
     4) Push new linelist and metadata to Splatalogue
     """
+
     sql_cur = sql_conn.cursor()
 
     # ----------------------------
     # METADATA PULL CHECK & UPDATE
     # ----------------------------
-    #meta_cmd = "SELECT * from species_metadata " \
-    #      "WHERE species_id=%s" %str(entry[0])
-    #print meta_cmd
 
     sql_cur.execute("SHOW columns FROM species_metadata")
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
@@ -353,7 +372,7 @@ def process_update(mol, entry=None, sql_conn=None):
         db_meta = results[0]
 
     else:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
+        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' % (a[3], a[52], a[53], a[54]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
@@ -369,7 +388,8 @@ def process_update(mol, entry=None, sql_conn=None):
         mol.metadata['v2_0'] = '0'
         mol.metadata['v3_0'] = '3'
         mol.metadata['LineList'] = mol.ll_id
-        new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
+        new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
+                                   "Leave blank otherwise. Current name is %s"
                                % mol.metadata['Name'], title="Metadata Name Change")
         if new_name is not '':
             mol.metadata['Name'] = new_name
@@ -378,7 +398,7 @@ def process_update(mol, entry=None, sql_conn=None):
         # Check to see first column to place reference info
         ref_idx = 23
         while True:
-            if db_meta[ref_idx] == None:
+            if not db_meta[ref_idx]:
                 break
             ref_idx += 1
 
@@ -394,7 +414,9 @@ def process_update(mol, entry=None, sql_conn=None):
     db_species = sql_cur.fetchall()[0]
 
     if db_meta[52] != mol.ll_id:
-        species_entry_dict = {key: value for (key,value) in [(db_species_cols[i], val) for i, val in enumerate(db_species)]}
+        species_entry_dict = {key: value for (key, value) in [(db_species_cols[i], val) for i, val
+                                                              in enumerate(db_species)]}
+
         ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
         ism_set_dict = {key: value for (key, value) in [(key, species_entry_dict[key]) for key in ism_set]}
         if any(val == '1' for val in ism_set_dict.values()):
@@ -416,7 +438,7 @@ def process_update(mol, entry=None, sql_conn=None):
 
     if db_meta[52] == mol.ll_id:
         metadata_to_push = {}
-        for i,col_name in enumerate(db_meta_cols):
+        for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
                 metadata_to_push[col_name] = mol.metadata[col_name]
             elif db_meta[i] is not None:
@@ -432,23 +454,25 @@ def process_update(mol, entry=None, sql_conn=None):
     # QN formatting --- let's just do it on a case-by-case basis
     qn_fmt = mol.cat['qn_code'][0]
 
-    fmtted_QNs = []
+    fmtted_qns = []
 
     # Iterate through rows and add formatted QN
     for idx, row in mol.cat.iterrows():
-        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
+        fmtted_qns.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
 
-    mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
+
     if metadata_to_push['ism'] == 1:
-        mol.cat['Lovas_NRAO'] = 1
+        mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
 
-    # Prep linelist for submission to database
+    # Prep linelist for submission to
     sql_cur.execute("SHOW columns FROM main")
     ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
     ll_col_list = mol.cat.columns.values.tolist()
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
 
     return final_cat, metadata_to_push
+
 
 def new_molecule(mol, sql_conn=None):
 
@@ -477,7 +501,8 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
-    new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
+    new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name?"
+                               " Leave blank otherwise. Current name is %s"
                                % metadata_to_push['Name'], title="Metadata Name Change")
     if new_name is not '':
         metadata_to_push['Name'] = new_name
@@ -488,19 +513,20 @@ def new_molecule(mol, sql_conn=None):
     sql_cur.execute(cmd)
     splat_id_list = sql_cur.fetchall()
     if len(splat_id_list) > 0:
-        splat_id = mol.tag[:3]+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
+        splat_id = mol.tag[:3] + str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
     else:
         splat_id = mol.tag[:3] + '01'
 
     species_to_push = OrderedDict([('species_id', metadata_to_push['species_id']),
                                    ('name', mol.formula), ('chemical_name', None), ('s_name', mol.formula),
-                                   ('s_name_noparens', mol.formula.replace('(','').replace(')','')), ('SPLAT_ID', splat_id),
-                                   ('atmos', '0'), ('potential', '1'), ('probable', '0'), ('known_ast_molecules', '0'),
-                                   ('planet', '0'), ('ism_hotcore', '0'), ('ism_diffusecloud', '0'), ('comet', '0'),
-                                   ('extragalactic', '0'), ('AGB_PPN_PN', '0'), ('SLiSE_IT', '0'), ('Top20', '0')])
+                                   ('s_name_noparens', mol.formula.replace('(', '').replace(')', '')),
+                                   ('SPLAT_ID', splat_id), ('atmos', '0'), ('potential', '1'), ('probable', '0'),
+                                   ('known_ast_molecules', '0'), ('planet', '0'), ('ism_hotcore', '0'),
+                                   ('ism_diffusecloud', '0'), ('comet', '0'), ('extragalactic', '0'),
+                                   ('AGB_PPN_PN', '0'), ('SLiSE_IT', '0'), ('Top20', '0')])
 
-    species_choices_fieldnames = ['%s (%s)'%(key, value) for key, value in species_to_push.items()]
-    species_choices = eg.multenterbox('Set species entries','species entry', species_choices_fieldnames)
+    species_choices_fieldnames = ['%s (%s)' % (key, value) for key, value in species_to_push.items()]
+    species_choices = eg.multenterbox('Set species entries', 'species entry', species_choices_fieldnames)
 
     ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
     ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
@@ -518,20 +544,19 @@ def new_molecule(mol, sql_conn=None):
             species_to_push[key] = species_choices[idx]
         idx += 1
 
-
     ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
         metadata_to_push[tag] = species_to_push[tag]
 
     # Format quantum numbers
     qn_fmt = mol.cat['qn_code'][0]
-    fmtted_QNs = []
+    fmtted_qns = []
 
     # Iterate through rows and add formatted QN
     for idx, row in mol.cat.iterrows():
-        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
+        fmtted_qns.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
 
-    mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")
@@ -540,6 +565,7 @@ def new_molecule(mol, sql_conn=None):
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
 
     return final_cat, species_to_push, metadata_to_push
+
 
 def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
@@ -552,13 +578,17 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     num_entries = len(ll_dict)
 
     # Create new species entry in database
-    placeholders = lambda inp: ', '.join(['%s'] * len(inp))
-    placeholders_err = lambda inp: ', '.join(['{}'] * len(inp))
-    columns = lambda inp: ', '.join(inp.keys())
 
-    query = lambda table, inp: "INSERT INTO %s ( %s ) VALUES ( %s )" % (table, columns(inp), placeholders(inp))
-    query_err = lambda table, inp: "INSERT INTO %s ( %s ) VALUES ( %s )" % \
-                                        (table, columns(inp), placeholders_err(inp))
+    def placeholders(inp): return ', '.join(['%s'] * len(inp))
+
+    def placeholders_err(inp): return ', '.join(['{}'] * len(inp))
+
+    def columns(inp): return ', '.join(inp.keys())
+
+    def query(table, inp): return "INSERT INTO %s ( %s ) VALUES ( %s )" % (table, columns(inp), placeholders(inp))
+
+    def query_err(table, inp): "INSERT INTO %s ( %s ) VALUES ( %s )" % \
+                               (table, columns(inp), placeholders_err(inp))
 
     # Add some last minute entries to dictionaries
     spec_dict['created'] = time.strftime('%Y-%m-%d %H:%M:%S')
@@ -575,11 +605,9 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         cursor.execute('UPDATE species SET nlines=%s WHERE species_id=%s',
                        (spec_dict['nlines'], meta_dict['species_id']))
 
-
-        print 'Removing previous Lovas NRAO recommended frequencies...'
-        cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s')
+        print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
+        cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
         cursor.close()
-
 
     else:
         cursor = db.cursor()
@@ -616,12 +644,11 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     cursor.close()
 
     # Push linelist to database
-    col_names = ll.columns.values
 
-
-    print 'Pushing linelist (%s entries) to database...' %(num_entries)
+    print 'Pushing linelist (%s entries) to database...' % num_entries
     cursor = db.cursor()
-    query_ll = "INSERT INTO %s ( %s ) VALUES ( %s )" % ("main", ', '.join(ll.columns.values), placeholders(ll.columns.values))
+    query_ll = "INSERT INTO %s ( %s ) VALUES ( %s )" \
+               % ("main", ', '.join(ll.columns.values), placeholders(ll.columns.values))
 
     try:
         cursor.executemany(query_ll, ll_dict)
@@ -632,8 +659,6 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     db.commit()
 
     print 'Finished with linelist push.'
-
-
 
 
 def main():
@@ -665,9 +690,9 @@ def main():
     # ------------
     # GUI RUN LOOP
     # ------------
-    ProgramLoopFinished = False
+    programloopfinished = False
 
-    while not ProgramLoopFinished:
+    while not programloopfinished:
         cursor = db.cursor()
         cursor.execute("USE splat")
 
@@ -677,10 +702,10 @@ def main():
         if up_or_down == 'CDMS List':
 
             choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
-            custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes','No'])
+            custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
             if custom_cat_file == 'Yes':
                 custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
-                cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True)
+                cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True, custom_path=custom_path)
             else:
                 cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=False)
 
@@ -689,12 +714,12 @@ def main():
 
             cursor.execute(cmd)
             res = cursor.fetchall()
-            SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-            SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
-                                                        'X','','','','','',''])]
+            splatmolresults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+            splatmolresults += [SplatSpeciesResultList([len(splatmolresults),999999999,0,'NEW MOLECULE',
+                                                        'X', '', '', '', '', '', ''])]
             choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                                   "Current choice is:\n %s" %choice, "Splatalogue Search Results",
-                                   SplatMolResults)
+                                   "Current choice is:\n %s" % choice, "Splatalogue Search Results",
+                                   splatmolresults)
             cursor.close()
 
             if choice2[68] == 'X':
@@ -710,9 +735,9 @@ def main():
 
         cont = eg.buttonbox(msg='Do you want to process another molecule?', title='More work???', choices=['Yes', 'No'])
         if cont == 'Yes':
-            ProgramLoopFinished = False
+            programloopfinished = False
         else:
-            ProgramLoopFinished = True
+            programloopfinished = True
 
     db.close()
 
