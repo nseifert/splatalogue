@@ -91,6 +91,7 @@ def push_data(df, meta, db):
         cursor.executemany(query_ll, ll_dict)
     except sqldb.ProgrammingError:
         print 'Pushing linelist failed.'
+        raise
     else:
         print 'Linelist successfully pushed.'
 
@@ -140,7 +141,6 @@ if __name__ == '__main__':
 
     for col in set(opt['columns']) - set(opt['select_columns']):
         inp.drop(col, axis=1, inplace=True)
-    print inp
 
     inp = calc_derived_params(inp, opt)
 

@@ -1,0 +1,22 @@
+! This is a commented line starting with an exclamation point.
+! This is a sample metadata input file for a custom submission to the SLAIM database.
+CHEMICAL_NAME:	Ozone
+TITLE:	<sup>16</sup>O<sup>16</sup>O<sup>18</sup>O
+SHORT_NAME: (16)O(16)O(18)O
+CONTRIBUTOR: Nathan Seifert
+A: 104573.157
+B: 12591.533
+C: 11212.506
+MU_A: 0.0
+MU_B: 0.5324
+MU_C: 0.0
+Q(300.0): 7452.3849
+Q(225.0): 4750.8594
+Q(150.0): 2559.9908
+Q(75.00): 904.1313
+Q(37.50): 320.2831
+Q(18.75): 113.7579
+Q(9.375): 40.6057
+STATE_ID_IDX: 3
+STATE_ID_VAL: 0
+REF: Data was taken from rotationally-resolved vibrational spectra in J.M. Flaud, C. Camy-Peyret, A. N'gom, V. Malathy Devi, C. P. Pinsland, M. A. Smith, <i>J. Mol. Spectrosc.</i>, <b>133</b>, 217-223 (1989). Dipole magnitude was taken from JPL entry, ID # 50004. 

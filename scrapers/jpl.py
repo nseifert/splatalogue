@@ -22,7 +22,6 @@ class SplatSpeciesResultList(list):
         it[0] = "0"*(4-len(str(it[0])))+str(it[0])
         return "{:5} {:10} {:10} {:>25} {:>15}".format(it[0], it[1], it[5], it[3], it[4])
 
-
 class JPLMolecule:
     def parse_cat(self, cat_url=None, local=0):
         num_qns = 0
@@ -267,20 +266,6 @@ def get_updates():
 
     update_page.close()
     return updates
-
-def initiate_sql_db():
-    def rd_pass():
-        return open('pass.pass').read()
-
-    print '\nLogging into MySQL database...'
-
-    HOST = "127.0.0.1"
-    LOGIN = "nseifert"
-    PASS = rd_pass()
-    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
-    db.autocommit(False)
-    print 'MySQL Login Successful.'
-    return db
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -583,7 +568,8 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
     print 'Finished with linelist push.'
 
-def main():
+def main(db):
+    pd.options.mode.chained_assignment = None
 
     # Get JPL update listing
     listing = get_updates()
@@ -602,11 +588,8 @@ def main():
     print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]
     cmd = "SELECT * FROM species " \
          "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
-    print cmd
 
-    db = initiate_sql_db()
     cursor = db.cursor()
-    cursor.execute("USE splat")
     cursor.execute(cmd)
     res = cursor.fetchall()
 
@@ -625,8 +608,3 @@ def main():
     else:  # Molecule already exists in Splatalogue database
         linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
         push_molecule(db, linelist, {}, metadata_final, update=1)
-
-
-if __name__ == '__main__':
-    pd.options.mode.chained_assignment = None
-    main()

@@ -11,13 +11,6 @@ import easygui as eg
 from QNFormat import *
 import sys
 
-__author__ = 'Nathan Seifert'
-
-
-# class CustomMolecule:  # With loaded CAT file from disk
-#     pass
-
-
 class CDMSMolecule:
 
     @staticmethod
@@ -270,7 +263,7 @@ class CDMSMolecule:
         self.meta_url = cdms_inp[4]
         self.ll_id = ll_id
         if custom:
-            self.cat = self.parse_cat(cat_url=open(custom_path, 'r'))
+            self.cat = self.parse_cat(cat_url=open(custom_path, 'r'), local=1)
         else:
             self.cat = self.parse_cat(cat_url=base_url+self.cat_url)
 
@@ -661,7 +654,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     print 'Finished with linelist push.'
 
 
-def main():
+def main(db):
 
     # ------------------
     # POPULATE CDMS LIST
@@ -670,79 +663,38 @@ def main():
     print 'Pulling updates from CDMS...'
     update_list = pull_updates()
     choice_list = [CDMSChoiceList([str(i)]+update_list[i]) for i in range(len(update_list))]
-    print 'CDMS Update Completed.'
 
-    # ---------
-    # SQL LOGIN
-    # ---------
-    print '\nLogging into MySQL database...'
+    # RUN PROCESS
 
-    def rd_pass():
-        return open('pass.pass').read()
+    cursor = db.cursor()
 
-    HOST = "127.0.0.1"
-    LOGIN = "nseifert"
-    PASS = rd_pass()
-    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3307)
-    db.autocommit(False)
-    print 'MySQL Login Successful.'
+    choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
+    custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
+    if custom_cat_file == 'Yes':
+        custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
+        cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True, custom_path=custom_path)
+    else:
+        cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=False)
 
-    # ------------
-    # GUI RUN LOOP
-    # ------------
-    programloopfinished = False
+    cmd = "SELECT * FROM species " \
+        "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
 
-    while not programloopfinished:
-        cursor = db.cursor()
-        cursor.execute("USE splat")
+    cursor.execute(cmd)
+    res = cursor.fetchall()
+    splatmolresults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+    splatmolresults += [SplatSpeciesResultList([len(splatmolresults),999999999,0,'NEW MOLECULE',
+                                                'X', '', '', '', '', '', ''])]
+    choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                           "Current choice is:\n %s" % choice, "Splatalogue Search Results",
+                           splatmolresults)
+    cursor.close()
 
-        up_or_down = eg.buttonbox(msg='Do you want to pull a molecule from CDMS or load custom cat file?',
-                                  title='Initialize', choices=['CDMS List', 'Custom File'])
+    if choice2[68] == 'X':
+        linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+        push_molecule(db, linelist, species_final, metadata_final, update=0)
 
-        if up_or_down == 'CDMS List':
-
-            choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
-            custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
-            if custom_cat_file == 'Yes':
-                custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
-                cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True, custom_path=custom_path)
-            else:
-                cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=False)
-
-            cmd = "SELECT * FROM species " \
-                "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
-
-            cursor.execute(cmd)
-            res = cursor.fetchall()
-            splatmolresults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-            splatmolresults += [SplatSpeciesResultList([len(splatmolresults),999999999,0,'NEW MOLECULE',
-                                                        'X', '', '', '', '', '', ''])]
-            choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                                   "Current choice is:\n %s" % choice, "Splatalogue Search Results",
-                                   splatmolresults)
-            cursor.close()
-
-            if choice2[68] == 'X':
-                linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-                push_molecule(db, linelist, species_final, metadata_final, update=0)
-
-            else:  # Molecule already exists in Splatalogue database
-                linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-                push_molecule(db, linelist, {}, metadata_final, update=1)
-
-        else:  # Open custom molecule
-            cat_path = eg.fileopenbox()
-
-        cont = eg.buttonbox(msg='Do you want to process another molecule?', title='More work???', choices=['Yes', 'No'])
-        if cont == 'Yes':
-            programloopfinished = False
-        else:
-            programloopfinished = True
-
-    db.close()
-
-
-if __name__ == "__main__":
-    main()
+    else:  # Molecule already exists in Splatalogue database
+        linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+        push_molecule(db, linelist, {}, metadata_final, update=1)
 
 

@@ -12,7 +12,6 @@ import MySQLdb as sqldb
 import easygui as eg
 from QNFormat import *
 
-
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
         obj = super(SplatSpeciesResultList, cls).__new__(cls, data)
@@ -154,6 +153,35 @@ class SLAIMMolecule:
         return pd.DataFrame(nplist)
 
     def get_metadata(self):
+
+        def inp_metadata(meta_inp_path):
+            mdata = {}
+
+            # Dictionaries to connect string values in JPL metadata to SQL columns
+            tags = {'TITLE': 'Name', 'CHEMICAL_NAME': 'chemical_name', 'SHORT_NAME': 's_name',
+                    'Q(300.0)': 'Q_300_0', 'Q(225.0)': 'Q_225_0', 'Q(150.0)': 'Q_150_0',
+                    'Q(75.00)': 'Q_75_00', 'Q(37.50)': 'Q_37_50', 'Q(18.75)': 'Q_18_75', 'Q(9.375)': 'Q_9_375',
+                    'A': 'A', 'B': 'B', 'C': 'C', 'MU_A': 'MU_A',  'MU_B': 'MU_B', 'MU_C': 'MU_C',
+                    'CONTRIBUTOR': 'Contributor', 'REF': 'REF'}
+
+            for line in open(meta_inp_path, 'r').read().split('\n'):
+                if line[0] == '!':
+                    continue
+
+                id, value = line.split(':')
+                try:
+                    mdata[tags[id]] = value.strip()
+                except KeyError:
+                    if id == 'STATE_ID_IDX':
+                        self.STATE_ID_IDX = value.strip()
+                    elif id == 'STATE_ID_VAL':
+                        self.STATE_ID_VAL = value.strip()
+                    else:
+                        continue
+
+            mdata['Date'] = time.strftime('%b %Y', time.gmtime())
+            return mdata
+
         metadata = {}
 
         # Dictionaries to connect string values in JPL metadata to SQL columns
@@ -165,17 +193,23 @@ class SLAIMMolecule:
         gui_order = ['Name', 'Contributor', 'Q(300.0)=', 'Q(225.0)=', 'Q(150.0)=', 'Q(75.00)=', 'Q(37.50)=', 'Q(18.75)=',
                      'Q(9.375)=', 'A', 'B', 'C', 'mu_A', '$\\mu_a$ =', '$\\mu_b$ =', '$\\mu_c$ =', 'Ref1']
 
-        meta_temp = eg.multenterbox('Enter metadata', 'Metadata entry', gui_order)
-        for i, entry in enumerate(gui_order):
-            metadata[entry] = meta_temp[i]
+        ent = eg.buttonbox(msg='Would you like to use a metadata input file or input it manually?',
+                           choices=['Input file', 'Manual entry'])
+        if ent == 'Input file':
+            meta_path = eg.fileopenbox(msg='Choose a metadata input file.', title='Metadata input.')
+            metadata = inp_metadata(meta_path)
+        else:
+            meta_temp = eg.multenterbox('Enter metadata', 'Metadata entry', gui_order)
+            for i, entry in enumerate(gui_order):
+                metadata[entry] = meta_temp[i]
 
         return metadata
 
-    def calc_derived_params(self, cat, metadata):
+    def calc_derived_params(self, cat):
         try:
-            Q_spinrot = float(metadata['Q_300_0'])
+            Q_spinrot = float(self.metadata['Q_300_0'])
         except ValueError:  # in case there's multiple numbers
-            Q_spinrot = float(metadata['Q_300_0'].split('(')[0])
+            Q_spinrot = float(self.metadata['Q_300_0'].split('(')[0])
         kt_300_cm1 = 208.50908
 
         cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) - np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
@@ -184,7 +218,7 @@ class SLAIMMolecule:
         cat['upper_state_energy'] = cat['lower_state_energy'] + cat['frequency']/29979.2458
         cat['upper_state_energy_K'] = cat['upper_state_energy']*1.4387863
         cat['error'] = cat['uncertainty']
-        cat['roundedfreq'] = np.round(cat['frequency'], 0)
+        cat['roundedfreq'] = cat['frequency'].apply(lambda x: np.round(x, 0))
         cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
 
         qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
@@ -216,24 +250,10 @@ class SLAIMMolecule:
         print 'Pulling metadata...'
         self.metadata = self.get_metadata()
         print 'Parsing cat file...'
-        self.cat = self.calc_derived_params(self.metadata, self.parse_cat(cat_file))
+        self.cat = self.calc_derived_params(self.parse_cat(cat_file))
 
         self.cat['ll_id'] = self.ll_id
         self.cat['`v3.0`'] = 3
-
-def initiate_sql_db():
-    def rd_pass():
-        return open('pass.pass').read()
-
-    print '\nLogging into MySQL database...'
-
-    HOST = "127.0.0.1"
-    LOGIN = "nseifert"
-    PASS = rd_pass()
-    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
-    db.autocommit(False)
-    print 'MySQL Login Successful.'
-    return db
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -392,7 +412,7 @@ def new_molecule(mol, sql_conn=None):
         metadata_to_push['Name'] = new_name
 
     tag_num = mol.id
-    tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
+    tag_prefix = ''.join(('0',)*(3-len(tag_num)))
     cmd = "SELECT SPLAT_ID FROM species " \
         "WHERE SPLAT_ID LIKE '%s%%'" % tag_prefix
     print 'Tag prefix, '+tag_prefix
@@ -536,7 +556,8 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
     print 'Finished with linelist push.'
 
-def main():
+def main(db):
+    pd.options.mode.chained_assignment = None
 
     # Get JPL update listing
     entryValues = eg.multenterbox('Please enter basic information for SLAIM entry', 'SLAIM entry', ['Molecular Formula', 'Mass'])
@@ -544,21 +565,20 @@ def main():
 
     cat_entry = SLAIMMolecule(listing_entry=entryValues, cat_file = open(cat_path, 'r'))
     tag_num = str(cat_entry.id)
-    if int(cat_entry.id) >= 10 and int(cat_entry.id) < 100:
+
+    if 10 <= int(cat_entry.id) < 100:
         splat_id_search = "0"+str(cat_entry.id)
     elif int(cat_entry.id) < 10:
         splat_id_search = "00"+str(cat_entry.id)
     else:
         splat_id_search = cat_entry.id
 
-    print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]
+    print tag_num, ''.join(('0',)*(3-len(tag_num)))
     cmd = "SELECT * FROM species " \
          "WHERE SPLAT_ID LIKE '%s%%'" % (splat_id_search,)
     print cmd
 
-    db = initiate_sql_db()
     cursor = db.cursor()
-    cursor.execute("USE splat")
     cursor.execute(cmd)
     res = cursor.fetchall()
 
@@ -577,8 +597,3 @@ def main():
     else:  # Molecule already exists in Splatalogue database
         linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
         push_molecule(db, linelist, {}, metadata_final, update=1)
-
-
-if __name__ == '__main__':
-    pd.options.mode.chained_assignment = None
-    main()
