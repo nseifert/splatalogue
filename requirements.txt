@@ -1,0 +1,8 @@
+# WITHOUT VERSION REQUIREMENTS
+MySQL-python
+beautifulsoup4
+numpy
+
+# WITH VERFSION REQUIREMENTS
+pandas >= 0.18.0
+easygui == 0.98.0
