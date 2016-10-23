@@ -560,40 +560,48 @@ def main(db):
     pd.options.mode.chained_assignment = None
 
     # Get JPL update listing
-    entryValues = eg.multenterbox('Please enter basic information for SLAIM entry', 'SLAIM entry', ['Molecular Formula', 'Mass'])
-    cat_path = eg.fileopenbox(msg='Please select input CAT file for SLAIM entry', title='CAT entry')
+    SLAIMLoop = True
 
-    cat_entry = SLAIMMolecule(listing_entry=entryValues, cat_file = open(cat_path, 'r'))
-    tag_num = str(cat_entry.id)
+    while SLAIMLoop:
 
-    if 10 <= int(cat_entry.id) < 100:
-        splat_id_search = "0"+str(cat_entry.id)
-    elif int(cat_entry.id) < 10:
-        splat_id_search = "00"+str(cat_entry.id)
-    else:
-        splat_id_search = cat_entry.id
+        entryValues = eg.multenterbox('Please enter basic information for SLAIM entry', 'SLAIM entry', ['Molecular Formula', 'Mass'])
+        cat_path = eg.fileopenbox(msg='Please select input CAT file for SLAIM entry', title='CAT entry')
 
-    print tag_num, ''.join(('0',)*(3-len(tag_num)))
-    cmd = "SELECT * FROM species " \
-         "WHERE SPLAT_ID LIKE '%s%%'" % (splat_id_search,)
-    print cmd
+        cat_entry = SLAIMMolecule(listing_entry=entryValues, cat_file = open(cat_path, 'r'))
+        tag_num = str(cat_entry.id)
 
-    cursor = db.cursor()
-    cursor.execute(cmd)
-    res = cursor.fetchall()
+        if 10 <= int(cat_entry.id) < 100:
+            splat_id_search = "0"+str(cat_entry.id)
+        elif int(cat_entry.id) < 10:
+            splat_id_search = "00"+str(cat_entry.id)
+        else:
+            splat_id_search = cat_entry.id
 
-    SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-    SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
-                                                'X','','','','','',''])]
-    choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                           "Current choice is:\n %s" %cat_entry.name, "Splatalogue Search Results",
-                           SplatMolResults)
-    cursor.close()
+        print tag_num, ''.join(('0',)*(3-len(tag_num)))
+        cmd = "SELECT * FROM species " \
+             "WHERE SPLAT_ID LIKE '%s%%'" % (splat_id_search,)
 
-    if choice2[68] == 'X':
-        linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-        push_molecule(db, linelist, species_final, metadata_final, update=0)
+        cursor = db.cursor()
+        cursor.execute(cmd)
+        res = cursor.fetchall()
 
-    else:  # Molecule already exists in Splatalogue database
-        linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-        push_molecule(db, linelist, {}, metadata_final, update=1)
+        SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+        SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
+                                                    'X','','','','','',''])]
+        choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                               "Current choice is:\n %s" %cat_entry.name, "Splatalogue Search Results",
+                               SplatMolResults)
+        cursor.close()
+
+        if choice2[68] == 'X':
+            linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+            push_molecule(db, linelist, species_final, metadata_final, update=0)
+
+        else:  # Molecule already exists in Splatalogue database
+            linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+            push_molecule(db, linelist, {}, metadata_final, update=1)
+
+        choice3 = eg.buttonbox(msg='Do you want to update another CDMS entry?', choices=['Yes', 'No'])
+
+        if choice3 == 'No':
+            SLAIMLoop = False

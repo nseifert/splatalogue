@@ -575,36 +575,44 @@ def main(db):
     listing = get_updates()
 
     choice_list = ["%s  %s  %s" % (time.strftime('%Y/%m/%d', x[0]), x[1], x[2]) for x in listing]
-    choice = eg.choicebox('Choose a Molecule to Update', 'Choice', choice_list)
+    JPLLoop = True
+    while JPLLoop:
 
-    choice_idx = 0
-    for idx, ent in enumerate(listing):
-        if int(choice.split()[1]) == ent[1]:
-            choice_idx = idx
+        choice = eg.choicebox('Choose a Molecule to Update', 'Choice', choice_list)
 
-    cat_entry = JPLMolecule(listing[choice_idx])
+        choice_idx = 0
+        for idx, ent in enumerate(listing):
+            if int(choice.split()[1]) == ent[1]:
+                choice_idx = idx
 
-    tag_num = str(cat_entry.id)
-    print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]
-    cmd = "SELECT * FROM species " \
-         "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
+        cat_entry = JPLMolecule(listing[choice_idx])
 
-    cursor = db.cursor()
-    cursor.execute(cmd)
-    res = cursor.fetchall()
+        tag_num = str(cat_entry.id)
+        print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]
+        cmd = "SELECT * FROM species " \
+             "WHERE SPLAT_ID LIKE '%s%%'" % (''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:len(tag_num)-3],)
 
-    SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-    SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
-                                                'X','','','','','',''])]
-    choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                           "Current choice is:\n %s" %choice, "Splatalogue Search Results",
-                           SplatMolResults)
-    cursor.close()
+        cursor = db.cursor()
+        cursor.execute(cmd)
+        res = cursor.fetchall()
 
-    if choice2[68] == 'X':
-        linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-        push_molecule(db, linelist, species_final, metadata_final, update=0)
+        SplatMolResults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+        SplatMolResults += [SplatSpeciesResultList([len(SplatMolResults),999999999,0,'NEW MOLECULE',
+                                                    'X','','','','','',''])]
+        choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                               "Current choice is:\n %s" %choice, "Splatalogue Search Results",
+                               SplatMolResults)
+        cursor.close()
 
-    else:  # Molecule already exists in Splatalogue database
-        linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-        push_molecule(db, linelist, {}, metadata_final, update=1)
+        if choice2[68] == 'X':
+            linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+            push_molecule(db, linelist, species_final, metadata_final, update=0)
+
+        else:  # Molecule already exists in Splatalogue database
+            linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+            push_molecule(db, linelist, {}, metadata_final, update=1)
+
+        choice3 = eg.buttonbox(msg='Do you want to update another JPL entry?', choices=['Yes', 'No'])
+
+        if choice3 == 'No':
+            JPLLoop = False

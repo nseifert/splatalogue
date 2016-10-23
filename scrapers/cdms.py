@@ -666,35 +666,40 @@ def main(db):
 
     # RUN PROCESS
 
-    cursor = db.cursor()
+    CDMSLoop = True
+    while CDMSLoop:
+        cursor = db.cursor()
 
-    choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
-    custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
-    if custom_cat_file == 'Yes':
-        custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
-        cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True, custom_path=custom_path)
-    else:
-        cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=False)
+        choice = eg.choicebox("Choose a Molecule to Update", "Choice", choice_list)
+        custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
+        if custom_cat_file == 'Yes':
+            custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
+            cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=True, custom_path=custom_path)
+        else:
+            cat_entry = CDMSMolecule(update_list[int(choice[0:5])], custom=False)
 
-    cmd = "SELECT * FROM species " \
-        "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
+        cmd = "SELECT * FROM species " \
+            "WHERE SPLAT_ID LIKE '%s%%'" % str(cat_entry.tag[:3])
 
-    cursor.execute(cmd)
-    res = cursor.fetchall()
-    splatmolresults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
-    splatmolresults += [SplatSpeciesResultList([len(splatmolresults),999999999,0,'NEW MOLECULE',
-                                                'X', '', '', '', '', '', ''])]
-    choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
-                           "Current choice is:\n %s" % choice, "Splatalogue Search Results",
-                           splatmolresults)
-    cursor.close()
+        cursor.execute(cmd)
+        res = cursor.fetchall()
+        splatmolresults = [SplatSpeciesResultList([i]+list(x)) for i, x in enumerate(res)]
+        splatmolresults += [SplatSpeciesResultList([len(splatmolresults),999999999,0,'NEW MOLECULE',
+                                                    'X', '', '', '', '', '', ''])]
+        choice2 = eg.choicebox("Pick molecule from Splatalogue to update, or create a new molecule.\n "
+                               "Current choice is:\n %s" % choice, "Splatalogue Search Results",
+                               splatmolresults)
+        cursor.close()
 
-    if choice2[68] == 'X':
-        linelist, species_final, metadata_final = new_molecule(cat_entry, db)
-        push_molecule(db, linelist, species_final, metadata_final, update=0)
+        if choice2[68] == 'X':
+            linelist, species_final, metadata_final = new_molecule(cat_entry, db)
+            push_molecule(db, linelist, species_final, metadata_final, update=0)
 
-    else:  # Molecule already exists in Splatalogue database
-        linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-        push_molecule(db, linelist, {}, metadata_final, update=1)
+        else:  # Molecule already exists in Splatalogue database
+            linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
+            push_molecule(db, linelist, {}, metadata_final, update=1)
 
+        choice3 = eg.buttonbox(msg='Do you want to update another CDMS entry?', choices=['Yes', 'No'])
 
+        if choice3 == 'No':
+            CDMSLoop = False
