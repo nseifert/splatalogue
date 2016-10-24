@@ -25,7 +25,7 @@ distribution, which can be found [here](https://www.continuum.io/downloads)
      - Pandas 0.18.0
      - Numpy (anything recent should be fine)
      - MySQL-python (anything recent should be fine)
-     - [Easygui 0.98.0](https://github.com/robertlugg/easygui/) (also available in pip)
+     - [Easygui 0.98.0](https://github.com/robertlugg/easygui/) (also available in pip and in this package)
      - BeautifulSoup 4
 
 
