@@ -170,7 +170,7 @@ def format_it(fmt_idx, qn_series):
                             else:
                                 fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
-                            if int(qn_series[2]) % 2 == 1 :
+                            if int(qn_series[2]) % 2 == 1:
                                 fmt = u'J = {:d} - {:d}, O = 2, <i>e</i>'.encode('utf-8')
                             else:
                                 fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
@@ -179,7 +179,7 @@ def format_it(fmt_idx, qn_series):
                     else:
 
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
-                            if int(qn_series[2]) % 2 == 1 :
+                            if int(qn_series[2]) % 2 == 1:
                                 fmt = u'J = {:d} - {:d}, O = 2, <i>e/f</i>'.encode('utf-8')
                             else:
                                 fmt = u'J = {:d} - {:d}, O = 1, <i>e/f</i>'.encode('utf-8')
