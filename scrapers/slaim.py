@@ -152,6 +152,45 @@ class SLAIMMolecule:
 
         return pd.DataFrame(nplist)
 
+    def parse_vizier(self, cat_url, vizier_options):
+
+        # Construct linelist result dictionary
+        fmt = vizier_options['fmt']
+        delimiter = vizier_options['delimiter']
+        linelist = {}
+        for key in fmt:
+            linelist[key] = []
+
+        atLineList = False
+
+        inp = open(cat_url, 'r')
+        for line in inp:
+
+            if not line.strip():  # Blank line
+                continue
+
+            if line[0] == "#":  # Comment
+                continue
+
+            if '--' in line:  # Last line before linelist starts
+                atLineList = True
+                continue
+
+            if atLineList:
+                try:
+                    for i, key in enumerate(fmt):
+                        if len(line.strip().split(delimiter)) != len(fmt):
+                            continue
+                        else:
+                            linelist[key].append(line.strip().split(delimiter)[i])
+                except IndexError:
+                    print "\"" + line + "\""
+                    raise
+
+        linelist['Freq'] = [float(f) for f in linelist['Freq']]  # Convert from str to float
+
+        return pd.DataFrame.from_dict(linelist)
+
     def get_metadata(self):
 
         def inp_metadata(meta_inp_path):
@@ -239,7 +278,7 @@ class SLAIMMolecule:
 
         return cat
 
-    def __init__(self, listing_entry, cat_file):
+    def __init__(self, listing_entry, cat_file, type='cat', vizier_options=None):
         self.date = datetime.datetime.now().strftime('%Y/%m/%d')
         self.id = str(listing_entry[1])
         self.name = listing_entry[0]
@@ -250,7 +289,10 @@ class SLAIMMolecule:
         print 'Pulling metadata...'
         self.metadata = self.get_metadata()
         print 'Parsing cat file...'
-        self.cat = self.calc_derived_params(self.parse_cat(cat_file))
+        if type == 'cat':
+            self.cat = self.calc_derived_params(self.parse_cat(cat_file))
+        elif type == 'vizier':
+            self.cat = self.calc_derived_params(self.parse_vizier(cat_file, vizier_options))
 
         self.cat['ll_id'] = self.ll_id
         self.cat['`v3.0`'] = 3
@@ -556,7 +598,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
     print 'Finished with linelist push.'
 
-def main(db):
+def main(db, type='cat'):
     pd.options.mode.chained_assignment = None
 
     # Get JPL update listing
@@ -567,7 +609,7 @@ def main(db):
         entryValues = eg.multenterbox('Please enter basic information for SLAIM entry', 'SLAIM entry', ['Molecular Formula', 'Mass'])
         cat_path = eg.fileopenbox(msg='Please select input CAT file for SLAIM entry', title='CAT entry')
 
-        cat_entry = SLAIMMolecule(listing_entry=entryValues, cat_file = open(cat_path, 'r'))
+        cat_entry = SLAIMMolecule(listing_entry=entryValues, cat_file=open(cat_path, 'r'), type='cat')
         tag_num = str(cat_entry.id)
 
         if 10 <= int(cat_entry.id) < 100:
