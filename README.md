@@ -113,7 +113,7 @@ Example:
 
 1. H2O
     - Toyama specifies QNs as J'Ka'Kc' - J''Ka''Kc'' as Uqn2, Uqn3, Uqn4 - Lqn2, Lqn3, Lqn4
-    - A QN style of J(Ka, Kc) - J(Ka, Kc) is equivalent to the QN style formatter: {}({}, {}) - {}({}, {})
+    - A QN style of J(Ka, Kc) - J(Ka, Kc) is equivalent to the QN style formatter: `{}({}, {}) - {}({}, {})`
     - The ordering for the above formatter would be inputted as: `up2, up3, up4, low2, low3, low4`
 2. NHD
     - Toyama specifies QNs as N'KaKc as N_KaKc, J', F1', F2', F as U/Lqn2, 3, 4, 5
