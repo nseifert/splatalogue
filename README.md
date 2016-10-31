@@ -120,5 +120,7 @@ Example:
     - Inputted QN style of `N(K<sub>a</sub>, K<sub>c) = {}({}, {}) - {}({}, {}), J = {} - {}, F<sub>1</sub> = {} - {}, F<sub>2</sub> = {} - {}, F = {} - {}`
     - Ordering of above formatted is inputted as: `up2, low2, up3, low3, up4, low4, up5, low5` (Note: ToyaMA QNs of the form N_IJ are automatically formatted to N(I, J) by the program)
 
-Metadata for Toyama can be inputted with the same metadata input files used for JPL/CDMS.
+Metadata for Toyama can be inputted with the same metadata input files used for JPL/CDMS. If you would like to provide the reference
+information in a plaintext file to be read by the program, please enter the path directly into the `Ref1` or `Ref2` entry boxes. The program will automatically
+read in the reference information from the specified file.
 
