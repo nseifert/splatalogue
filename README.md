@@ -92,3 +92,33 @@ and make sure to add to `fmt_dict` a new entry in the tuple keyed as 203:
 `203: (... , ... , {'fmt':'', 'series':[1], 'tag': 'New example conditional scheme for tag 203.'})`
 
 The QNFormat routine will then format the quantum numbers appropriately.
+
+### Toyama notes
+
+Submitting data from the Toyama Microwave Atlas is slightly different. The Toyama routine requires
+the raw HTML file of the table output from a search on ToyaMA. To facilitate this, just do a single
+molecule search from 0 to an arbitrarily high frequency on the target molecule of choice, right click the results
+file in your favorite browser, and save to HTML. The ToyaMA routine will first ask you to supply this HTML file.
+
+At the moment, the ToyaMA routine only submits entries as a single rovibrational state of the given molecule,
+so all vibrational states will be submitted into a single species.
+
+Entry of quantum number style formatting is also slightly different. After inputting the HTML file  for the table,
+the program will ask you to input two sequences corresponding to the string format style of the quantum numbers,
+as well as the quantum number ORDERING you desire. Spaces for individual quantum numbers in the style formatter are
+written as `{}`. Ordering is represented by a comma-delimited sequence of strings of the form "upN" or "lowN" where N is the integer corresponding to the representative upper state / lower state quantum
+number in the ToyaMA entry listing, respectively.
+
+Example:
+
+1. H2O
+    - Toyama specifies QNs as J'Ka'Kc' - J''Ka''Kc'' as Uqn2, Uqn3, Uqn4 - Lqn2, Lqn3, Lqn4
+    - A QN style of J(Ka, Kc) - J(Ka, Kc) is equivalent to the QN style formatter: {}({}, {}) - {}({}, {})
+    - The ordering for the above formatter would be inputted as: `up2, up3, up4, low2, low3, low4`
+2. NHD
+    - Toyama specifies QNs as N'KaKc as N_KaKc, J', F1', F2', F as U/Lqn2, 3, 4, 5
+    - Inputted QN style of `N(K<sub>a</sub>, K<sub>c) = {}({}, {}) - {}({}, {}), J = {} - {}, F<sub>1</sub> = {} - {}, F<sub>2</sub> = {} - {}, F = {} - {}`
+    - Ordering of above formatted is inputted as: `up2, low2, up3, low3, up4, low4, up5, low5` (Note: ToyaMA QNs of the form N_IJ are automatically formatted to N(I, J) by the program)
+
+Metadata for Toyama can be inputted with the same metadata input files used for JPL/CDMS.
+
