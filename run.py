@@ -2,6 +2,7 @@ from easygui import *
 import scrapers.jpl as jpl
 import scrapers.cdms as cdms
 import scrapers.slaim as slaim
+import scrapers.toyama as toyama
 import MySQLdb as sqldb
 import sys
 
@@ -70,6 +71,7 @@ if __name__ == '__main__':
         while ActivityLoop:
 
             activity_choices = ['Add or update molecule via JPL. (Stable)', 'Add or update molecule via CDMS. (Stable)',
+                                'Add or update molecule via Toyama (Works pretty well).',
                                 'Add or update molecule with custom CAT file into SLAIM database. (Not 100% bug-free)',
                                 'Append observational information to transitions in database. (Not yet implemented)', 'Quit.']
             the_choice = choicebox(msg='Please choose an activity.', title='Main Screen', choices=activity_choices)
@@ -81,17 +83,15 @@ if __name__ == '__main__':
             if choice_idx == 0:
                 # DO JPL shit
                 jpl.main(db)
-
             elif choice_idx == 1:
                 # DO CDMS shit
                 cdms.main(db)
-                pass
-
             elif choice_idx == 2:
+                toyama.main(db)
+            elif choice_idx == 3:
                 slaim.main(db)
                 pass
-
-            elif choice_idx == 3:
+            elif choice_idx == 4:
                 print 'Sorry, this is not yet implemented!'
                 pass
 

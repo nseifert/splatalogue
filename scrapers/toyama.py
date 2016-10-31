@@ -8,6 +8,7 @@ import MySQLdb as sqldb
 import easygui as eg
 from os.path import exists
 
+
 def format_qns(df, fmt):
     # Resolve indicies
     fmt_idx = fmt['index']
@@ -112,6 +113,7 @@ def parse_html(inp):
     # Get rid of any columns that are all NaN entries
     return data.dropna(axis=1, how='all')
 
+
 def inp_metadata(meta_inp_path):
     mdata = {}
 
@@ -148,6 +150,7 @@ def inp_metadata(meta_inp_path):
         mdata[key] = fill_ins[key]
 
     return mdata
+
 
 def prep_data(df, opt):
 
@@ -191,20 +194,7 @@ def prep_data(df, opt):
     return df
 
 
-def push_data(df, meta, new_species=False, species_data=None):
-    def initiate_sql_db():
-        def rd_pass():
-            return open('pass.pass').read()
-
-        print '\nLogging into MySQL database...'
-
-        HOST = "127.0.0.1"
-        LOGIN = "nseifert"
-        PASS = rd_pass()
-        db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3307)
-        db.autocommit(False)
-        print 'MySQL Login Successful.'
-        return db
+def push_data(df, meta, db, new_species=False, species_data=None):
 
     def placeholders(inp_dict, err=False):
         if not err:
@@ -221,13 +211,13 @@ def push_data(df, meta, new_species=False, species_data=None):
         else:
             return "INSERT INTO %s ( %s ) VALUES ( %s )" % (table, columns(inp_dict), placeholders(inp_dict, err=True))
 
-    db = initiate_sql_db()
 
     # Create new species entry, if needed
-    print 'Creating new species entry...'
+
     cursor = db.cursor()
     cursor.execute("USE splat")
     if new_species:
+        print 'Creating new species entry...'
         if species_data:
             cursor.execute(query("species", species_data), species_data.values())
     print 'Created new species entry.'
@@ -257,6 +247,7 @@ def push_data(df, meta, new_species=False, species_data=None):
     cursor.close()
 
 def main(db):
+
     pd.options.mode.chained_assignment = None # default='warn'
 
     ToyamaLoop = True
@@ -354,8 +345,13 @@ def main(db):
 
         if NewOrAppend == 'New':
             data = format_qns(parse_html(open(opt['path'],'r')), fmt={'style': opt['qn_style'], 'index': opt['qn_index']})
-            push_data(prep_data(data, opt), meta, new_species=True, species_data=species)
+            push_data(df=prep_data(data, opt), meta=meta, db=db, new_species=True, species_data=species)
 
         else:
             data = format_qns(parse_html(open(opt['path'],'r')), fmt={'style': opt['qn_style'], 'index': opt['qn_index']})
-            push_data(prep_data(data, opt), meta, new_species=False)
+            push_data(df=prep_data(data, opt), meta=meta, db=db, new_species=False)
+
+        RestartChoice = eg.buttonbox(msg='Would you like to add another Toyama entry?', title='Another perhaps?', choices=['Yes', 'No'])
+
+        if RestartChoice == 'No':
+            break
