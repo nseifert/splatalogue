@@ -6,7 +6,8 @@ tools are featured here, the main script -- run.py -- features a GUI with helper
 
 ### Installation
 
-*THIS PACKAGE REQUIRES LINUX. DOES NOT WORK ON WINDOWS SINCE MYSQL INTERFACING IS WORTHLESS IN WINDOWS.*
+*THIS PACKAGE REQUIRES LINUX. DOES NOT WORK ON WINDOWS SINCE I NEVER WANTED TO DEAL WITH MYSQL HANDLING IN WINDOWS. IF YOU CAN
+GET MYSQLDB TO WORK IN WINDOWS, THIS CODE WILL PROBABLY RUN.*
 
 These tools require, at minimum, **Python 2.7.x with pip installed**. If you're on Python 2.7.9 or greater, then you're in
 luck -- pip is already included! If pip is not installed in your python distribution, you can find download instructions [at this link](https://pip.pypa.io/en/latest/installing/)
