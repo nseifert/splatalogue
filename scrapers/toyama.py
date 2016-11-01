@@ -153,7 +153,7 @@ def inp_metadata(meta_inp_path):
     return mdata
 
 
-def prep_data(df, opt):
+def prep_data(df, opt, meta):
 
     rename_dict = {'Frequency': 'measfreq', 'Exp uncert': 'measerrfreq',
                        'Source': 'labref_Lovas_NIST', 'Enenrgy': 'lower_state_energy',
@@ -186,10 +186,10 @@ def prep_data(df, opt):
     df['`v3.0`'] = 3
     df['species_id'] = meta['species_id']
 
-    if opt['ism_molecule']:
-        df['Lovas_NRAO'] = 1
-    else:
-        df['Lovas_NRAO'] = 0
+    # if opt['ism_molecule']:
+    #     df['Lovas_NRAO'] = 1
+    # else:
+    #     df['Lovas_NRAO'] = 0
 
 
     return df
@@ -325,7 +325,7 @@ def main(db):
             elif MetadataInpChoice == 'Manual Entry':
                 meta = {}
 
-                MetaFields = ['Name', 'Contributor', 'Ref1', 'Ref2', 'A', 'B', 'C', 'MU_A', 'MU_B', 'MU_C', 'Q(300.0)', 'Q(225.0)', 'Q(150.0)', 'Q(75.00)', 'Q(37.50)', 'Q(18.75)', 'Q(9.375)']
+                MetaFields = ['Name', 'Contributor', 'Ref1', 'Ref2', 'A', 'B', 'C', 'MU_A', 'MU_B', 'MU_C', 'Q_300_0', 'Q_225_0', 'Q_150_0', 'Q_75_00', 'Q_37_50', 'Q_18_75', 'Q_9_375']
                 MetaChoices = eg.multenterbox(msg='Please enter basic metadata information.', title='Metadata entry', fields=MetaFields)
                 for i, val in enumerate(MetaFields):
                     # Check if meta entry is a text file -- for Ref only
@@ -348,11 +348,11 @@ def main(db):
 
         if NewOrAppend == 'New':
             data = format_qns(parse_html(open(opt['path'],'r')), fmt={'style': opt['qn_style'], 'index': opt['qn_index']})
-            push_data(df=prep_data(data, opt), meta=meta, db=db, new_species=True, species_data=species)
+            push_data(df=prep_data(data, opt, meta), meta=meta, db=db, new_species=True, species_data=species)
 
         else:
             data = format_qns(parse_html(open(opt['path'],'r')), fmt={'style': opt['qn_style'], 'index': opt['qn_index']})
-            push_data(df=prep_data(data, opt), meta=meta, db=db, new_species=False)
+            push_data(df=prep_data(data, opt, meta), meta=meta, db=db, new_species=False)
 
         RestartChoice = eg.buttonbox(msg='Would you like to add another Toyama entry?', title='Another perhaps?', choices=['Yes', 'No'])
 
