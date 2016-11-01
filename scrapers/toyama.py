@@ -33,7 +33,7 @@ def format_qns(df, fmt):
             except IndexError:
                 print 'Your QN# input is malformed in some way. It failed on: %s ' %val
                 raise
-    df['resolved_QNs'] = df[order].apply(lambda x: fmt_style.format(*x), axis=1)
+    df['resolved_QNs'] = pd.to_numeric(df[order], errors='coerce').apply(lambda x: fmt_style.format(*x), axis=1)
 
     if 'Symmetry' in df.columns.values:
         df['resolved_QNs'] = df['resolved_QNs'] + ' ' + df['Symmetry']

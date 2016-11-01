@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
             activity_choices = ['Add or update molecule via JPL. (Stable)', 'Add or update molecule via CDMS. (Stable)',
                                 'Add or update molecule via Toyama (Works pretty well).',
-                                'Add or update molecule with custom CAT file into SLAIM database. (Not 100% bug-free)',
+                                'Add or update molecule with custom CAT file into SLAIM database. (Not 100pct bug-free)',
                                 'Append observational information to transitions in database. (Not yet implemented)', 'Quit.']
             the_choice = choicebox(msg='Please choose an activity.', title='Main Screen', choices=activity_choices)
             if not the_choice:
