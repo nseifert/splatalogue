@@ -12,7 +12,7 @@ def initiate_sql_db(user_dict):
 
 if __name__ == "__main__":
 
-	db = initiate_sql_db({'ip': '127.0.0.1', 'user': 'nseifert', 'pass': 'SkullflowerKoinonia127c!', 'port': 3307})
+	db = initiate_sql_db({'ip': '127.0.0.1', 'user': 'nseifert', 'pass': 'lolz', 'port': 3307})
 
 	cur = db.cursor()
 	cur.execute("USE splat")
