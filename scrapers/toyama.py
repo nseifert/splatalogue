@@ -131,7 +131,8 @@ def inp_metadata(meta_inp_path):
         if line[0] == '!':
             continue
 
-        id, value = line.split(':')
+        id = line.split(':')[0]
+        value = ':'.join(line.split(':')[1:])
         try:
             mdata[tags[id]] = value.strip()
         except KeyError:
