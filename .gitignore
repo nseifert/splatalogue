@@ -1,4 +1,4 @@
 # Password files #
 *.pass
-
+*.pyc
 .idea/
