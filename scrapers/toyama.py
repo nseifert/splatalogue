@@ -325,7 +325,7 @@ def main(db):
             elif MetadataInpChoice == 'Manual Entry':
                 meta = {}
 
-                MetaFields = ['Name', 'Contributor', 'Ref1', 'Ref2', 'A', 'B', 'C', 'MU_A', 'MU_B', 'MU_C']
+                MetaFields = ['Name', 'Contributor', 'Ref1', 'Ref2', 'A', 'B', 'C', 'MU_A', 'MU_B', 'MU_C', 'Q(300.0)', 'Q(225.0)', 'Q(150.0)', 'Q(75.00)', 'Q(37.50)', 'Q(18.75)', 'Q(9.375)']
                 MetaChoices = eg.multenterbox(msg='Please enter basic metadata information.', title='Metadata entry', fields=MetaFields)
                 for i, val in enumerate(MetaFields):
                     # Check if meta entry is a text file -- for Ref only
