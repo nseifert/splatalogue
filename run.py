@@ -10,9 +10,15 @@ import sys
 def read_sql_inp(path):
     inp_data = {}
     for line in open(path,'r').read().split('\n'):
-        if not line.strip():
-            continue
-        inp_data[line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+        try:
+	        if not line.strip():
+	            continue
+	        if line.strip()[0] == "!":
+	        	continue
+	        inp_data[line.split(':')[0].strip().lower()] = line.split(':')[1].strip()
+        except:
+        	print 'There is an error in your SQL input file. Line contains: %s' %line
+        	raise
 
     return inp_data
 
@@ -75,7 +81,9 @@ if __name__ == '__main__':
                                 'Add or update molecule with custom CAT file into SLAIM database. (Not 100% bug-free)',
                                 'Append observational information to transitions in database. (Not yet implemented)', 'Quit.']
             the_choice = choicebox(msg='Please choose an activity.', title='Main Screen', choices=activity_choices)
-
+            if not the_choice:
+            	break
+         
             choice_idx = activity_choices.index(the_choice)
             if choice_idx == len(activity_choices) - 1:
                 choice_idx = -1

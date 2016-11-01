@@ -258,6 +258,8 @@ def main(db):
         opt = {}
 
         opt['path'] = eg.fileopenbox(msg='Please select input HTML table for Toyama entry', title='Toyama table entry')
+        if not opt['path']:
+            break
 
         qn_style_settings = {
             'msg': 'Please specify your quantum number style and ordering. \n'
