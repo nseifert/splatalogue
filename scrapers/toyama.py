@@ -340,8 +340,12 @@ def main(db):
 
             if isinstance(species, dict):
                 meta['species_id'] = species['species_id']
+
             else:
                 meta['species_id'] = species
+                meta['LineList'] = 16
+                meta['v3_0'] = 3
+                meta['Date'] = time.strftime('%b %Y', time.gmtime())
 
         else:
             break
