@@ -13,6 +13,7 @@ def format_qns(df, fmt):
     # Resolve indicies
     fmt_idx = fmt['index']
     fmt_style = fmt['style']
+    print fmt_idx, fmt_style
 
     if len(fmt_idx) % 2 == 1 or len(fmt_idx) == 0:
 
@@ -25,7 +26,6 @@ def format_qns(df, fmt):
         for val in fmt_idx:
 
             try:
-
                 if 'up' in val:
                     order.append('Uqn%s' %[int(s) for s in val if s.isdigit()][0])
                 elif 'low' in val:
@@ -33,7 +33,8 @@ def format_qns(df, fmt):
             except IndexError:
                 print 'Your QN# input is malformed in some way. It failed on: %s ' %val
                 raise
-    df['resolved_QNs'] = pd.to_numeric(df[order], errors='coerce').apply(lambda x: fmt_style.format(*x), axis=1)
+    print df[order]
+    df['resolved_QNs'] = df[order].apply(pd.to_numeric, args=('coerce','integer')).apply(lambda x: fmt_style.format(*x), axis=1)
 
     if 'Symmetry' in df.columns.values:
         df['resolved_QNs'] = df['resolved_QNs'] + ' ' + df['Symmetry']
@@ -64,7 +65,18 @@ def format_qns(df, fmt):
 
         return out
 
+    # Get rid of any NaNs
+    def drop_nans_hyperfine(buffer):
+        if 'nan' in buffer:
+            # If hyperfine, look for F = first'
+            buffer = buffer.split(', F =')[0]
+            buffer.replace('nan', '')
+        return buffer
+
+
     df['resolved_QNs'] = df['resolved_QNs'].apply(fix_QNs)
+    df['resolved_QNs'] = df['resolved_QNs'].apply(drop_nans_hyperfine)
+    df['resolved_QNs'] = df['resolved_QNs'].apply(lambda x: x.replace('.0',''))
     return df
 
 
@@ -244,6 +256,10 @@ def push_data(df, meta, db, new_species=False, species_data=None):
         raise
     else:
         print 'Linelist successfully pushed.'
+
+    fix_float_qns = 'UPDATE main set resolved_QNs = REPLACE(resolved_QNs, \'.0\', \'\')' \
+                    ' WHERE ll_id=16 AND species_id=%s' % meta['species_id']
+    cursor.execute(fix_float_qns)
 
     cursor.close()
 

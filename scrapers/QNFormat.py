@@ -8,7 +8,7 @@ class MissingQNFormatException(Exception):
     pass
 
 
-def format_it(fmt_idx, qn_series):
+def format_it(fmt_idx, qn_series, choice_idx=None):
     customChoice = None
 
     fmt_dict = {202: ({'fmt': '{:d}({:d}) - {:d}({:d})','series': [0, 1, 2, 3], 'tag':'Symmetric top'},
@@ -56,8 +56,11 @@ def format_it(fmt_idx, qn_series):
 
                 1404: ({'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), m = {:d}', 'series': [0, 1, 2, 4, 5, 6, 3], 'tag': 'Asymmetric top with specified upper-state vibrational QN'},
                        {'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), v = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with generic vibrational transition QNs'},
-                       {'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series': [0, 1, 2, 4, 5, 6], 'tag': 'Generic asymmetric top, no vibrational labelling.',
-                        'fmt':'', 'series':[0], 'tag': 'Monodeuterated methanol, CH2DOH'},
+                       {'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series': [0, 1, 2, 4, 5, 6], 'tag': 'Generic asymmetric top, no vibrational labelling.'},
+                       {'fmt':'', 'series':[0], 'tag': 'Monodeuterated methanol, CH2DOH'},
+                       {'fmt':'', 'series':[1], 'tag': 'Generic asymmetric top with methyl-like internal rotation'},
+                       {'fmt':'', 'series':[2], 'tag': 'n-propyl cyanide, gauche/anti combined fit'},
+                       {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'}
                        ),
 
                 224: ({'fmt': 'N = {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic'},
@@ -107,11 +110,13 @@ def format_it(fmt_idx, qn_series):
             order = [0, 1]
 
     else:
-        if len(fmt_dict[fmt_idx]) > 1 :
-            choices = ['%s' % x['tag'] for x in fmt_dict[fmt_idx]]
-            ch = eg.choicebox(msg='Choose the desired QN format.', choices=choices)
+        if len(fmt_dict[fmt_idx]) > 1:
+            if choice_idx is None:
+                choices = ['%s' % x['tag'] for x in fmt_dict[fmt_idx]]
+                ch = eg.choicebox(msg='Choose the desired QN format.', choices=choices)
+                choice_idx = choices.index(ch)
 
-            fmt_style = fmt_dict[fmt_idx][choices.index(ch)]
+            fmt_style = fmt_dict[fmt_idx][choice_idx]
 
             if not fmt_style['fmt'] and len(fmt_style['series']) == 1:
                 customChoice = fmt_style['series'][0]
@@ -142,6 +147,32 @@ def format_it(fmt_idx, qn_series):
                         fmt += ", e<sub>1</sub>"
                     elif int(qn_series[3]) == 2:
                         fmt += ", o<sub>1</sub>"
+                    order = [0, 1, 2, 4, 5, 6]
+
+                if customChoice == 1:
+                    fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d})'
+                    if int(qn_series[3]) == 0:
+                        fmt += ", A"
+                    elif int(qn_series[3]) == 1:
+                        fmt += ", E"
+                    order = [0, 1, 2, 4, 5, 6]
+
+                if customChoice == 2:
+                    fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d})'
+                    if int(qn_series[3]) == 0:
+                        fmt += ", anti"
+                    elif int(qn_series[3]) == 1:
+                        fmt += ", gauche"
+                    order = [0, 1, 2, 4, 5, 6]
+
+                if customChoice == 3:
+                    fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d})'
+                    if int(qn_series[3]) == 0:
+                        fmt += ", g<sup>+</sup>"
+                    elif int(qn_series[3]) == 1:
+                        fmt += ", g<sup>-</sup>"
+                    else:
+                        fmt += ", anti"
                     order = [0, 1, 2, 4, 5, 6]
 
             elif fmt_idx == 203:
@@ -260,4 +291,7 @@ def format_it(fmt_idx, qn_series):
 
                     order = [0, 3, 1, 4]
 
-    return fmt.format(*[int(qn_series[x]) for x in order])
+    if choice_idx:
+        return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
+    else:
+        return fmt.format(*[int(qn_series[x]) for x in order]), ''

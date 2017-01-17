@@ -376,8 +376,11 @@ def process_update(mol, entry=None, sql_conn=None):
     fmtted_QNs = []
     print 'Preparing linelist...'
     # Iterate through rows and add formatted QN
+    choice_idx = None
     for idx, row in mol.cat.iterrows():
-        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
+        format, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
+                                       choice_idx=choice_idx)
+        fmtted_qns.append(format)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
 
@@ -469,8 +472,11 @@ def new_molecule(mol, sql_conn=None):
     fmtted_QNs = []
 
     # Iterate through rows and add formatted QN
+    choice_idx = None
     for idx, row in mol.cat.iterrows():
-        fmtted_QNs.append(format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)'))))
+        format, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
+                                       choice_idx=choice_idx)
+        fmtted_qns.append(format)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
 
