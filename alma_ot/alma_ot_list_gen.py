@@ -22,8 +22,8 @@ if __name__ == '__main__':
 
 
 
-    ALMA_BANDS = OrderedDict({'BAND4': (125000.0, 163000.0), 'BAND5': (163000.0, 211000.0), 'BAND8': (385000.0, 500000.0)})
-    #ALMA_BANDS = OrderedDict({'BAND5': (163000.0, 211000.0)})
+    #ALMA_BANDS = OrderedDict({'BAND4': (125000.0, 163000.0), 'BAND5': (163000.0, 211000.0), 'BAND8': (385000.0, 500000.0)})
+    ALMA_BANDS = OrderedDict({'BAND5': (163000.0, 211000.0)})
     OUTPUT_DELIMITER = ':'
 
     # First pull molecules
@@ -75,7 +75,6 @@ if __name__ == '__main__':
     import numpy as np
     final['line_id'] = final['line_id'].astype(np.int)
     final['resolved_QNs'] = final['resolved_QNs'].str.replace("\n", ' ')
-    final.loc[final['Lovas Int'].isnull(), 'Lovas Int'] = 'NULL'
-
-    final[output_order].to_csv('AlmaOTBands4_5_8_ALL_ISM.dat', sep=':', index=False)
+    final.fillna(value='NULL', inplace=True)
+    final[output_order].to_csv('AlmaOTBand5_ALL_ISM.dat', sep=':', index=False)
 
