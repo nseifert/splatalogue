@@ -75,6 +75,7 @@ if __name__ == '__main__':
     import numpy as np
     final['line_id'] = final['line_id'].astype(np.int)
     final['resolved_QNs'] = final['resolved_QNs'].str.replace("\n", ' ')
+    final.loc[final['Lovas Int'].isnull(), 'Lovas Int'] = 'NULL'
 
     final[output_order].to_csv('AlmaOTBands4_5_8_ALL_ISM.dat', sep=':', index=False)
 
