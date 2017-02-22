@@ -48,6 +48,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                       'tag': 'Linear molecule with non-singlet electronic spin and hyperfine nuclei'},
                       ),
                 1303: ({'fmt': '', 'series': [0], 'tag': 'Lambda doubled symmetric top, e.g. CH3CN v8=1'},
+                       {'fmt': '', 'series': [1], 'tag': 'Methylamine (JPL)'},
+                       {'fmt': '', 'series': [2], 'tag': 'Ethylene v5-v4 (CDMS)'}
                        ),
 
                 1304: ({'fmt':'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[1, 4, 3, 7],
@@ -290,6 +292,58 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                             fmt = u'J = {:d} - {:d}, <sup>l</sup>K = -({:d}) - -({:d})'
 
                     order = [0, 3, 1, 4]
+
+                elif customChoice == 1:
+
+                    if int(qn_series[2]) == 0:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, A<sub>1</sub>'
+                    elif int(qn_series[2]) == 1:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, A<sub>2</sub>'
+                    elif int(qn_series[2]) == 2:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, B<sub>1</sub>'
+                    elif int(qn_series[2]) == 3:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, B<sub>2</sub>'
+                    elif int(qn_series[2]) == 4:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, E<sub>1</sub>, l = 1'
+                    elif int(qn_series[2]) == 5:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, E<sub>1</sub>, l = -1'
+                    elif int(qn_series[2]) == 6:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, E<sub>2</sub>, l = 1'
+                    elif int(qn_series[2]) == 7:
+                            fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, E<sub>2</sub>, l = -1'
+
+                    if int(qn_series[5]) != int(qn_series[2]):
+                        if int(qn_series[5]) == 0:
+                            fmt += ' -> A<sub>1</sub>'
+                        if int(qn_series[5]) == 1:
+                            fmt += ' -> A<sub>2</sub>'
+                        if int(qn_series[5]) == 2:
+                            fmt += ' -> B<sub>1</sub>'
+                        if int(qn_series[5]) == 3:
+                            fmt += ' -> B<sub>2</sub>'
+                        if int(qn_series[5]) == 4:
+                            fmt += ' -> E<sub>1</sub>, l = 1'
+                        if int(qn_series[5]) == 5:
+                            fmt += ' -> E<sub>1</sub>, l = -1'
+                        if int(qn_series[5]) == 6:
+                            fmt += ' -> E<sub>2</sub>, l = 1'
+                        if int(qn_series[5]) == 7:
+                            fmt += ' -> E<sub>2</sub>, l = 2'
+
+                    order = [0, 3, 1, 4]
+
+                elif customChoice == 2:
+                    if int(qn_series[2]) == 1:
+                        fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, v<sub>5 = 1'
+                    elif int(qn_series[2]) == 2:
+                        fmt = u'J = {:d} - {:d}, K = {:d} - {:d}, v<sub>4 = 1'
+                    if int(qn_series[5]) != int(qn_series[2]):
+                        if int(qn_series[5] == 1):
+                            fmt += ' -> v<sub>5</sub> = 1'
+                        else:
+                            fmt += ' -> v<sub>4</sub> = 1'
+                    order = [0, 3, 1, 4]
+
 
     if choice_idx:
         return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx

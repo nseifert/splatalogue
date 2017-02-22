@@ -194,7 +194,9 @@ class JPLMolecule:
             Q_spinrot = float(metadata['Q_300_0'].split('(')[0])
         kt_300_cm1 = 208.50908
 
-        cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) - np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
+        cat['sijmu2'] = 2.40251E4 * 10**(cat['intintensity']) * Q_spinrot * (1./cat['frequency']) * \
+                        (1./(np.exp(-1.0*cat['lower_state_energy']/kt_300_cm1) -
+                             np.exp(-1.0*(cat['frequency']/29979.2458+cat['lower_state_energy'])/kt_300_cm1)))
         cat['aij'] = np.log10(1.16395E-20*cat['frequency']**3*cat['sijmu2']/cat['upper_state_degeneracy'])
         cat['lower_state_energy_K'] = cat['lower_state_energy']*1.4387863
         cat['upper_state_energy'] = cat['lower_state_energy'] + cat['frequency']/29979.2458
@@ -242,7 +244,7 @@ class JPLMolecule:
         print 'Pulling metadata...'
         self.metadata = self.get_metadata(self.meta_url)
         print 'Parsing cat file...'
-        self.cat = self.parse_cat(self.cat_url)
+        self.cat = self.calc_derived_params(self.parse_cat(self.cat_url), self.metadata)
 
 
         self.cat['ll_id'] = self.ll_id
@@ -380,9 +382,12 @@ def process_update(mol, entry=None, sql_conn=None):
     for idx, row in mol.cat.iterrows():
         format, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
                                        choice_idx=choice_idx)
-        fmtted_qns.append(format)
+        fmtted_QNs.append(format)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+
+    if metadata_to_push['ism'] == 1:
+        mol.cat['Lovas_NRAO'] = 1
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")
@@ -476,7 +481,7 @@ def new_molecule(mol, sql_conn=None):
     for idx, row in mol.cat.iterrows():
         format, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
                                        choice_idx=choice_idx)
-        fmtted_qns.append(format)
+        fmtted_QNs.append(format)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
 
@@ -521,8 +526,9 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
                        (spec_dict['created'], meta_dict['species_id']))
         cursor.execute('UPDATE species SET nlines=%s WHERE species_id=%s',
                        (spec_dict['nlines'], meta_dict['species_id']))
+        print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
+        cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
         cursor.close()
-
     else:
         cursor = db.cursor()
         print 'Creating new entry in species table...'
