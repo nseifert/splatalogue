@@ -461,7 +461,8 @@ def process_update(mol, entry=None, sql_conn=None):
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
 
     if metadata_to_push['ism'] == 1:
-        mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
+        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.ones(len(mol.cat.index))))
+        # mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
 
     # Prep linelist for submission to
     sql_cur.execute("SHOW columns FROM main")

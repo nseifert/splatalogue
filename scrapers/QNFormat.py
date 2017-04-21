@@ -7,6 +7,13 @@ import easygui as eg
 class MissingQNFormatException(Exception):
     pass
 
+def make_frac(idx, qn, shift=-1):
+    temp = qn.values
+    for val in idx:
+            temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+    return temp
+
+
 
 def format_it(fmt_idx, qn_series, choice_idx=None):
     customChoice = None
@@ -103,6 +110,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
     try:
         temp = fmt_dict[fmt_idx]
+        HasFractions = False
     except KeyError:
         if qn_series.shape[0] != 2:
             raise MissingQNFormatException("QN format index %i is not recognized by the program. "
@@ -136,7 +144,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 fmt = fmt_style['fmt']
                 order = fmt_style['series']
 
-        if customChoice:
+        if customChoice is not None:
 
             if fmt_idx == 1404:
 
@@ -184,95 +192,106 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                     if int(qn_series[1]) < 0 and int(qn_series[4]) > 0:
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>f</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, O = 3, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>f</i>'.encode('utf-8')
 
                     elif int(qn_series[1]) > 0 and int(qn_series[4]) < 0:
 
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1:
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, O = 3, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>e</i>'.encode('utf-8')
                     else:
 
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1:
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e/f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e/f</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, O = 2, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e/f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, O = 1, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e/f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, O = 3, <i>e/f</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>e/f</i>'.encode('utf-8')
                     order = [2, 5]
 
             elif fmt_idx == 213:  # For Hund's case (b) with Lambda doubling
 
                 if customChoice == 0:
 
+                    HasFractions = True
+                    shift = -1
+
                     if qn_series[1] == '1':
                         if int(qn_series[2])-int(qn_series[0]) == 1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega;= 3/2, <i>e</i>'.encode('utf-8')
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega;= 1/2, <i>e</i>'.encode('utf-8')
                     else:
                         if int(qn_series[2])-int(qn_series[0]) == 1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega;= 3/2, <i>f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega;= 1/2, <i>f</i>'.encode('utf-8')
                     order = [0, 3]
 
             elif fmt_idx == 234 or fmt_idx == 224:
 
                 if customChoice == 0:
 
+                    # Rewrite qn_series to have fractional strings
+                    HasFractions = True
+                    shift = -1
+                    
                     if int(qn_series[2]) - int(qn_series[0]) == 1:
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, F-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 3/2, F = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, F-1/2 = {:d}<sup>-</sup> - {:d}<sup>+</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 3/2, F = {}<sup>-</sup> - {}<sup>+</sup>'
                     else:
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, F-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 1/2, F = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, F-1/2 = {:d}<sup>-</sup> - {:d}<sup>+</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 1/2, F = {}<sup>-</sup> - {}<sup>+</sup>'
                     order = [0, 4, 3, 7]
 
             elif fmt_idx == 245:
                 if customChoice == 0:
+
+                    HasFractions = True
+                    shift = -1
+
                     if int(qn_series[2]) - int(qn_series[0]) == 1:
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, F<sub>1</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>' \
-                                  u', F<sub>2</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 3/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
+                                  u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 3/2, F<sub>1</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>' \
-                                  u', F<sub>2</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 3/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
+                                  u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                     else:
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, F<sub>1</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>' \
-                                  u', F<sub>2</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega; = 1/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
+                                  u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
-                            fmt = u'J-1/2 = {:d} - {:d}, O = 1/2, F<sub>1</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>' \
-                                  u', F<sub>2</sub>-1/2 = {:d}<sup>+</sup> - {:d}<sup>-</sup>'
+                            fmt = u'J = {} - {}, &Omega;= 1/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
+                                  u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                     order = [0, 5, 3, 8, 4, 9]
 
             elif fmt_idx == 1303:
@@ -346,6 +365,13 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
 
     if choice_idx:
-        return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
+        if HasFractions:
+            new_series = make_frac(order, qn_series, shift=shift)
+            return fmt.format(*[new_series[x] for x in order]), choice_idx
+        else:
+            return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
     else:
+        if HasFractions:
+            new_series = make_frac(order, qn_series, shift=shift)
+            return fmt.format(*[new_series[x] for x in order]), choice_idx
         return fmt.format(*[int(qn_series[x]) for x in order]), ''
