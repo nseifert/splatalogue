@@ -258,14 +258,25 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                     # Rewrite qn_series to have fractional strings
                     HasFractions = True
-                    shift = -1
+                    
                     
                     if int(qn_series[2]) - int(qn_series[0]) == 1:
+                        if int(qn_series[0]) <= 5:
+                                shift = +1 # N = J - 0.5 if J <= 5.5 for omega = 3/2
+                        else:
+                                shift = -1 # N = J + 0.5 if J >= 5.5 
+
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
+
                             fmt = u'J = {} - {}, &Omega; = 3/2, F = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
                             fmt = u'J = {} - {}, &Omega; = 3/2, F = {}<sup>-</sup> - {}<sup>+</sup>'
                     else:
+                        if int(qn_series[0]) <= 5:
+                            shift = -1
+                        else:
+                            shift = +1
+                            
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
                             fmt = u'J = {} - {}, &Omega; = 1/2, F = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
