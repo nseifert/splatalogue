@@ -7,10 +7,14 @@ import easygui as eg
 class MissingQNFormatException(Exception):
     pass
 
-def make_frac(idx, qn, shift=-1):
+def make_frac(idx, qn, shift=-1, frac_series=None):
     temp = qn.values
+    if not frac_series: # No specific rows excluded from fractional shift
+        frac_series = idx
+
     for val in idx:
-            temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+            if idx in frac_series:
+                temp[val] = '%s/2' % str(int(qn[val])*2+shift)
     return temp
 
 
@@ -32,26 +36,26 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 303: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series':[0, 1, 2, 3, 4, 5], 'tag': 'Asymmetric top.' },
                       ),
 
-                304: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d}), F= {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with 1 hyperfine nuclei.'},
+                304: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d}), F = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with 1 hyperfine nuclei.'},
                       ),
 
-                314: ({'fmt':'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J + 1/2 = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7],
+                314: ({'fmt':'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'frac_series': [3, 7], 'frac_shift': -1,
                       'tag': 'Asymmetric top with non-zero total electronic spin'},
                       ),
 
-                346: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J+1/2 = {:d} - {:d}, F+1/2 = {:d} - {:d}',
-                       'series': [0, 1, 2, 6, 7, 8, 3, 9, 4, 11],
+                346: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {} - {}',
+                       'series': [0, 1, 2, 6, 7, 8, 3, 9, 4, 11], 'frac_series': [3, 9, 4, 11], 'frac_shift': -1,
                       'tag': 'Asymmetric top with non-zero total electronic spin and 1 hyperfine nuclei'},
                       ),
 
                 112: ({'fmt': 'N = {:d} - {:d}, 2J = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Hunds case (A) linear'},
                       ),
 
-                113: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}, F+1/2 = {:d} - {:d}', 'series':[1, 4, 0, 3, 2, 5],
+                113: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}, F = {} - {}', 'series':[1, 4, 0, 3, 2, 5], 'frac_series': [2,5], 'frac_shift': -1,
                        'tag': 'Linear molecule with singlet electronic spin and hyperfine nuclei'},
                       ),
 
-                123: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {:d} - {:d}, F = {:d} - {:d}', 'series':[0, 3, 1, 4, 2, 5],
+                123: ({'fmt':'N = {:d} - {:d}, J = {} - {}, F = {:d} - {:d}', 'series':[0, 3, 1, 4, 2, 5], 'frac_series': [1,4], 'frac_shift': -1,
                       'tag': 'Linear molecule with non-singlet electronic spin and hyperfine nuclei'},
                       ),
                 1303: ({'fmt': '', 'series': [0], 'tag': 'Lambda doubled symmetric top, e.g. CH3CN v8=1'},
@@ -72,7 +76,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'}
                        ),
 
-                224: ({'fmt': 'N = {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic'},
+                224: ({'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
                       {'fmt': '', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting, e.g. NO'},
                       ),
 
@@ -82,7 +86,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 245: ({'fmt':'', 'series': [0], 'tag': 'Hunds case (a) with two hyperfine splittings, e.g. N17O'},
                       ),
 
-                255: ({'fmt': 'J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', 'series':[2, 7, 1, 6, 3, 8, 4, 9], 'tag': 'Linear molecule with two quads and parity'},
+                255: ({'fmt': 'J = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', 'series':[2, 7, 1, 6, 3, 8, 4, 9], 'frac_series':[2,7],  'frac_shift': -1, 'tag': 'Linear molecule with two quads and parity'},
                       ),
 
                 102: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[0, 2, 1, 3], 'tag': 'Linear molecule in S state'},
@@ -91,16 +95,16 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 1202: ({'fmt': 'J = {:d} - {:d}, v = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule with generic vibrational QNs'},
                        ),
 
-                325: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J+1/2 = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with half-integer electronic spin + nuclear quad coupling'},
+                325: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'frac_series': [3,8], 'frac_shift': -1, 'tag': 'Asymmetric top with half-integer electronic spin + nuclear quad coupling'},
                       ),
 
-                1335: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F + 1/2 = {:d} - {:d}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                1335: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'tag': 'Symmetric top with parity and half-integer electronic spin'},
                        ),
 
-                1356: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {:d} - {:d}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
+                1356: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
                        ),
 
-                1366: ({'fmt': 'N = {:d} - {:d}, J + 1/2 = {:d} - {:d}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'tag': 'Symmetric top with parity and half-integer electronic spin and single integral quad'},
+                1366: ({'fmt': 'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single integral quad'},
                        ),
 
                 6315: ({'fmt': 'N(KaKc) = {:d}({:d}, {:d}) - {:d}({:d}, {:d}), S = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with crazy coupling with reduced spin QN.'},
@@ -111,6 +115,9 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
     try:
         temp = fmt_dict[fmt_idx]
         HasFractions = False
+
+        frac_s = None
+        frach_sh = None
     except KeyError:
         if qn_series.shape[0] != 2:
             raise MissingQNFormatException("QN format index %i is not recognized by the program. "
@@ -135,6 +142,14 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 fmt = fmt_style['fmt']
                 order = fmt_style['series']
 
+                try:
+                    frac_s = fmt_style['frac_series']
+                    frac_sh = fmt_style['frac_shift']
+                except KeyError:
+                    pass
+                else: 
+                    HasFractions = True
+
         else:
             fmt_style = fmt_dict[fmt_idx][0]
             if not fmt_style['fmt'] and len(fmt_style['series']) == 1:
@@ -143,6 +158,14 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
             else:
                 fmt = fmt_style['fmt']
                 order = fmt_style['series']
+
+                try:
+                    frac_s = fmt_style['frac_series']
+                    frac_sh = fmt_style['frac_shift']
+                except KeyError:
+                    pass
+                else: 
+                    HasFractions = True
 
         if customChoice is not None:
 
@@ -192,45 +215,45 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                     if int(qn_series[1]) < 0 and int(qn_series[4]) > 0:
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>f</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega; = 3, <i>f</i>'.encode('utf-8')
 
                     elif int(qn_series[1]) > 0 and int(qn_series[4]) < 0:
 
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>e</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>e</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>e</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>e</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega; = 3, <i>e</i>'.encode('utf-8')
                     else:
 
                         if int(qn_series[0]) - int(qn_series[2]) == 1:
                             if int(qn_series[2]) % 2 == 1:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>e/f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>e/f</i>'.encode('utf-8')
                         elif int(qn_series[0]) - int(qn_series[2]) == 0:
                             if int(qn_series[2]) % 2 == 1 :
-                                fmt = u'J = {:d} - {:d}, &Omega;= 2, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 2, <i>e/f</i>'.encode('utf-8')
                             else:
-                                fmt = u'J = {:d} - {:d}, &Omega;= 1, <i>e/f</i>'.encode('utf-8')
+                                fmt = u'J = {:d} - {:d}, &Omega; = 1, <i>e/f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {:d} - {:d}, &Omega;= 3, <i>e/f</i>'.encode('utf-8')
+                            fmt = u'J = {:d} - {:d}, &Omega; = 3, <i>e/f</i>'.encode('utf-8')
                     order = [2, 5]
 
             elif fmt_idx == 213:  # For Hund's case (b) with Lambda doubling
@@ -242,14 +265,14 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                     if qn_series[1] == '1':
                         if int(qn_series[2])-int(qn_series[0]) == 1:
-                            fmt = u'J = {} - {}, &Omega;= 3/2, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega; = 3/2, <i>e</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {} - {}, &Omega;= 1/2, <i>e</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega; = 1/2, <i>e</i>'.encode('utf-8')
                     else:
                         if int(qn_series[2])-int(qn_series[0]) == 1:
-                            fmt = u'J = {} - {}, &Omega;= 3/2, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega; = 3/2, <i>f</i>'.encode('utf-8')
                         else:
-                            fmt = u'J = {} - {}, &Omega;= 1/2, <i>f</i>'.encode('utf-8')
+                            fmt = u'J = {} - {}, &Omega; = 1/2, <i>f</i>'.encode('utf-8')
                     order = [0, 3]
 
             elif fmt_idx == 234 or fmt_idx == 224:
@@ -262,9 +285,9 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                     
                     if int(qn_series[2]) - int(qn_series[0]) == 1:
                         if int(qn_series[0]) <= 5:
-                                shift = +1 # N = J - 0.5 if J <= 5.5 for omega = 3/2
+                                frac_sh = +1 # N = J - 0.5 if J <= 5.5 for omega = 3/2
                         else:
-                                shift = -1 # N = J + 0.5 if J >= 5.5 
+                                frac_sh = -1 # N = J + 0.5 if J >= 5.5 
 
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
 
@@ -273,10 +296,10 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                             fmt = u'J = {} - {}, &Omega; = 3/2, F = {}<sup>-</sup> - {}<sup>+</sup>'
                     else:
                         if int(qn_series[0]) <= 5:
-                            shift = -1
+                            frac_sh = -1
                         else:
-                            shift = +1
-                            
+                            frac_sh = +1
+
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
                             fmt = u'J = {} - {}, &Omega; = 1/2, F = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
@@ -287,7 +310,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 if customChoice == 0:
 
                     HasFractions = True
-                    shift = -1
+                    frac_sh = -1
 
                     if int(qn_series[2]) - int(qn_series[0]) == 1:
                         if int(qn_series[1]) == 1 and int(qn_series[5]) == -1:
@@ -301,7 +324,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                             fmt = u'J = {} - {}, &Omega; = 1/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
                                   u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                         else:
-                            fmt = u'J = {} - {}, &Omega;= 1/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
+                            fmt = u'J = {} - {}, &Omega; = 1/2, F<sub>1</sub> = {}<sup>+</sup> - {}<sup>-</sup>' \
                                   u', F<sub>2</sub> = {}<sup>+</sup> - {}<sup>-</sup>'
                     order = [0, 5, 3, 8, 4, 9]
 
@@ -377,12 +400,12 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
     if choice_idx:
         if HasFractions:
-            new_series = make_frac(order, qn_series, shift=shift)
+            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
             return fmt.format(*[new_series[x] for x in order]), choice_idx
         else:
             return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
     else:
         if HasFractions:
-            new_series = make_frac(order, qn_series, shift=shift)
+            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
             return fmt.format(*[new_series[x] for x in order]), choice_idx
         return fmt.format(*[int(qn_series[x]) for x in order]), ''
