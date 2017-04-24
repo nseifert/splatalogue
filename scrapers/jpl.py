@@ -526,8 +526,13 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
                        (spec_dict['created'], meta_dict['species_id']))
         cursor.execute('UPDATE species SET nlines=%s WHERE species_id=%s',
                        (spec_dict['nlines'], meta_dict['species_id']))
-        print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
-        cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
+        if meta_dict['ism'] == 1:
+            print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
+            cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
+        print 'Removing previous current version lines if available...'
+        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+        print 'Removing duplicate metadata, if neeeded...'
+        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
     else:
         cursor = db.cursor()

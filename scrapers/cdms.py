@@ -461,7 +461,9 @@ def process_update(mol, entry=None, sql_conn=None):
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
 
     if metadata_to_push['ism'] == 1:
-        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.ones(len(mol.cat.index))))
+        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.ones(shape=len(mol.cat.index),dtype=np.int8)))
+    else:
+        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.zeros(shape=len(mol.cat.index),dtype=np.int8)))
         # mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
 
     # Prep linelist for submission to
@@ -607,8 +609,13 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         cursor.execute('UPDATE species SET nlines=%s WHERE species_id=%s',
                        (spec_dict['nlines'], meta_dict['species_id']))
 
-        print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
-        cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
+        if meta_dict['ism'] == 1:
+            print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
+            cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
+        print 'Removing previous current version lines if available...'
+        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+        print 'Removing duplicate metadata, if neeeded...'
+        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
 
     else:

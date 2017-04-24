@@ -9,12 +9,12 @@ class MissingQNFormatException(Exception):
 
 def make_frac(idx, qn, shift=-1, frac_series=None):
     temp = qn.values
-    if not frac_series: # No specific rows excluded from fractional shift
+    if frac_series is None: # No specific rows excluded from fractional shift
         frac_series = idx
 
     for val in idx:
-            if idx in frac_series:
-                temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+        if val in frac_series:
+            temp[val] = '%s/2' % str(int(qn[val])*2+shift)
     return temp
 
 
