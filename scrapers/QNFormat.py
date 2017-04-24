@@ -98,7 +98,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 325: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'frac_series': [3,8], 'frac_shift': -1, 'tag': 'Asymmetric top with half-integer electronic spin + nuclear quad coupling'},
                       ),
 
-                1335: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                1335: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
                        ),
 
                 1356: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
@@ -117,7 +117,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
         HasFractions = False
 
         frac_s = None
-        frach_sh = None
+        frac_sh = None
     except KeyError:
         if qn_series.shape[0] != 2:
             raise MissingQNFormatException("QN format index %i is not recognized by the program. "
@@ -261,7 +261,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 if customChoice == 0:
 
                     HasFractions = True
-                    shift = -1
+                    frac_sh = -1
 
                     if qn_series[1] == '1':
                         if int(qn_series[2])-int(qn_series[0]) == 1:
