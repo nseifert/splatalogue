@@ -21,9 +21,9 @@ def init_sql_db():
 if __name__ == '__main__':
 
 
-
+    ALMA_BANDS= OrderedDict({'BAND3_4': (84000.0, 163000.0), 'BAND6_10': (211000.0,950000.0)})
     #ALMA_BANDS = OrderedDict({'BAND4': (125000.0, 163000.0), 'BAND5': (163000.0, 211000.0), 'BAND8': (385000.0, 500000.0)})
-    ALMA_BANDS = OrderedDict({'BAND5': (163000.0, 211000.0)})
+    #ALMA_BANDS = OrderedDict({'BAND5': (163000.0, 211000.0)})
     OUTPUT_DELIMITER = ':'
 
     # First pull molecules
@@ -36,7 +36,8 @@ if __name__ == '__main__':
     SPECIES_COLUMNS = ('species_id', 's_name_noparens', 'chemical_name', 'planet', 'ism_hotcore', 'ism_diffusecloud', 'ism_darkcloud', 'comet',
                        'extragalactic', 'AGB_PPN_PN', 'Top20')
     MAIN_COLUMNS = ('line_id', 'orderedfreq', 'resolved_QNs', 'sijmu2', 'obsintensity_Lovas_NIST', 'upper_state_energy_K')
-    cursor.execute("SELECT %s FROM species WHERE known_ast_molecules = 1 AND chemical_name not like \"%%Aluminum%%\"" %', '.join(SPECIES_COLUMNS))
+    cursor.execute("SELECT %s FROM species WHERE species_id = 1041" %', '.join(SPECIES_COLUMNS))
+    #cursor.execute("SELECT %s FROM species WHERE known_ast_molecules = 1 AND chemical_name not like \"%%Aluminum%%\"" %', '.join(SPECIES_COLUMNS))
     species = cursor.fetchall()
     cursor.close()
     species_dict = {}
@@ -76,5 +77,5 @@ if __name__ == '__main__':
     final['line_id'] = final['line_id'].astype(np.int)
     final['resolved_QNs'] = final['resolved_QNs'].str.replace("\n", ' ')
     final.fillna(value='NULL', inplace=True)
-    final[output_order].to_csv('AlmaOTBand5_ALL_ISM.dat', sep=':', index=False)
+    final[output_order].to_csv('MethylCyanidev8_1_BANDS3_10_EXCL5.dat', sep=':', index=False)
 

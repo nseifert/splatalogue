@@ -461,9 +461,9 @@ def process_update(mol, entry=None, sql_conn=None):
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
 
     if metadata_to_push['ism'] == 1:
-        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.ones(shape=len(mol.cat.index),dtype=np.int8)))
+        mol.cat['Lovas_NRAO'] = 1
     else:
-        mol.cat = mol.cat.assign(Lovas_NRAO=pd.Series(np.zeros(shape=len(mol.cat.index),dtype=np.int8)))
+        mol.cat['Lovas_NRAO'] = 0
         # mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
 
     # Prep linelist for submission to

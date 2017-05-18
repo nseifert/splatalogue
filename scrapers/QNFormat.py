@@ -100,6 +100,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                 1335: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
                        ),
+                1325: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                       ),
 
                 1356: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
                        ),

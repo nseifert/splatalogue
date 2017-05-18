@@ -255,7 +255,7 @@ def initiate_sql_db():
     HOST = "127.0.0.1"
     LOGIN = "nseifert"
     PASS = rd_pass()
-    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3306)
+    db = sqldb.connect(host=HOST, user=LOGIN, passwd=PASS.strip(), port=3307)
     db.autocommit(False)
     print 'MySQL Login Successful.'
     return db
@@ -264,13 +264,23 @@ def process(mol, id_dict, db):
     key = id_dict[0]
     vib_states_ids = id_dict[1][key]
 
+    def make_frac(idx, qn, shift=-1, frac_series=None):
+        temp = qn.values
+        if frac_series is None: # No specific rows excluded from fractional shift
+            frac_series = idx
+
+        for val in idx:
+            if val in frac_series:
+                temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+        return temp
     def qn_format(qn_series, extra):
         if int(qn_series[1]) == -1 and int(qn_series[6]) == 1:
-            fmt = u'N = {:d}<sup>-</sup> - {:d}<sup>+</sup>, J + 1/2 = {:d} - {:d}, F = {:d} - {:d}'
+            fmt = u'N = {:d}<sup>-</sup> - {:d}<sup>+</sup>, J = {} - {}, F = {:d} - {:d}'
         else:
-            fmt = u'N = {:d}<sup>+</sup> - {:d}<sup>-</sup>, J + 1/2 = {:d} - {:d}, F = {:d} - {:d}'
+            fmt = u'N = {:d}<sup>+</sup> - {:d}<sup>-</sup>, J = {} - {}, F = {:d} - {:d}'
         order = [0, 5, 3, 8, 4, 9]
-        return fmt.format(*[int(qn_series[j]) for j in order])
+        new_series = make_frac(order, qn_series, shift=-1, frac_series=[3,8])
+        return fmt.format(*[new_series[x] for x in order])
 
     cursor = db.cursor()
     cmd = "SELECT * FROM species WHERE s_name_noparens LIKE 'OH%%'"

@@ -46,14 +46,13 @@ if __name__ == "__main__":
     # Now let's check for species that have multiple linelists with Lovas_NRAO = 1
 
     print 'Correcting recommended frequencies for all known AST molecules...'
-    cursor.execute("SELECT species_id FROM species WHERE known_ast_molecules = 1")
-
-    ast_molecules = cursor.fetchall()
-    #ast_molecules = [(194,)]
+    #cursor.execute("SELECT species_id FROM species WHERE known_ast_molecules = 1")
+    #ast_molecules = cursor.fetchall()
+    ast_molecules = [(155,)]
 
     for entry in tqdm(ast_molecules):
         HasLatestVersion = True 
-        LatestVersion = 2
+        LatestVersion = 3
 
         curs2 = db.cursor()
         curs2.execute("SELECT ll_id FROM main WHERE species_id = %s" % entry[0])
@@ -83,7 +82,7 @@ if __name__ == "__main__":
                     continue
 
                 # Now let's go through Lovas linelist with intensities and match to most recent linelist
-                TOLERANCE = 1.0 # MHz
+                TOLERANCE = 2.0 # MHz
                 for trans in freqs_and_ints:
                     freq_min = trans[0] - TOLERANCE
                     freq_max = trans[0] + TOLERANCE
