@@ -73,7 +73,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        {'fmt':'', 'series':[0], 'tag': 'Monodeuterated methanol, CH2DOH'},
                        {'fmt':'', 'series':[1], 'tag': 'Generic asymmetric top with methyl-like internal rotation'},
                        {'fmt':'', 'series':[2], 'tag': 'n-propyl cyanide, gauche/anti combined fit'},
-                       {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'}
+                       {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'},
+                       {'fmt':'', 'series':[4], 'tag': 'Dimethyl ether, two methyl rotor fit (CDMS)'}
                        ),
 
                 224: ({'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
@@ -208,6 +209,18 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         fmt += ", g<sup>-</sup>"
                     else:
                         fmt += ", anti"
+                    order = [0, 1, 2, 4, 5, 6]
+
+                if customChoice == 4:
+                    fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d})'
+                    if int(qn_series[3]) == 0:
+                        fmt += ", AA"
+                    elif int(qn_series[3]) == 1:
+                        fmt += ", EE"
+                    elif int(qn_series[3]) == 3:
+                        fmt += ", EA"
+                    else:
+                        fmt += ", AE"
                     order = [0, 1, 2, 4, 5, 6]
 
             elif fmt_idx == 203:
