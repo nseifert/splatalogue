@@ -223,7 +223,7 @@ class JPLMolecule:
 
         return cat
 
-    def __init__(self, listing_entry):
+    def __init__(self, listing_entry, custom=False, custom_path=""):
         self.date = listing_entry[0]
         self.id = str(listing_entry[1])
         self.name = listing_entry[2]
@@ -240,11 +240,13 @@ class JPLMolecule:
         else:
             self.cat_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/c00"+self.id+".cat"
             self.meta_url = "http://spec.jpl.nasa.gov/ftp/pub/catalog/doc/d00"+self.id+".cat"
-
         print 'Pulling metadata...'
         self.metadata = self.get_metadata(self.meta_url)
         print 'Parsing cat file...'
-        self.cat = self.calc_derived_params(self.parse_cat(self.cat_url), self.metadata)
+        if custom:
+            self.cat = self.calc_derived_params(self.parse_cat(cat_url=open(custom_path, 'r'), local=1), self.metadata)
+        else:
+            self.cat = self.calc_derived_params(self.parse_cat(self.cat_url), self.metadata)
 
 
         self.cat['ll_id'] = self.ll_id
@@ -529,10 +531,12 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         if meta_dict['ism'] == 1:
             print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
-        print 'Removing previous current version lines if available...'
-        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
-        print 'Removing duplicate metadata, if neeeded...'
-        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
+        append_choice = eg.buttonbox(msg='Would you like to append data or remove previous entries?', choices=['Append', 'Remove'])
+        if append_choice == 'Remove':
+            print 'Removing previous current version lines if available...'
+            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+            print 'Removing duplicate metadata, if neeeded...'
+            cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
     else:
         cursor = db.cursor()
@@ -596,13 +600,17 @@ def main(db):
     while JPLLoop:
 
         choice = eg.choicebox('Choose a Molecule to Update', 'Choice', choice_list)
-
         choice_idx = 0
         for idx, ent in enumerate(listing):
             if int(choice.split()[1]) == ent[1]:
                 choice_idx = idx
-
-        cat_entry = JPLMolecule(listing[choice_idx])
+        custom_cat_file = eg.buttonbox(msg='Would you like to supply a custom CAT file?', choices=['Yes', 'No'])
+        if custom_cat_file == 'Yes':
+            custom_path = eg.fileopenbox(msg='Please select a CAT file.', title='Custom CAT file')
+            cat_entry = JPLMolecule(listing[choice_idx], custom=True, custom_path=custom_path)
+            print cat_entry.cat
+        else:
+            cat_entry = JPLMolecule(listing[choice_idx])
 
         tag_num = str(cat_entry.id)
         print tag_num, ''.join(('0',)*(6-len(tag_num)))+cat_entry.id[:(len(tag_num)-3)]

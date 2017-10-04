@@ -456,8 +456,6 @@ def process_update(mol, entry=None, sql_conn=None):
                                        choice_idx=choice_idx)
         fmtted_qns.append(format)
 
-
-
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
 
     if metadata_to_push['ism'] == 1:

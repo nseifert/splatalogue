@@ -134,7 +134,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 choices = ['%s' % x['tag'] for x in fmt_dict[fmt_idx]]
                 ch = eg.choicebox(msg='Choose the desired QN format.', choices=choices)
                 choice_idx = choices.index(ch)
-
+            print 'fmt_idx: %s \t\t choice_idx: %s' %(fmt_idx, choice_idx)
             fmt_style = fmt_dict[fmt_idx][choice_idx]
 
             if not fmt_style['fmt'] and len(fmt_style['series']) == 1:
@@ -400,7 +400,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                     order = [0, 3, 1, 4]
 
 
-    if choice_idx:
+    if choice_idx is not None:
         if HasFractions:
             new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
             return fmt.format(*[new_series[x] for x in order]), choice_idx
