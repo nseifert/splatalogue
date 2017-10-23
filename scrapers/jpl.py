@@ -342,7 +342,7 @@ def process_update(mol, entry=None, sql_conn=None):
         species_entry_dict = {key: value for (key,value) in [(db_species_cols[i], val) for i, val in enumerate(db_species)]}
         ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
         ism_set_dict = {key: value for (key, value) in [(key, species_entry_dict[key]) for key in ism_set]}
-        if any(val == '1' for val in ism_set_dict.values()):
+        if any([val == '1' for val in ism_set_dict.values()]):
             mol.metadata['ism'] = 1
         else:
             mol.metadata['ism'] = 0
@@ -457,8 +457,9 @@ def new_molecule(mol, sql_conn=None):
 
     ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
     ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
-    if any(val == '1' for val in ism_set_dict.values()):
+    if any([val == '1' for val in ism_set_dict.values()]):
         metadata_to_push['ism'] = 1
+        mol.cat['Lovas_NRAO'] = 1
     else:
         metadata_to_push['ism'] = 0
 
