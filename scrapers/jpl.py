@@ -250,7 +250,7 @@ class JPLMolecule:
 
 
         self.cat['ll_id'] = self.ll_id
-        self.cat['`v3.0`'] = 3
+        self.cat['`v4.0`'] = 4
 
 def get_updates():
     BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
@@ -424,7 +424,8 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
-    metadata_to_push['v3_0'] = '3'
+    metadata_to_push['v3_0'] = '0'
+    metadata_to_push['v4_0'] = '4'
     metadata_to_push['Ref20'] = mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
@@ -455,13 +456,7 @@ def new_molecule(mol, sql_conn=None):
     species_choices_fieldnames = ['%s (%s)'%(key, value) for key, value in species_to_push.items()]
     species_choices = eg.multenterbox('Set species entries','species entry', species_choices_fieldnames)
 
-    ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
-    ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
-    if any([val == '1' for val in ism_set_dict.values()]):
-        metadata_to_push['ism'] = 1
-        mol.cat['Lovas_NRAO'] = 1
-    else:
-        metadata_to_push['ism'] = 0
+
 
     idx = 0
     for key in species_to_push:
@@ -470,6 +465,14 @@ def new_molecule(mol, sql_conn=None):
         else:
             species_to_push[key] = species_choices[idx]
         idx += 1
+
+    ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
+    ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
+    if any([val == '1' for val in ism_set_dict.values()]):
+        metadata_to_push['ism'] = 1
+        mol.cat['Lovas_NRAO'] = 1
+    else:
+        metadata_to_push['ism'] = 0
 
     ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
@@ -535,7 +538,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         append_choice = eg.buttonbox(msg='Would you like to append data or remove previous entries?', choices=['Append', 'Remove'])
         if append_choice == 'Remove':
             print 'Removing previous current version lines if available...'
-            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v4.0`=4 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
             print 'Removing duplicate metadata, if neeeded...'
             cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()

@@ -70,7 +70,7 @@ if __name__ == '__main__':
         if 'db' in user_info.keys():
             cursor.execute("USE %s" % user_info['db'])
         else:
-            cursor.execute("USE splat")
+            cursor.execute("USE splat_2019")
         cursor.close()
 
         ActivityLoop = True

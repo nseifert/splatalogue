@@ -43,7 +43,7 @@ class CDMSMolecule:
         widths = [13, 8, 8, 2, 10, 3, 7, 4]  # Not including quantum numbers
         w_sum = sum(widths)
         parser = make_parser(tuple(widths))
-
+        print '========\n'+ cat_url + '\n =======\n'
         if local == 0:
             cat_inp = urllib2.urlopen(cat_url).read().split('\n')
         else:
@@ -67,7 +67,11 @@ class CDMSMolecule:
         qn_parser = make_parser((2,)*12)
         for row in initial_list:
             if num_qns == 0:  # Get number of quantum numbers per state
-                num_qns = int(row[7][-1])
+                try:
+                    num_qns = int(row[7][-1])
+                except IndexError:
+                    print row
+                    raise 
 
             qns = qn_parser(row[-1])  # splits QN entry into pairs
             up_done = False
@@ -254,7 +258,7 @@ class CDMSMolecule:
         return cat
 
     def __init__(self, cdms_inp, custom=False, ll_id='10', custom_path=""):
-        base_url = "http://www.astro.uni-koeln.de"
+        base_url = "http://cdms.astro.uni-koeln.de"
 
         self.tag = cdms_inp[0]
         self.name = cdms_inp[1]
@@ -271,7 +275,7 @@ class CDMSMolecule:
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
-        self.cat['`v3.0`'] = '3'
+        self.cat['`v4.0`'] = '4'
 
 
 class SplatSpeciesResultList(list):
@@ -310,8 +314,8 @@ def pretty_print(comp):
 
 def pull_updates():
 
-    base_url = "http://www.astro.uni-koeln.de"
-    page = urllib2.urlopen(base_url+"/cdms/entries")
+    base_url = "http://cdms.astro.uni-koeln.de"
+    page = urllib2.urlopen(base_url+"/classic/entries")
     soup = BeautifulSoup(page.read(), "lxml")
 
     urls = []  # URLs to CAT and Documentation (metadata) files
@@ -493,10 +497,14 @@ def new_molecule(mol, sql_conn=None):
 
     # Generate new species_id
     sql_cur.execute('SELECT MAX(species_id) FROM species')
-    metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    try:
+        metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    except TypeError: # Gets thrown if there are no species in the table; therefore species ID should be "1".
+        metadata_to_push['species_id'] = "1"
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
-    metadata_to_push['v3_0'] = '3'
+    metadata_to_push['v3_0'] = '0'
+    metadata_to_push['v4_0'] = '4'
     metadata_to_push['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
@@ -527,14 +535,6 @@ def new_molecule(mol, sql_conn=None):
     species_choices_fieldnames = ['%s (%s)' % (key, value) for key, value in species_to_push.items()]
     species_choices = eg.multenterbox('Set species entries', 'species entry', species_choices_fieldnames)
 
-    ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
-    ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
-    if any([val == '1' for val in ism_set_dict.values()]):
-        metadata_to_push['ism'] = 1
-        mol.cat['Lovas_NRAO'] = 1
-    else:
-        metadata_to_push['ism'] = 0
-
     idx = 0
     for key in species_to_push:
         if not species_choices[idx]:
@@ -542,6 +542,16 @@ def new_molecule(mol, sql_conn=None):
         else:
             species_to_push[key] = species_choices[idx]
         idx += 1
+
+    ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
+    ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
+
+    if any([val == '1' for val in ism_set_dict.values()]):
+        print 'Its an interstellar molecule!'
+        metadata_to_push['ism'] = 1
+        mol.cat['Lovas_NRAO'] = 1
+    else:
+        metadata_to_push['ism'] = 0
 
     ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
@@ -565,7 +575,6 @@ def new_molecule(mol, sql_conn=None):
     ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
     ll_col_list = mol.cat.columns.values.tolist()
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
-
     return final_cat, species_to_push, metadata_to_push
 
 
