@@ -137,7 +137,7 @@ def inp_metadata(meta_inp_path):
             'CONTRIBUTOR': 'Contributor', 'REF': 'Ref1'}
 
 
-    fill_ins = {'v3_0': 3, 'LineList': 16}
+    fill_ins = {'v4_0': 4, 'LineList': 16}
 
     for line in open(meta_inp_path, 'r').read().split('\n'):
         if line[0] == '!':
@@ -195,7 +195,7 @@ def prep_data(df, opt, meta):
         df['intintensity'].apply(lambda x: np.log10(x))
 
     df['ll_id'] = 16
-    df['`v3.0`'] = 3
+    df['`v4.0`'] = 4
     df['species_id'] = meta['species_id']
 
     # if opt['ism_molecule']:

@@ -296,7 +296,7 @@ class SLAIMMolecule:
             self.cat = self.calc_derived_params(self.parse_vizier(cat_file, vizier_options))
 
         self.cat['ll_id'] = self.ll_id
-        self.cat['`v3.0`'] = 3
+        self.cat['`v4.0`'] = 4
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -339,7 +339,8 @@ def process_update(mol, entry=None, sql_conn=None):
         ref_idx = 23
         mol.metadata['v1_0'] = '0'
         mol.metadata['v2_0'] = '0'
-        mol.metadata['v3_0'] = '3'
+        mol.metadata['v3_0'] = '0'
+        mol.metadata['v4_0'] = '4'
         mol.metadata['LineList'] = mol.ll_id
         new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
                                % mol.metadata['Name'], title="Metadata Name Change")
@@ -445,7 +446,8 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
-    metadata_to_push['v3_0'] = '3'
+    metadata_to_push['v3_0'] = '0'
+    metadata_to_push['v4_0'] = '4'
     metadata_to_push['Ref20'] = mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
