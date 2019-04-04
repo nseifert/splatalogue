@@ -43,7 +43,7 @@ class CDMSMolecule:
         widths = [13, 8, 8, 2, 10, 3, 7, 4]  # Not including quantum numbers
         w_sum = sum(widths)
         parser = make_parser(tuple(widths))
-        print '========\n'+ cat_url + '\n =======\n'
+        print '========\n'+ cat_url + '\n========\n'
         if local == 0:
             cat_inp = urllib2.urlopen(cat_url).read().split('\n')
         else:
@@ -547,7 +547,6 @@ def new_molecule(mol, sql_conn=None):
     ism_set_dict = {key: value for (key, value) in [(key, species_to_push[key]) for key in ism_set]}
 
     if any([val == '1' for val in ism_set_dict.values()]):
-        print 'Its an interstellar molecule!'
         metadata_to_push['ism'] = 1
         mol.cat['Lovas_NRAO'] = 1
     else:
