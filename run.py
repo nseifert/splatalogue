@@ -50,7 +50,7 @@ if __name__ == '__main__':
             user_info = read_sql_inp(path_to_sql_user)
 
         elif sql_ques == 'No':
-            temp_info = multenterbox(msg='Please enter your mySQL server login info.',
+            temp_info = multenterbox(msg='Please enter your mySQL server login info. Leave password blank if you would like a secure dialog box.',
                          fields=sql_user_fields)
             for i, val in enumerate(temp_info):
                 if not val:
