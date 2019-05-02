@@ -94,6 +94,20 @@ and make sure to add to `fmt_dict` a new entry in the tuple keyed as 203:
 
 The QNFormat routine will then format the quantum numbers appropriately.
 
+### QNFormat with fractional numbers
+
+A few changes are required in the QN_Format style entries if you need fractional quantum numbers to be formatted properly. 
+
+Like with other special routines, you need the **fmt** key to be empty and **series** to be a single-element list. 
+
+In your custom routine, you need to add the following code at the top:
+
+`HasFractions = True`
+`frac_sh = INTEGER`
+`frac_s = [list of INTEGERS]`
+
+Here, `HasFractions` tells the routine that you expect fractions. `frac_sh` sets the shift you need for half-integer code. SPCAT usually displays half-integer QNs as the floor or ceiling of the QN, so e.g. 5/2 will either be represented as 2 or 3. In this case, if 3 <--> 5/2, then `frac_sh = -1`, and if 2 <--> 5/2, then `frac_sh = 1`. The list `frac_s` tells the routine which of the quantum number, by their index number, should be casted as half-integer fractions. Currently, the routine only supports half-integer quantum numbers. 
+
 ### Toyama notes
 
 Submitting data from the Toyama Microwave Atlas is slightly different. The Toyama routine requires
