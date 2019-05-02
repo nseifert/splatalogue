@@ -434,32 +434,32 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         if qn_series[0] - qn_series[3] == 0: # N' - J' = 0 --> pi 1/2
                             
                             if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
 
                         elif np.abs(qn_series[0] - qn_series[3]) >= 1: # N' - J' = 1 --> pi 3/2
 
                             if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
                         order = [0, 5, 3, 8, 1, 6, 4, 9, 2]
 
                     else:
                         if qn_series[0] - qn_series[3] == 0: # N' - J' = 0 --> pi 1/2
                             
                             if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
 
                         elif np.abs(qn_series[0] - qn_series[3]) >= 1: # N' - J' = 1 --> pi 3/2
 
                             if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
-                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
                         order = [0, 5, 3, 8, 1, 6, 4, 9, 2, 7]      
 
 
