@@ -421,7 +421,10 @@ def new_molecule(mol, sql_conn=None):
 
     # Generate new species_id
     sql_cur.execute('SELECT MAX(species_id) FROM species')
-    metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    try:
+        metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    except TypeError: # Gets thrown if there are no species in the table; therefore default species  ID is 1?
+        metadata_to_push['species_id'] = "1"
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
     metadata_to_push['v3_0'] = '0'
@@ -485,11 +488,12 @@ def new_molecule(mol, sql_conn=None):
     # Iterate through rows and add formatted QN
     choice_idx = None
     for idx, row in mol.cat.iterrows():
-        format, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
+        fmt, choice_idx = format_it(qn_fmt, row.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')),
                                        choice_idx=choice_idx)
-        fmtted_QNs.append(format)
+        fmtted_QNs.append(fmt)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
+    print mol.cat
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")

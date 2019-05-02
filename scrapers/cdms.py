@@ -355,7 +355,7 @@ def pull_updates():
         compiled.append([unidrop(des[i][0]).encode('utf-8'), unidrop(des[i][1]).encode('utf-8'),
                          formatted_date, urls[i][1], urls[i][2]])
 
-    compiled.sort(key=lambda x: x[2], reverse=True)
+    compiled.sort(key=lambda x: x[2], reverse=True) # Sorts by update time, most recent first
     return compiled
 
 
@@ -481,7 +481,7 @@ def process_update(mol, entry=None, sql_conn=None):
     ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
     ll_col_list = mol.cat.columns.values.tolist()
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
-
+    
     return final_cat, metadata_to_push
 
 

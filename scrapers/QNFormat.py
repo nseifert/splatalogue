@@ -2,19 +2,24 @@
 __author__ = 'nate'
 import pandas as pd
 import easygui as eg
+import numpy as np
 
 
 class MissingQNFormatException(Exception):
     pass
 
 def make_frac(idx, qn, shift=-1, frac_series=None):
-    temp = qn.values
+    temp = qn.values.copy()
+    print temp
     if frac_series is None: # No specific rows excluded from fractional shift
         frac_series = idx
 
     for val in idx:
         if val in frac_series:
-            temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+            try:
+                temp[val] = '%s/2' % str(int(qn[val])*2+shift)
+            except ValueError:
+                raise
     return temp
 
 
@@ -111,7 +116,10 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        ),
 
                 6315: ({'fmt': 'N(KaKc) = {:d}({:d}, {:d}) - {:d}({:d}, {:d}), S = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with crazy coupling with reduced spin QN.'},
-                       )
+                       ),
+                       
+                1325: ({'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
+                    )
 
                 }
 
@@ -139,8 +147,9 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
             fmt_style = fmt_dict[fmt_idx][choice_idx]
 
             if not fmt_style['fmt'] and len(fmt_style['series']) == 1:
-                customChoice = fmt_style['series'][0]
-                # Needs custom routine to edit style
+
+                customChoice = fmt_style['series'][0] # Needs custom routine to edit style
+
             else:
                 fmt = fmt_style['fmt']
                 order = fmt_style['series']
@@ -411,16 +420,64 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         else:
                             fmt += ' -> v<sub>4</sub> = 1'
                     order = [0, 3, 1, 4]
+        
+            elif fmt_idx == 1325: 
+
+                if customChoice == 0:
+                    # Sample line:  294425.7040  0.0250 -2.4466 2   65.0997 35-1430011325 14 1 01517  13-1 01416 
+# qn_series will look like this: [14, 1, 0, 15, 17, 13, -1, 0, 14, 16] or (14,1,0,15,17) -> (13,-1,0,14,16) for (N, p*K, v, J, F) 5-tuplet
+                    HasFractions = True
+                    frac_sh = -1 
+                    frac_s = [3,4,8,9]
+                    if qn_series[2] - qn_series[7] == 0: #delta_v = 0 
+
+                        if qn_series[0] - qn_series[3] == 0: # N' - J' = 0 --> pi 1/2
+                            
+                            if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                            elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+
+                        elif np.abs(qn_series[0] - qn_series[3]) >= 1: # N' - J' = 1 --> pi 3/2
+
+                            if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                            elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                        order = [0, 5, 3, 8, 1, 6, 4, 9, 2]
+
+                    else:
+                        if qn_series[0] - qn_series[3] == 0: # N' - J' = 0 --> pi 1/2
+                            
+                            if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                            elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d},  <sup>2</sup>&Pi<sub>1/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+
+                        elif np.abs(qn_series[0] - qn_series[3]) >= 1: # N' - J' = 1 --> pi 3/2
+
+                            if qn_series[5] - qn_series[8] == 0: # N'' - J'' = 0 --> pi 1/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>1/2</sub>'
+                            elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
+                                fmt = u'N = {:d} - {:d}, J = {} - {}, K = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
+                        order = [0, 5, 3, 8, 1, 6, 4, 9, 2, 7]      
 
 
     if choice_idx is not None:
         if HasFractions:
-            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
-            return fmt.format(*[new_series[x] for x in order]), choice_idx
+            #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
+            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s) 
+            try:
+                return fmt.format(*[new_series[x] for x in order]), choice_idx
+            except:
+                print new_series, qn_series
+                raise
         else:
             return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
     else:
         if HasFractions:
+            #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
             new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
-            return fmt.format(*[new_series[x] for x in order]), choice_idx
-        return fmt.format(*[int(qn_series[x]) for x in order]), ''
+            return fmt.format(*[new_series[x] for x in order]), ''
+        else:
+            return fmt.format(*[int(qn_series[x]) for x in order]), ''
