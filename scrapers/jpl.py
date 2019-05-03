@@ -493,7 +493,6 @@ def new_molecule(mol, sql_conn=None):
         fmtted_QNs.append(fmt)
 
     mol.cat['resolved_QNs'] = pd.Series(fmtted_QNs, index=mol.cat.index)
-    print mol.cat
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")

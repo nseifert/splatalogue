@@ -104,6 +104,7 @@ if __name__ == "__main__":
                     else:
                         for line in results:
                             cmd = "UPDATE main SET obsintensity_Lovas_NIST = \'%s\' WHERE line_id = %s" %(trans[1], line[0])
+                                # Add line to populate transition_in_space instead 
                             curs2.execute(cmd)
 
             else:  # No Lovas data.

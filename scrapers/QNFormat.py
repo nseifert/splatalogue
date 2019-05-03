@@ -10,7 +10,6 @@ class MissingQNFormatException(Exception):
 
 def make_frac(idx, qn, shift=-1, frac_series=None):
     temp = qn.values.copy()
-    print temp
     if frac_series is None: # No specific rows excluded from fractional shift
         frac_series = idx
 
