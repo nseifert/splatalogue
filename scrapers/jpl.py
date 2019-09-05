@@ -135,8 +135,13 @@ class JPLMolecule:
                             print i, val, [x.strip() for x in qns]
             try:
                 parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
-            except ValueError:  # Get blank line
-                continue
+            except ValueError:  # Get blank line or other issue?
+                line = [s.strip() for s in row[:-1]]
+                if not line[0]: # Blank line
+                    continue
+                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
 
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
                   ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'), ('qn_code', 'i4')]
@@ -417,12 +422,24 @@ def new_molecule(mol, sql_conn=None):
         if col_name in mol.metadata.keys():
             metadata_to_push[col_name] = mol.metadata[col_name]
         else:
-            continue
-
-    # Generate new species_id
-    sql_cur.execute('SELECT MAX(species_id) FROM species')
-    try:
-        metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+            continue                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
+                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
+    # Generate new spe                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])cies_id
+    sql_cur.execute('S                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])ELECT MAX(species_id) FROM species')
+    try:                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
+        metadata_to_pu                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])sh['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
     except TypeError: # Gets thrown if there are no species in the table; therefore default species  ID is 1?
         metadata_to_push['species_id'] = "1"
     metadata_to_push['v1_0'] = '0'
@@ -440,9 +457,9 @@ def new_molecule(mol, sql_conn=None):
     tag_num = mol.id
     tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
     cmd = "SELECT SPLAT_ID FROM species " \
-        "WHERE SPLAT_ID LIKE '%s%%'" % tag_prefix
-    print 'Tag prefix, '+tag_prefix
-    sql_cur.execute(cmd)
+        "WHERE SPLAT_I                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:D LIKE '%s%%'" % tag_prefix
+    print 'Tag prefix,                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:]) '+tag_prefix
+    sql_cur.execute(cm                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])d)
     splat_id_list = sql_cur.fetchall()
     if len(splat_id_list) > 0:
         splat_id = tag_prefix+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)

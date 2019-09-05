@@ -141,8 +141,13 @@ class CDMSMolecule:
                             raise
             try:
                 parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
-            except ValueError:  # Get blank line
-                continue
+            except ValueError:  # Get blank line or other issue?
+                line = [s.strip() for s in row[:-1]]
+                if not line[0]: # Blank line
+                    continue
+                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
+                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
+                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
 
         # Generates columns for dataframe that correlate with columns in main
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
@@ -311,7 +316,7 @@ class CDMSChoiceList(list):
     def __str__(self):
         it = list(self)
         it[0] = "0"*(4-len(it[0]))+it[0]
-        return "{:5} {:10} {:>25} {:>25}".format(it[0], it[1], it[2], time.strftime("%B %Y", it[3]))
+        return "{:5} {:10} {:>25} {:>15}".format(it[0], it[1], it[2], time.strftime("%B %Y", it[3]))
 
 
 def unidrop(x):  # Strips any non-ASCII unicode text from string
