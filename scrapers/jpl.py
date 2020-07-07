@@ -414,34 +414,25 @@ def new_molecule(mol, sql_conn=None):
     # METADATA ADD
     # ----------------------------
 
+    # Generate array of all columns from species_metadata so we can fill them in as we go
     sql_cur.execute("SHOW columns FROM species_metadata")
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
     metadata_to_push = {}
 
+    # Fills in metadata dictionary with the column array we generated above as a list of keys for the metadata dict
     for i, col_name in enumerate(db_meta_cols):
         if col_name in mol.metadata.keys():
             metadata_to_push[col_name] = mol.metadata[col_name]
         else:
-            continue                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
-                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
-    # Generate new spe                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])cies_id
-    sql_cur.execute('S                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])ELECT MAX(species_id) FROM species')
-    try:                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
-        metadata_to_pu                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
-                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])sh['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
-    except TypeError: # Gets thrown if there are no species in the table; therefore default species  ID is 1?
+            continue
+
+    # Generate new species_id
+    sql_cur.execute('SELECT MAX(species_id) FROM species')
+    try: # species_id is +1 of the largest species_id in the species table
+        metadata_to_push['species_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    except TypeError: # Gets thrown if there are no species in the table; therefore species ID should be "1".
         metadata_to_push['species_id'] = "1"
+
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
     metadata_to_push['v3_0'] = '0'
@@ -457,9 +448,9 @@ def new_molecule(mol, sql_conn=None):
     tag_num = mol.id
     tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
     cmd = "SELECT SPLAT_ID FROM species " \
-        "WHERE SPLAT_I                elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:D LIKE '%s%%'" % tag_prefix
-    print 'Tag prefix,                    line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:]) '+tag_prefix
-    sql_cur.execute(cm                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])d)
+        "WHERE SPLAT_ID LIKE '%s%%'" % tag_prefix
+    print 'Tag prefix, '+tag_prefix    
+    sql_cur.execute(cmd)
     splat_id_list = sql_cur.fetchall()
     if len(splat_id_list) > 0:
         splat_id = tag_prefix+ str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
