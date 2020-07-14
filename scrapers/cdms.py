@@ -414,7 +414,9 @@ def process_update(mol, entry=None, sql_conn=None):
 
     mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
 
-    mol.metadata['Ref20'] = "http://www.astro.uni-koeln.de"+mol.meta_url
+    mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://www.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
+    mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('file=e','file=c')
+    mol.metadata['Ref19'] = mol.metadata['Ref19'].replace('Entry', 'CAT file')
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
@@ -522,7 +524,8 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['v2_0'] = '0'
     metadata_to_push['v3_0'] = '0'
     metadata_to_push['v4_0'] = '4'
-    metadata_to_push['Ref20'] = "http://cdms.astro.uni-koeln.de"+mol.meta_url
+    metadata_to_push['Ref20'] = '<a href=' + "\"" + 'http://cdms.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
+    metadata_to_push['Ref19'] = metadata_to_push['Ref20'].replace('cdmsinfo?file=e','cdmssearch?file=c').replace('Entry', 'CAT file')
     metadata_to_push['LineList'] = mol.ll_id
 
     # If you want to give the molecule a pretty new, or non-standard, name
