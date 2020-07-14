@@ -35,6 +35,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                       ),
 
                 213: ({'fmt': '', 'series': [0], 'tag': 'Hunds Case B with Lambda doubling'},
+                      {'fmt': '', 'series': [0], 'tag': 'Ziruys lambda-doubling. e.g. NaS'}
                       ),
 
                 303: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series':[0, 1, 2, 3, 4, 5], 'tag': 'Asymmetric top.' },
@@ -142,7 +143,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 choices = ['%s' % x['tag'] for x in fmt_dict[fmt_idx]]
                 ch = eg.choicebox(msg='Choose the desired QN format.', choices=choices)
                 choice_idx = choices.index(ch)
-            print 'fmt_idx: %s \t\t choice_idx: %s' %(fmt_idx, choice_idx)
+            #print 'fmt_idx: %s \t\t choice_idx: %s' %(fmt_idx, choice_idx)
             fmt_style = fmt_dict[fmt_idx][choice_idx]
 
             if not fmt_style['fmt'] and len(fmt_style['series']) == 1:
@@ -297,6 +298,25 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         else:
                             fmt = u'J = {} - {}, &Omega; = 1/2, <i>f</i>'.encode('utf-8')
                     order = [0, 3]
+                
+                elif customChoice == 1:
+
+                    HasFractions = True
+                    frac_sh = -1
+                    
+                    if int(qn_series[2]) - int(qn_series[0]) == 1: # pi3/2
+                        if int(qn_series[1]) > 0: # e parity
+                            fmt = u'J = {} - {}, &Omega; = 3/2, <i>e</i>'.encode('utf-8')
+                        else:
+                            fmt = u'J = {} - {}, &Omega; = 3/2, <i>f</i>'.encode('utf-8')
+                    else:
+                        if int(qn_series[2]) - int(qn_series[0]) == 0: #pi1/2
+                            if int(qn_series[1]) < 0: #e parity 
+                                fmt = u'J = {} - {}, &Omega; = 3/2, <i>e</i>'.encode('utf-8')
+                            else:
+                                fmt = u'J = {} - {}, &Omega; = 3/2, <i>f</i>'.encode('utf-8')
+                    order = [0, 3]
+                                
 
             elif fmt_idx == 234 or fmt_idx == 224:
 
