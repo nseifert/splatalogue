@@ -73,7 +73,14 @@ class JPLMolecule:
         # Let's put everything together to put into a dataframe
         parsed_list = []
         qn_parser = make_parser((2,)*12)
+        max_qn_length = 0 # For fitting strings into  temporary numpy array
+
         for row in initial_list:
+            raw_qn = row[-1].rstrip()
+
+            if len(raw_qn) > max_qn_length:
+                max_qn_length = len(raw_qn)
+
             if num_qns == 0:  # Get number of quantum numbers per state
                 num_qns = int(row[7][-1])
 
@@ -113,6 +120,9 @@ class JPLMolecule:
                             elif re.search('[a-zA-Z]', val.strip()):  # QN > 99
                                 temp = list(val)
                                 qns_up.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                            elif re.search('[a-z]', val.strip()): # QN < -9, e.g. CDMS CD3CN entry
+                                temp = list(val)
+                                qns_up.append((-10 - l_to_idx(temp[0])*10) - int(temp[1]))
                         except TypeError:
                             print i, val, [x.strip() for x in qns]
 
@@ -128,9 +138,12 @@ class JPLMolecule:
                                 qns_down.append(-1)
                             elif val.strip() == '':
                                 qns_down.append(0)
-                            else:
+                            elif re.search('[a-zA-Z]', val.strip()):  # QN > 99
                                 temp = list(val)
                                 qns_down.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                            elif re.search('[a-z]', val.strip()): # QN < -9, e.g. CDMS CD3CN entry
+                                temp = list(val)
+                                qns_down.append((-10 - l_to_idx(temp[0])*10) - int(temp[1]))
                         except TypeError:
                             print i, val, [x.strip() for x in qns]
             try:
@@ -144,7 +157,8 @@ class JPLMolecule:
                     parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
 
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
-                  ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'), ('qn_code', 'i4')]
+                  ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'),
+                  ('qn_code', 'i4'), ('raw_qn', 'S%i'%max_qn_length)]
         dtypes.extend([('qn_up_%s' %i,'i4') for i in range(num_qns)])
         dtypes.extend([('qn_dwn_%s' %i,'i4') for i in range(num_qns)])
 
@@ -210,9 +224,8 @@ class JPLMolecule:
         cat['roundedfreq'] = np.round(cat['frequency'], 0)
         cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
 
-        qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
-        cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
-
+        cat['quantum_numbers'] = cat['raw_qn']
+        
         # Add measured freqs and then ordered frequencies
         cat['measfreq'] = np.nan
         cat['orderedfreq'] = np.nan

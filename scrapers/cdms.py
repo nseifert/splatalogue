@@ -70,6 +70,7 @@ class CDMSMolecule:
         # Let's put everything together to put into a dataframe
         parsed_list = []
         qn_parser = make_parser((2,)*12)
+        max_qn_length = 0 # For fitting strings into  temporary numpy array
         for row in initial_list:
             if num_qns == 0:  # Get number of quantum numbers per state
                 try:
@@ -80,7 +81,9 @@ class CDMSMolecule:
 
             # This is a really hacky way to parse the quantum numbers, but it's robust and has worked without a hitch so far. 
             # Uses a series of if-else statements to iterate through the QNs in a linear fashion
-
+            raw_qn = row[-1].rstrip()
+            if len(raw_qn) > max_qn_length:
+                max_qn_length = len(raw_qn)
             qns = qn_parser(row[-1])  # splits QN entry into pairs
             up_done = False # Boolean for being done with the upper state QNs
             in_middle = False # Are we in the character gap between the upper and lower state QNs?
@@ -114,9 +117,12 @@ class CDMSMolecule:
                                 qns_up.append(-1)
                             elif val.strip() == '':  # No parity symbol?
                                 qns_up.append(0)
-                            elif re.search('[a-zA-Z]', val.strip()):  # QN > 99
+                            elif re.search('[A-Z]', val.strip()):  # QN > 99
                                 temp = list(val)
                                 qns_up.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                            elif re.search('[a-z]', val.strip()): # QN < -9, e.g. CDMS CD3CN entry
+                                temp = list(val)
+                                qns_up.append((-10 - l_to_idx(temp[0])*10) - int(temp[1]))
                         except TypeError: # You shouldn't ever get here, but just in case...
                             print i, val, [x.strip() for x in qns]
                             raise
@@ -133,30 +139,34 @@ class CDMSMolecule:
                                 qns_down.append(-1)
                             elif val.strip() == '':
                                 qns_down.append(0)
-                            else:
+                            elif re.search('[A-Z]', val.strip()):  # QN > 99
                                 temp = list(val)
                                 qns_down.append((100 + (l_to_idx(temp[0]))*10) + int(temp[1]))
+                            elif re.search('[a-z]', val.strip()): # QN < -9, e.g. CDMS CD3CN entry
+                                temp = list(val)
+                                qns_down.append((-10 - l_to_idx(temp[0])*10) - int(temp[1]))
                         except TypeError:
                             print i, val, [x.strip() for x in qns]
                             raise
             try:
-                parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
+                parsed_list.append([float(s.strip()) for s in row[:-1]] + [raw_qn] + [qns_up, qns_down])
             except ValueError:  # Get blank line or other issue?
                 line = [s.strip() for s in row[:-1]]
                 if not line[0]: # Blank line
                     continue
                 elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
                     line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
+                    parsed_list.append([float(col) for col in line] + [raw_qn] + [qns_up, qns_down])
 
         # Generates columns for dataframe that correlate with columns in main
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
                   ('lower_state_energy', 'f8'), ('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'),
-                  ('qn_code', 'i4')]
+                  ('qn_code', 'i4'), ('raw_qn', 'S%i'%max_qn_length)]
         dtypes.extend([('qn_up_%s' % i, 'i4') for i in range(len(parsed_list[0][-2]))])
         dtypes.extend([('qn_dwn_%s' % i, 'i4') for i in range(len(parsed_list[0][-2]))])
 
         final_list = []
+        
         for row in parsed_list:
             final_list.append(tuple(row[:-2]+row[-2]+row[-1]))
 
@@ -258,9 +268,8 @@ class CDMSMolecule:
         cat['roundedfreq'] = cat['frequency'].round(0)
         cat['line_wavelength'] = 299792458./(cat['frequency']*1.0E6)*1000
 
-        qn_cols = cat.filter(regex=re.compile('(qn_)'+'.*?'+'(_)'+'(\\d+)')).columns.values.tolist()
-        cat['quantum_numbers'] = cat[qn_cols].apply(lambda x: ' '.join([str(e) for e in x]), axis=1)
-
+        cat['quantum_numbers'] = cat['raw_qn']
+ 
         # Add measured freqs and then ordered frequencies
         cat['measfreq'] = np.nan
         cat['orderedfreq'] = np.nan
