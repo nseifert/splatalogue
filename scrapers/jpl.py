@@ -485,7 +485,7 @@ def new_molecule(mol, sql_conn=None):
     else:
         metadata_to_push['ism'] = 0
 
-    ism_overlap_tags = ['ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
+    ism_overlap_tags = ['species_id', 'ism_hotcore', 'comet', 'planet', 'AGB_PPN_PN', 'extragalactic']
     for tag in ism_overlap_tags:
         metadata_to_push[tag] = species_to_push[tag]
 
@@ -517,7 +517,9 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
 
     print 'Converting linelist for SQL insertion...'
     ll['species_id'] = meta_dict['species_id']
-    ll_dict = [(None if pd.isnull(y) else y for y in x) for x in ll.values]
+    ll = ll.where(pd.notnull(ll),None)
+    ll_dict = [tuple(x) for x in ll.to_numpy()]
+
     num_entries = len(ll_dict)
 
     # Create new species entry in database
