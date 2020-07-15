@@ -402,14 +402,25 @@ def process_update(mol, entry=None, sql_conn=None):
                 idx = i
                 break
         db_meta = results[idx]
+    
+    metadata_push_answer = eg.buttonbox(msg='Do you want to append a new metadata entry? For instance, say no if you are merely adding a hyperfine linelist to an existing entry.', choices=['Yes', 'No'])
+    if metadata_push_answer == 'Yes':
+        push_metadata_flag = True
+    else:
+        push_metadata_flag = False
+    append_lines = eg.buttonbox(msg='Do you want to append the linelist, or replace the current linelist in the database?', choices=['Append', 'Replace'])
+    if append_lines == 'Append':
+        append_lines = True
+    else:
+        append_lines = False
 
     if db_meta[52] != mol.ll_id:
         # Only entry in database isn't from the linelist of the entry that user wants to update
         ref_idx = 23
         mol.metadata['v1_0'] = '0'
         mol.metadata['v2_0'] = '0'
-        mol.metadata['v3_0'] = '0'
-        mol.metadata['v4_0'] = '4'
+        mol.metadata['v3_0'] = '3'
+        #mol.metadata['v4_0'] = '4'
         mol.metadata['LineList'] = mol.ll_id
         new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
                                    "Leave blank otherwise. Current name is %s"
@@ -502,7 +513,7 @@ def process_update(mol, entry=None, sql_conn=None):
     ll_col_list = mol.cat.columns.values.tolist()
     final_cat = mol.cat[[col for col in ll_splat_col_list if col in ll_col_list]]
     
-    return final_cat, metadata_to_push
+    return final_cat, metadata_to_push, push_metadata_flag, append_lines
 
 
 def new_molecule(mol, sql_conn=None):
@@ -535,8 +546,8 @@ def new_molecule(mol, sql_conn=None):
     # Odds and ends; we default to v4_0 for splat_2019    
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
-    metadata_to_push['v3_0'] = '0'
-    metadata_to_push['v4_0'] = '4'
+    metadata_to_push['v3_0'] = '3'
+    #metadata_to_push['v4_0'] = '4'
     metadata_to_push['Ref20'] = '<a href=' + "\"" + 'http://cdms.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
     metadata_to_push['Ref19'] = metadata_to_push['Ref20'].replace('cdmsinfo?file=e','cdmssearch?file=c').replace('Entry', 'CAT file')
     metadata_to_push['LineList'] = mol.ll_id
@@ -556,7 +567,11 @@ def new_molecule(mol, sql_conn=None):
 
     # If there's more than one species in the splatalogue list with the same molecular mass, this finds the minimum value necessary to make it a unique ID
     if len(splat_id_list) > 0:
-        splat_id = mol.tag[:3] + str(max([int(x[0][3:]) for x in splat_id_list]) + 1)
+        max_id = max([int(x[0][3:]) for x in splat_id_list])
+        if max_id < 10:
+            splat_id = mol.tag[:3] + '0'+str(max_id+1)
+        else:
+            splat_id = mol.tag[:3] + str(max_id+1)
     else:
         splat_id = mol.tag[:3] + '01'
 
@@ -619,7 +634,7 @@ def new_molecule(mol, sql_conn=None):
     return final_cat, species_to_push, metadata_to_push
 
 
-def push_molecule(db, ll, spec_dict, meta_dict, update=0):
+def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_lines_flag=False, update=0):
 
     # push_molecule() takes all the prepared entry data from either new_molecule() or process_update() and pushes it to the database
 
@@ -667,10 +682,13 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
         if meta_dict['ism'] == 1:
             print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
-        print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
-        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v4.0`=4 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
-        print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
-        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v4_0 = 4', (meta_dict['species_id'], meta_dict['LineList']))
+
+        if push_metadata_flag:
+            print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
+            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+        if not append_lines_flag:
+            print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
+            cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
 
     else:
@@ -697,16 +715,18 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
     #                    (meta_dict['species_id'], meta_dict['LineList']))
     #     cursor.close()
 
-    cursor = db.cursor()
+    
     # Create new metadata entry in database
-    print 'Creating new entry in metadata table...'
-    try:
-        cursor.execute(query("species_metadata", meta_dict), meta_dict.values())
-    except sqldb.ProgrammingError:
-        print "The folllowing query failed: "
-        print query_err("species_metadata", meta_dict).format(*meta_dict.values())
-    print 'Finished successfully.\n'
-    cursor.close()
+    if (update == 0) or (update == 1 and push_metadata_flag == True):
+        cursor = db.cursor()
+        print 'Creating new entry in metadata table...'
+        try:
+            cursor.execute(query("species_metadata", meta_dict), meta_dict.values())
+        except sqldb.ProgrammingError:
+            print "The folllowing query failed: "
+            print query_err("species_metadata", meta_dict).format(*meta_dict.values())
+        print 'Finished successfully.\n'
+        cursor.close()
 
     print 'Pushing linelist (%s entries) to database...' % num_entries
     cursor = db.cursor()
@@ -772,10 +792,9 @@ def main(db):
         if choice2[68] == 'X': # New molecule
             linelist, species_final, metadata_final = new_molecule(cat_entry, db)
             push_molecule(db, linelist, species_final, metadata_final, update=0)
-
         else:  # Molecule already exists in Splatalogue database
-            linelist, metadata_final = process_update(cat_entry, res[int(choice2[0:5])], db)
-            push_molecule(db, linelist, {}, metadata_final, update=1)
+            linelist, metadata_final, push_metadata_flag, append_lines_flag = process_update(cat_entry, res[int(choice2[0:5])], db)
+            push_molecule(db=db, ll=linelist, spec_dict={}, meta_dict=metadata_final, push_metadata_flag=push_metadata_flag, append_lines_flag=append_lines_flag, update=1)
 
         choice3 = eg.buttonbox(msg='Do you want to update another CDMS entry?', choices=['Yes', 'No'])
 
