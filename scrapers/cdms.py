@@ -194,7 +194,7 @@ class CDMSMolecule:
         # Dictionaries to connect string values in CDMS metadata to SQL columns
         q_temps = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.0': 'Q_500_0', '300.0': 'Q_300_0',
                    '225.0': 'Q_225_0', '150.0': 'Q_150_0', '75.00': 'Q_75_00', '37.50': 'Q_37_50',
-                   '18.75': 'Q_18_75', '9.375': 'Q_9_375', '5.00': 'Q_5_00', '2.725': 'Q_2_275'}
+                   '18.75': 'Q_18_75', '9.375': 'Q_9_375', '5.000': 'Q_5_00', '2.725': 'Q_2_725'}
         dipoles = {'a / D': 'MU_A', 'b / D': 'MU_B', 'c / D': 'MU_C'}
 
         # Initialize scraper
@@ -304,7 +304,8 @@ class CDMSMolecule:
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
         self.cat['`v4.0`'] = '4'
-
+        for key in self.metadata:
+            print key, ': ', self.metadata[key]
 
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
