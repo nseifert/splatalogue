@@ -48,7 +48,10 @@ class CDMSMolecule:
         widths = [13, 8, 8, 2, 10, 3, 7, 4]  # Character widths for each CAT file entry, not including quantum numbers
         w_sum = sum(widths)
         parser = make_parser(tuple(widths))
-        print '========\n'+ cat_url + '\n========\n'
+        try:
+            print '========\n'+ cat_url.name + '\n========\n'
+        except AttributeError: # cat_url is a string:
+            print '========\n'+ cat_url + '\n========\n'
         if local == 0:
             cat_inp = urllib2.urlopen(cat_url).read().split('\n')
         else:
@@ -665,9 +668,9 @@ def push_molecule(db, ll, spec_dict, meta_dict, update=0):
             print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
         print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
-        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+        cursor.execute('DELETE FROM main WHERE species_id=%s AND `v4.0`=4 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
         print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
-        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
+        cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v4_0 = 4', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
 
     else:
