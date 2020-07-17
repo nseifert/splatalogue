@@ -268,7 +268,7 @@ class JPLMolecule:
 
 
         self.cat['ll_id'] = self.ll_id
-        self.cat['`v4.0`'] = 4
+        self.cat['`v3.0`'] = 3
 
 def get_updates():
     BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
@@ -464,8 +464,8 @@ def new_molecule(mol, sql_conn=None):
 
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
-    metadata_to_push['v3_0'] = '0'
-    metadata_to_push['v4_0'] = '4'
+    metadata_to_push['v3_0'] = '3'
+    #metadata_to_push['v4_0'] = '0'
     metadata_to_push['Ref20'] = mol.meta_url
     metadata_to_push['LineList'] = mol.ll_id
 
