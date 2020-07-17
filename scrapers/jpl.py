@@ -310,11 +310,13 @@ def process_update(mol, entry=None, sql_conn=None):
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
     sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
 
+    dict_test = {key: value for key, value in zip(db_meta_cols, db_meta)}
+
     results = sql_cur.fetchall()
     print results
     if len(results) == 1:
         db_meta = results[0]
-
+    
     elif len(results) > 1:  # There's more than one linelist associated with the chosen species_id
         chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update (JPL linelist = 12)", "Entry list", chc)
@@ -366,6 +368,7 @@ def process_update(mol, entry=None, sql_conn=None):
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
     sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta[0],))
     db_species = sql_cur.fetchall()[0]
+
 
     if db_meta[52] != mol.ll_id:
         species_entry_dict = {key: value for (key,value) in [(db_species_cols[i], val) for i, val in enumerate(db_species)]}

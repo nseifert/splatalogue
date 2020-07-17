@@ -306,7 +306,7 @@ class CDMSMolecule:
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
-        self.cat['`v4.0`'] = '4'
+        self.cat['`v3.0`'] = '3'
         for key in self.metadata:
             print key, ': ', self.metadata[key]
 
@@ -402,6 +402,8 @@ def process_update(mol, entry=None, sql_conn=None):
                 idx = i
                 break
         db_meta = results[idx]
+
+    db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
     
     metadata_push_answer = eg.buttonbox(msg='Do you want to append a new metadata entry? For instance, say no if you are merely adding a hyperfine linelist to an existing entry.', choices=['Yes', 'No'])
     if metadata_push_answer == 'Yes':
@@ -414,7 +416,7 @@ def process_update(mol, entry=None, sql_conn=None):
     else:
         append_lines = False
 
-    if db_meta[52] != mol.ll_id:
+    if db_meta['LineList'] != mol.ll_id:
         # Only entry in database isn't from the linelist of the entry that user wants to update
         ref_idx = 23
         mol.metadata['v1_0'] = '0'
@@ -428,15 +430,15 @@ def process_update(mol, entry=None, sql_conn=None):
         if new_name is not '':
             mol.metadata['Name'] = new_name
     else:
-        mol.metadata['Name'] = db_meta[2]
+        mol.metadata['Name'] = db_meta['Name']
         # Check to see first column to place reference info
-        ref_idx = 23
+        ref_idx = 1
         while True:
-            if not db_meta[ref_idx]:
+            if not db_meta['Ref%s'%ref_idx]:
                 break
             ref_idx += 1
 
-    mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
+    mol.metadata[db_meta_cols[ref_idx-1]] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://www.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
     mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('file=e','file=c')
@@ -446,10 +448,10 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SHOW columns FROM species")
 
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta[0],))
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta['species_id'],))
     db_species = sql_cur.fetchall()[0]
 
-    if db_meta[52] != mol.ll_id:
+    if db_meta['LineList'] != mol.ll_id:
         species_entry_dict = {key: value for (key, value) in [(db_species_cols[i], val) for i, val
                                                               in enumerate(db_species)]}
 
@@ -472,13 +474,13 @@ def process_update(mol, entry=None, sql_conn=None):
     # sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s",
     #                 (db_meta[0], mol.ll_id, db_meta[53], db_meta[54]))
 
-    if db_meta[52] == mol.ll_id:
+    if db_meta['LineList'] == mol.ll_id:
         metadata_to_push = {}
         for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
                 metadata_to_push[col_name] = mol.metadata[col_name]
-            elif db_meta[i] is not None:
-                metadata_to_push[col_name] = db_meta[i]
+            elif db_meta[col_name] is not None:
+                metadata_to_push[col_name] = db_meta[col_name]
             else:
                 continue
     else:
@@ -499,14 +501,15 @@ def process_update(mol, entry=None, sql_conn=None):
                                        choice_idx=choice_idx)
         fmtted_qns.append(format)
 
-    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
-
     if metadata_to_push['ism'] == 1:
         mol.cat['Lovas_NRAO'] = 1
     else:
         mol.cat['Lovas_NRAO'] = 0
         # mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
 
+    # Push formatted quantum numbers to linelist
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
+    
     # Prep linelist for submission to
     sql_cur.execute("SHOW columns FROM main")
     ll_splat_col_list = [tup[0] for tup in sql_cur.fetchall()]
