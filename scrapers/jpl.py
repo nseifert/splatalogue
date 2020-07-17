@@ -327,6 +327,8 @@ def process_update(mol, entry=None, sql_conn=None):
                 break
         db_meta = results[idx]
 
+    db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
+
     metadata_push_answer = eg.buttonbox(msg='Do you want to append a new metadata entry? For instance, say no if you are merely adding a hyperfine linelist to an existing entry.', choices=['Yes', 'No'])
     if metadata_push_answer == 'Yes':
         push_metadata_flag = True
@@ -350,15 +352,15 @@ def process_update(mol, entry=None, sql_conn=None):
         if new_name is not '':
             mol.metadata['Name'] = new_name
     else:
-        mol.metadata['Name'] = db_meta[2]
+        mol.metadata['Name'] = db_meta['Name']
         # Check to see first column to place reference info
-        ref_idx = 23
+        ref_idx = 1
         while True:
-            if db_meta[ref_idx] == None:
+            if not db_meta['Ref%s'%ref_idx]:
                 break
             ref_idx += 1
 
-    mol.metadata[db_meta_cols[ref_idx]] = mol.metadata.pop('Ref1')
+    mol.metadata[db_meta_cols[ref_idx-1]] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
@@ -366,11 +368,11 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SHOW columns FROM species")
 
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta[0],))
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta['species_id'],))
     db_species = sql_cur.fetchall()[0]
 
 
-    if db_meta[52] != mol.ll_id:
+    if db_meta['LineList'] != mol.ll_id:
         species_entry_dict = {key: value for (key,value) in [(db_species_cols[i], val) for i, val in enumerate(db_species)]}
         ism_set = ('ism_hotcore', 'ism_diffusecloud', 'comet', 'extragalactic', 'known_ast_molecules')
         ism_set_dict = {key: value for (key, value) in [(key, species_entry_dict[key]) for key in ism_set]}
@@ -391,13 +393,13 @@ def process_update(mol, entry=None, sql_conn=None):
     # sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s",
     #                 (db_meta[0], mol.ll_id, db_meta[53], db_meta[54]))
 
-    if db_meta[52] == mol.ll_id:
+    if db_meta['LineList'] == mol.ll_id:
         metadata_to_push = {}
-        for i,col_name in enumerate(db_meta_cols):
+        for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
                 metadata_to_push[col_name] = mol.metadata[col_name]
-            elif db_meta[i] is not None:
-                metadata_to_push[col_name] = db_meta[i]
+            elif db_meta[col_name] is not None:
+                metadata_to_push[col_name] = db_meta[col_name]
             else:
                 continue
     else:

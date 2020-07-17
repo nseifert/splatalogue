@@ -493,7 +493,7 @@ def process_update(mol, entry=None, sql_conn=None):
     qn_fmt = mol.cat['qn_code'][0]
 
     fmtted_qns = []
-
+    print 'Preparing linelist...'
     # Iterate through rows and add formatted QN
     choice_idx = None
     for idx, row in mol.cat.iterrows():
@@ -501,14 +501,14 @@ def process_update(mol, entry=None, sql_conn=None):
                                        choice_idx=choice_idx)
         fmtted_qns.append(format)
 
+    # Push formatted quantum numbers to linelist
+    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
+
     if metadata_to_push['ism'] == 1:
         mol.cat['Lovas_NRAO'] = 1
     else:
         mol.cat['Lovas_NRAO'] = 0
         # mol.cat['Lovas_NRAO'] = pd.Series(np.ones(len(mol.cat.index)), index=mol.cat.index)
-
-    # Push formatted quantum numbers to linelist
-    mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
     
     # Prep linelist for submission to
     sql_cur.execute("SHOW columns FROM main")
