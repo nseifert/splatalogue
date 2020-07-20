@@ -53,6 +53,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                       'tag': 'Asymmetric top with non-zero total electronic spin and 1 hyperfine nuclei'},
                       ),
 
+                1:   ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Atomic hyperfine transitions, pure J\'\' - J\''},),
+                
                 112: ({'fmt': 'N = {:d} - {:d}, 2J = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Hunds case (A) linear'},
                       ),
 
