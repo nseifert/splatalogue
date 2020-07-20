@@ -10,11 +10,11 @@ import MySQLdb as sqldb
 import easygui as eg
 from QNFormat import *
 import sys
+import os
 
 class CDMSMolecule:
 
-    @staticmethod
-    def parse_cat(cat_url=None, local=0):
+    def parse_cat(self, cat_url=None, local=0):
         """ This function takes a Pickett prediction file (a so-called "CAT" file) and converts it into a Pandas DataFrame. 
         This code should work for any well-formed CAT file, and works for all CDMS and JPL entries, as well as custom, user-generated
         CAT files. It is unclear if there are any edge cases this misses as CAT files are fairly rigorous in their formatting.
@@ -53,7 +53,14 @@ class CDMSMolecule:
         except AttributeError: # cat_url is a string:
             print '========\n'+ cat_url + '\n========\n'
         if local == 0:
-            cat_inp = urllib2.urlopen(cat_url).read().split('\n')
+            cat_inp = urllib2.urlopen(cat_url).read()
+
+            # Save cat_inp to working directory
+            with open(self.working_directory+'/'+self.tag+"_"+self.name+'.cat','wb') as otpt:
+                otpt.write(cat_inp)
+
+            # Split by line to ready CAT file for parse
+            cat_inp = cat_inp.split('\n')
         else:
             cat_inp = cat_url.read().split('\n')
 
@@ -202,7 +209,12 @@ class CDMSMolecule:
 
         # Initialize scraper
         meta_page = urllib2.urlopen(meta_url)
-        soup = BeautifulSoup(meta_page.read(), 'lxml')
+        meta_page_read = meta_page.read()
+
+        with open(self.working_directory+'/'+self.tag+"_"+self.name+'.html','wb') as otpt:
+            otpt.write(meta_page_read)
+
+        soup = BeautifulSoup(meta_page_read, 'lxml')
 
         # Grab formula
         formula = soup.find_all('caption')[0].get_text().split('\n')[0].encode('utf-8')
@@ -290,7 +302,31 @@ class CDMSMolecule:
 
         return cat
 
-    def __init__(self, cdms_inp, custom=False, ll_id='10', custom_path=""):
+    def create_directory(self):
+        save_path = 'working_molecules/'
+        folder_name = 'CDMS_'+self.tag+"_"+self.name+'_'+time.strftime('%b%Y', self.date)
+
+        total_path = save_path+folder_name
+        # Check to see if folder already exists; if so, we'll append an integer to it
+        if os.path.isdir(total_path):
+            # There might be more than 1, so we should add +1 to the tally if so
+            dupe_idx = 1
+            while os.path.isdir(total_path+'_{:d}'.format(dupe_idx)):
+                dupe_idx += 1
+            total_path = save_path+folder_name+'_{:d}'.format(dupe_idx)
+
+
+        try:
+            os.makedirs(total_path)
+        except OSError:
+            print('Creation of directory %s failed' %(total_path,))
+        else:
+            print('Created working directory for molecular information at: %s' %(total_path,))
+
+        return total_path
+        
+
+    def __init__(self, cdms_inp, custom=False, ll_id='10', custom_path="", write_directory=True):
         base_url = "http://cdms.astro.uni-koeln.de"
 
         self.tag = cdms_inp[0]
@@ -299,18 +335,26 @@ class CDMSMolecule:
         self.cat_url = cdms_inp[3]
         self.meta_url = cdms_inp[4]
         self.ll_id = ll_id
+        if write_directory:
+            self.working_directory = self.create_directory()
         if custom:
             self.cat = self.parse_cat(cat_url=open(custom_path, 'r'), local=1)
         else:
             self.cat = self.parse_cat(cat_url=base_url+self.cat_url)
-
+        
         self.formula, self.metadata = self.get_metadata(base_url+self.meta_url)
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
         self.cat['`v3.0`'] = '3'
+
+        # Write parsed CAT dataframe to CSV file
+        self.cat.to_csv(path_or_buf=self.working_directory+'/'+self.tag+"_"+self.name+'_parsed_cat.csv')
         for key in self.metadata:
             print key, ': ', self.metadata[key]
+        
+
+
 
 class SplatSpeciesResultList(list):
     def __new__(cls, data=None):
