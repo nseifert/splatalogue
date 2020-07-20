@@ -247,7 +247,10 @@ class CDMSMolecule:
                         metadata['C'] = pull_float(temp)[0].encode('utf-8')
 
         metadata['Ref1'] = str(soup.find_all('p')[0]).replace('\n', ' ')
+        # Some hard-coded replace statements for weird things that don't parse correctly when displaying the metadata
+        print(metadata["Ref1"].replace('\xc2\x96','-')) # Fixes long dashes that Holger sometimes likes to use
 
+ 
         return formula, metadata
 
     # Calculates all derived parameters from data in the CAT file, e.g. lower/upper state energies, sijmu2 values, etc. 

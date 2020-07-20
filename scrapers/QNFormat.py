@@ -54,7 +54,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                       ),
 
                 1:   ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Atomic hyperfine transitions, pure J\'\' - J\''},),
-                
+
                 112: ({'fmt': 'N = {:d} - {:d}, 2J = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Hunds case (A) linear'},
                       ),
 
@@ -81,7 +81,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        {'fmt':'', 'series':[1], 'tag': 'Generic asymmetric top with methyl-like internal rotation'},
                        {'fmt':'', 'series':[2], 'tag': 'n-propyl cyanide, gauche/anti combined fit'},
                        {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'},
-                       {'fmt':'', 'series':[4], 'tag': 'Dimethyl ether, two methyl rotor fit (CDMS)'}
+                       {'fmt':'', 'series':[4], 'tag': 'Dimethyl ether, two methyl rotor fit (CDMS)'},
+                       {'fmt':'', 'series':[5], 'tag': 'Methyl mercaptan, internal rotation with torsional excited states'}
                        ),
 
                 224: ({'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
@@ -232,6 +233,33 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         fmt += ", EA"
                     else:
                         fmt += ", AE"
+                    order = [0, 1, 2, 4, 5, 6]
+                
+                if customChoice == 5:
+                    # First build upper state QNs
+                    fmt = '{:d}({:d},{:d})'
+                    if int(qn_series[1]) > 0:
+                        fmt += "<sup>+</sup>"
+                    else:
+                        fmt += "<sup>-</sup>"
+                    fmt += ' - {:d}({:d},{:d})'
+                    # Now lower state
+                    if int(qn_series[5]) > 0:
+                        fmt += "<sup>+</sup>"
+                    else:
+                        fmt += "<sup>-</sup>"
+                    # Now A or E
+                    if int(qn_series[3]) in [1, -2, 4]:
+                        fmt += " E"
+                    else:
+                        fmt += " A"
+                    # Now torsional state
+                    if int(qn_series[3]) in [0,1]:
+                        fmt += ', v<sub>t</sub> = 0'
+                    elif int(qn_series[3]) in [-2, -3]:
+                        fmt += ', v<sub>t</sub> = 1'
+                    else:
+                        fmt += ', v<sub>t</sub> = 2'
                     order = [0, 1, 2, 4, 5, 6]
 
             elif fmt_idx == 203:
