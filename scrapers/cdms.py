@@ -250,10 +250,6 @@ class CDMSMolecule:
         # Some hard-coded replace statements for weird things that don't parse correctly when displaying the metadata
         metadata['Ref1'] = metadata["Ref1"].replace('\xc2\x96','-') # Fixes long dashes that Holger sometimes likes to use
 
-        print(metadata['Ref1'])
-        import sys 
-        sys.exit()
-
         return formula, metadata
 
     # Calculates all derived parameters from data in the CAT file, e.g. lower/upper state energies, sijmu2 values, etc. 
