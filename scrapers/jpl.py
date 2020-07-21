@@ -405,6 +405,17 @@ def process_update(mol, entry=None, sql_conn=None):
     else:
         metadata_to_push = mol.metadata
 
+    # Generate new unique ID for metadata entry
+    try:
+        sql_cur.execute('SELECT MAX(line_id) FROM species_metadata')
+    except: # line_id doesn't exist in the database so just skip this step
+        pass 
+    else: 
+        try:
+            metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+        except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
+            metadata_to_push['line_id'] = 1
+
     # for key in metadata_to_push:
     #     print '%s: %s' %(key, metadata_to_push[key])
 
@@ -473,6 +484,17 @@ def new_molecule(mol, sql_conn=None):
                                % metadata_to_push['Name'], title="Metadata Name Change")
     if new_name is not '':
         metadata_to_push['Name'] = new_name
+
+    # Generate new unique ID for metadata entry
+    try:
+        sql_cur.execute('SELECT MAX(line_id) FROM species_metadata')
+    except: # line_id doesn't exist in the database so just skip this step
+        pass 
+    else: 
+        try:
+            metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+        except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
+            metadata_to_push['line_id'] = 1
 
     tag_num = mol.id
     tag_prefix = ''.join(('0',)*(6-len(tag_num)))+tag_num[:(len(tag_num)-3)]
