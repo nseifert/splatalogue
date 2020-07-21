@@ -457,9 +457,9 @@ def process_update(mol, entry=None, sql_conn=None):
     else:
         push_metadata_flag = False
     append_lines = eg.buttonbox(msg='Do you want to append the linelist, or replace the current linelist in the database?', choices=['Append', 'Replace'])
-    if append_lines == 'Append':
+    if append_lines == 'Append' or not append_lines:
         append_lines = True
-    else:
+    elif append_lines == 'Replace':
         append_lines = False
 
     if db_meta['LineList'] != mol.ll_id:
@@ -532,6 +532,12 @@ def process_update(mol, entry=None, sql_conn=None):
     else:
         metadata_to_push = mol.metadata
 
+    # Generate new unique ID for metadata entry
+    sql_cur.execute('SELECT MAX(line_id) FROM species_metadata')
+    try:
+        metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
+        metadata_to_push['line_id'] = 1
     # for key in metadata_to_push:
     #     print '%s: %s' %(key, metadata_to_push[key])
 
