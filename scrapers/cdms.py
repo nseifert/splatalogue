@@ -440,7 +440,7 @@ def process_update(mol, entry=None, sql_conn=None):
         db_meta = results[0]
 
     else:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' % (a[3], a[52], a[53], a[54]) for a in results]
+        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[4], a[55], a[57], a[59]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
@@ -463,28 +463,29 @@ def process_update(mol, entry=None, sql_conn=None):
         append_lines = False
 
     if db_meta['LineList'] != mol.ll_id:
-        # Only entry in database isn't from the linelist of the entry that user wants to update
-        ref_idx = 23
-        mol.metadata['v1_0'] = '0'
-        mol.metadata['v2_0'] = '0'
-        mol.metadata['v3_0'] = '3'
-        #mol.metadata['v4_0'] = '4'
         mol.metadata['LineList'] = mol.ll_id
-        new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
-                                   "Leave blank otherwise. Current name is %s"
-                               % mol.metadata['Name'], title="Metadata Name Change")
-        if new_name is not '':
-            mol.metadata['Name'] = new_name
+        # Only entry in database isn't from the linelist of the entry that user wants to update
+    mol.metadata['v1_0'] = '0'
+    mol.metadata['v2_0'] = '0'
+    mol.metadata['v3_0'] = '3'
+    #mol.metadata['v4_0'] = '4'
+        
+    new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
+                                "Leave blank otherwise. Current name is %s"
+                            % mol.metadata['Name'], title="Metadata Name Change")
+    if new_name is not '':
+        mol.metadata['Name'] = new_name
     else:
         mol.metadata['Name'] = db_meta['Name']
-        # Check to see first column to place reference info
-        ref_idx = 1
-        while True:
-            if not db_meta['Ref%s'%ref_idx]:
-                break
-            ref_idx += 1
+    
+    # Check to see first column to place reference info
+    # ref_idx = 1
+    # while True:
+    #     if not db_meta['Ref%s'%ref_idx]:
+    #         break
+    #     ref_idx += 1
 
-    mol.metadata[db_meta_cols[ref_idx-1]] = mol.metadata.pop('Ref1')
+    mol.metadata['Ref%s'%ref_idx] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://www.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
     mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('file=e','file=c')
@@ -754,11 +755,12 @@ def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
 
         if push_metadata_flag:
-            print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
-            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
-        if not append_lines_flag:
             print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
             cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
+
+        if not append_lines_flag:
+            print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
+            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
         cursor.close()
 
     else:
