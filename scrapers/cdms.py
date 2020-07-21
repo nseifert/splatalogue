@@ -592,6 +592,13 @@ def new_molecule(mol, sql_conn=None):
     except TypeError: # Gets thrown if there are no species in the table; therefore species ID should be "1".
         metadata_to_push['species_id'] = "1"
 
+    # Generate new unique ID for metadata entry
+    sql_cur.execute('SELECT MAX(line_id) FROM species_metadata')
+    try:
+        metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+    except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
+        metadata_to_push['line_id'] = 1
+
     # Odds and ends; we default to v4_0 for splat_2019    
     metadata_to_push['v1_0'] = '0'
     metadata_to_push['v2_0'] = '0'
