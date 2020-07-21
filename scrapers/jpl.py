@@ -340,27 +340,23 @@ def process_update(mol, entry=None, sql_conn=None):
     else:
         append_lines = False
 
-    if db_meta[52] != mol.ll_id:
-        # Only entry in database isn't from the linelist of the entry that user wants to update
-        ref_idx = 23
-        mol.metadata['v1_0'] = '0'
-        mol.metadata['v2_0'] = '0'
-        mol.metadata['v3_0'] = '3'
+    if db_meta['LineList'] != mol.ll_id:
         mol.metadata['LineList'] = mol.ll_id
-        new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? Leave blank otherwise. Current name is %s"
-                               % mol.metadata['Name'], title="Metadata Name Change")
-        if new_name is not '':
-            mol.metadata['Name'] = new_name
+        # Only entry in database isn't from the linelist of the entry that user wants to update
+    mol.metadata['v1_0'] = '0'
+    mol.metadata['v2_0'] = '0'
+    mol.metadata['v3_0'] = '3'
+    #mol.metadata['v4_0'] = '4'
+        
+    new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
+                                "Leave blank otherwise. Current name is %s"
+                            % mol.metadata['Name'], title="Metadata Name Change")
+    if new_name is not '':
+        mol.metadata['Name'] = new_name
     else:
         mol.metadata['Name'] = db_meta['Name']
-        # Check to see first column to place reference info
-        ref_idx = 1
-        while True:
-            if not db_meta['Ref%s'%ref_idx]:
-                break
-            ref_idx += 1
 
-    mol.metadata[db_meta_cols[ref_idx-1]] = mol.metadata.pop('Ref1')
+    # mol.metadata['Ref1'] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = mol.meta_url
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
@@ -607,11 +603,12 @@ def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_
             print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
         if push_metadata_flag:
-            print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
-            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
-        if not append_lines_flag:
             print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
             cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
+        if not append_lines_flag:
+            print 'Removing previous current version lines if available...' # Prevents doubling of entries, such as in case of an accidental update
+            cursor.execute('DELETE FROM main WHERE species_id=%s AND `v3.0`=3 AND ll_id=%s', (meta_dict['species_id'], meta_dict['LineList']))
+
         cursor.close()
     else:
         cursor = db.cursor()
