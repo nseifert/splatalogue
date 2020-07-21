@@ -318,7 +318,7 @@ def process_update(mol, entry=None, sql_conn=None):
         db_meta = results[0]
     
     elif len(results) > 1:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v1: %s \t v2: %s' %(a[3], a[52], a[53], a[54]) for a in results]
+        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[3], a[54], a[57], a[58]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update (JPL linelist = 12)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):

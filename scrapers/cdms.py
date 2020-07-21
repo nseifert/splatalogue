@@ -440,7 +440,7 @@ def process_update(mol, entry=None, sql_conn=None):
         db_meta = results[0]
 
     else:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[4], a[55], a[57], a[59]) for a in results]
+        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[3], a[54], a[57], a[58]) for a in results]
         user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
