@@ -485,7 +485,7 @@ def process_update(mol, entry=None, sql_conn=None):
     #         break
     #     ref_idx += 1
 
-    mol.metadata['Ref%s'%ref_idx] = mol.metadata.pop('Ref1')
+    #mol.metadata['Ref%s'%ref_idx] = mol.metadata.pop('Ref1')
 
     mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://www.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
     mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('file=e','file=c')
