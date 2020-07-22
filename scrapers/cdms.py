@@ -549,6 +549,7 @@ def process_update(mol, entry=None, sql_conn=None):
         mol.metadata['ism_diffuse'] = species_entry_dict['ism_diffusecloud']
         mol.metadata['species_id'] = species_entry_dict['species_id']
 
+    mol.metadata['species_id_noparens'] = mol.s_name_noparens
     # for row in zip(db_meta_cols, db_meta):
     #     print row[0],'\t',row[1]
 
@@ -656,6 +657,7 @@ def new_molecule(mol, sql_conn=None):
     metadata_to_push['Ref20'] = '<a href=' + "\"" + 'http://cdms.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
     metadata_to_push['Ref19'] = metadata_to_push['Ref20'].replace('cdmsinfo?file=e','cdmssearch?file=c').replace('Entry', 'CAT file')
     metadata_to_push['LineList'] = mol.ll_id
+    metadata_to_push['species_id_noparens'] = mol.s_name_noparens
 
     # If you want to give the molecule a pretty new, or non-standard, name
     new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name?"
