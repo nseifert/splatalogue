@@ -195,7 +195,41 @@ class CDMSMolecule:
             return cat
         
         add(self.cat, row_name, value)
+
+    def parse_formula(self, input_formula):
+
+        common_isotopes = ['13C', '15N','18O','17O','33S','34S','36S', '40Ar', '26Al','30Si','29Si','65Cu','52Cr','66Zn', '68Zn','35Cl','36Cl','37Cl','39K', '40K', '41K','46Ti','50Ti']
+
         
+        # Get rid of any junk after a comma, usually some state descriptor
+        if ',' in input_formula:
+            output_formula = input_formula.split(',')[0]
+            leftovers = ' '.join(input_formula.split(',')[1:])
+        else: 
+            output_formula = input_formula
+            leftovers = ''
+
+        for isotope in common_isotopes:
+            # Do isotopes first
+            if isotope in output_formula:
+                num_part, element = re.findall(r'[^\W\d_]+|\d+', isotope)
+                output_formula = output_formula.replace(isotope, '<sup>'+num_part+'</sup>'+element)
+        # Replace every other number with <sub>
+        atoms_with_multiplicity = re.findall(r'[A-Z][a-z]*\d+', output_formula)
+        for atom in atoms_with_multiplicity:
+            element, num_part = re.findall(r'[^\W\d_]+|\d+', atom)
+            output_formula = output_formula.replace(atom, element+'<sub>'+num_part+'</sub>',1)
+
+        # Add <sub> to any parenthesized subgroup of the formula
+        parenthetical_subgroups = re.findall(r'\)\d+', output_formula)
+        for subgroup in parenthetical_subgroups:
+            output_formula = output_formula.replace(subgroup, ')'+'<sub>'+subgroup.split(')')[1]+'</sub>')
+
+        # Now, let's build s_name and s_name_noparens
+        s_name = output_formula.replace('<sup>','(').replace('</sup>', ')').replace('<sub>','').replace('</sub>','')
+        s_name_noparens = s_name.replace('(','').replace(')','')
+        return output_formula+leftovers, s_name+leftovers, s_name_noparens+leftovers
+
     # Scrapes CDMS site to generate metadata 
     def get_metadata(self, meta_url):
         print self.name
@@ -262,7 +296,7 @@ class CDMSMolecule:
         # Some hard-coded replace statements for weird things that don't parse correctly when displaying the metadata
         metadata['Ref1'] = metadata["Ref1"].replace('\xc2\x96','-') # Fixes long dashes that Holger sometimes likes to use
 
-        return formula, metadata
+        return self.parse_formula(formula), metadata
 
     # Calculates all derived parameters from data in the CAT file, e.g. lower/upper state energies, sijmu2 values, etc. 
     # Currently does NOT calculate sij values, because of the case-by-case, or even line-by-line, difficulty on how to identify the electric dipole to divide by
@@ -342,7 +376,7 @@ class CDMSMolecule:
         else:
             self.cat = self.parse_cat(cat_url=base_url+self.cat_url)
         
-        self.formula, self.metadata = self.get_metadata(base_url+self.meta_url)
+        (self.formula, self.s_name, self.s_name_noparens), self.metadata = self.get_metadata(base_url+self.meta_url)
 
         self.cat = self.calc_derived_params(self.cat, self.metadata)
         self.cat['ll_id'] = self.ll_id
@@ -648,8 +682,8 @@ def new_molecule(mol, sql_conn=None):
 
     # Self-explanatory: This is where we build the species row entry
     species_to_push = OrderedDict([('species_id', metadata_to_push['species_id']),
-                                   ('name', mol.formula), ('chemical_name', None), ('s_name', mol.formula),
-                                   ('s_name_noparens', mol.formula.replace('(', '').replace(')', '')),
+                                   ('name', mol.formula), ('chemical_name', None), ('s_name', mol.s_name),
+                                   ('s_name_noparens', mol.s_name_noparens),
                                    ('SPLAT_ID', splat_id), ('atmos', '0'), ('potential', '1'), ('probable', '0'),
                                    ('known_ast_molecules', '0'), ('planet', '0'), ('ism_hotcore', '0'),
                                    ('ism_diffusecloud', '0'), ('comet', '0'), ('extragalactic', '0'),
