@@ -98,6 +98,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 255: ({'fmt': 'J = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', 'series':[2, 7, 1, 6, 3, 8, 4, 9], 'frac_series':[2,7],  'frac_shift': -1, 'tag': 'Linear molecule with two quads and parity'},
                       ),
 
+                101: ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Linear molecule'}, ),
+
                 102: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[0, 2, 1, 3], 'tag': 'Linear molecule in S state'},
                       ),
 
@@ -512,21 +514,25 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         order = [0, 5, 3, 8, 1, 6, 4, 9, 2, 7]      
 
 
-    if choice_idx is not None:
-        if HasFractions:
-            #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
-            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s) 
-            try:
-                return fmt.format(*[new_series[x] for x in order]), choice_idx
-            except:
-                print new_series, qn_series
-                raise
+    try: 
+        if choice_idx is not None:
+            if HasFractions:
+                #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
+                new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s) 
+                try:
+                    return fmt.format(*[new_series[x] for x in order]), choice_idx
+                except:
+                    print new_series, qn_series
+                    raise
+            else:
+                return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
         else:
-            return fmt.format(*[int(qn_series[x]) for x in order]), choice_idx
-    else:
-        if HasFractions:
-            #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
-            new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
-            return fmt.format(*[new_series[x] for x in order]), ''
-        else:
-            return fmt.format(*[int(qn_series[x]) for x in order]), ''
+            if HasFractions:
+                #print 'Fraction shift: %s \t\t Fraction series: %s \t\t QN list: %s'%(frac_sh, frac_s, qn_series)
+                new_series = make_frac(order, qn_series, shift=frac_sh, frac_series=frac_s)
+                return fmt.format(*[new_series[x] for x in order]), ''
+            else:
+                return fmt.format(*[int(qn_series[x]) for x in order]), ''
+    except:
+        print('WARNING: If you are seeing this error it probably means the QN code for this CAT has not been programmed into QNFormat. Please contact your friendly local developer for help (e.g. Nate)')
+        raise
