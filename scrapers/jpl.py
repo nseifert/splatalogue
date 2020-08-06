@@ -310,7 +310,7 @@ def process_update(mol, entry=None, sql_conn=None):
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
     sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
 
-    dict_test = {key: value for key, value in zip(db_meta_cols, db_meta)}
+    
 
     results = sql_cur.fetchall()
     print results
@@ -396,10 +396,12 @@ def process_update(mol, entry=None, sql_conn=None):
         for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
                 metadata_to_push[col_name] = mol.metadata[col_name]
-            elif db_meta[col_name] is not None:
-                metadata_to_push[col_name] = db_meta[col_name]
-            else:
-                continue
+            #elif db_meta[col_name] is not None:
+            #    metadata_to_push[col_name] = db_meta[col_name]
+            else: # Hacky fix to ensure clean columns -- this cleans up columns with no default values that don't allow NULL or are values that aren't otherwise filled in by this routine
+                print col_name
+                if col_name in ['ism', 'species_id', 'LineList']:
+                    metadata_to_push[col_name] = db_meta[col_name]
     else:
         metadata_to_push = mol.metadata
 

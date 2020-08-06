@@ -505,7 +505,7 @@ def process_update(mol, entry=None, sql_conn=None):
     mol.metadata['v1_0'] = '0'
     mol.metadata['v2_0'] = '0'
     mol.metadata['v3_0'] = '3'
-    #mol.metadata['v4_0'] = '4'
+    mol.metadata['v4_0'] = '0'
         
     new_name = eg.enterbox(msg="Do you want to change the descriptive metadata molecule name? "
                                 "Leave blank otherwise. Current name is %s"
@@ -564,10 +564,13 @@ def process_update(mol, entry=None, sql_conn=None):
         for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
                 metadata_to_push[col_name] = mol.metadata[col_name]
-            elif db_meta[col_name] is not None:
-                metadata_to_push[col_name] = db_meta[col_name]
-            else:
-                continue
+            #elif db_meta[col_name] is not None:
+            #    metadata_to_push[col_name] = db_meta[col_name]
+            else: # Hacky fix to ensure clean columns -- this cleans up columns with no default values that don't allow NULL or are values that aren't otherwise filled in by this routine
+                print col_name
+                if col_name in ['ism', 'species_id', 'LineList']:
+                    metadata_to_push[col_name] = db_meta[col_name]
+
     else:
         metadata_to_push = mol.metadata
 
