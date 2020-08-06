@@ -100,8 +100,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                 101: ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Linear molecule'}, ),
 
-                102: ({'fmt': 'J = {:d} - {:d}', 'series':[0, 1], 'tag': 'Linear molecule in S state'},
-                      ),
+                102: ({'fmt': 'J = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule, S state, with hyperfine'},),
 
                 112: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}', 'series': [1, 3, 0, 2], 'tag': 'Linear molecule, S state, with hyperfine'},),
 
