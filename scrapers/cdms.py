@@ -485,11 +485,14 @@ def process_update(mol, entry=None, sql_conn=None):
 
     db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
     
-    metadata_push_answer = eg.buttonbox(msg='Do you want to append a new metadata entry? For instance, say no if you are merely adding a hyperfine linelist to an existing entry.', choices=['Yes', 'No'])
-    if metadata_push_answer == 'Yes':
-        push_metadata_flag = True
+    metadata_push_answer = eg.buttonbox(msg='Do you want to APPEND or REPLACE a new metadata entry, or DO NOTHING? Do nothing if you are merely adding a hyperfine linelist to an existing entry.', choices=['APPEND', 'REPLACE', 'DO NOTHING'])
+    if metadata_push_answer == 'APPEND':
+        push_metadata_flag = 'APPEND'
+    elif metadata_push_answer == 'REPLACE':
+        push_metadata_flag = 'REPLACE'
     else:
-        push_metadata_flag = False
+        push_metadata_flag = 'NO'
+
     append_lines = eg.buttonbox(msg='Do you want to append the linelist, or replace the current linelist in the database?', choices=['Append', 'Replace'])
     if append_lines == 'Append' or not append_lines:
         append_lines = True
@@ -573,11 +576,17 @@ def process_update(mol, entry=None, sql_conn=None):
         sql_cur.execute('SELECT MAX(line_id) FROM species_metadata')
     except: # line_id doesn't exist in the database so just skip this step
         pass 
-    else: 
-        try:
-            metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
-        except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
-            metadata_to_push['line_id'] = 1
+    else:
+        if push_metadata_flag == 'APPEND':
+            try:
+                metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0])+1)
+            except TypeError: # Gets thrown if there are no metadata entries in the table, thus line_id should be "1". 
+                metadata_to_push['line_id'] = 1
+        elif push_metadata_flag == 'REPLACE':
+            try: 
+                metadata_to_push['line_id'] = str(int(sql_cur.fetchall()[0][0]))
+            except TypeError: 
+                metadata_to_push['line_id'] = 1
     # for key in metadata_to_push:
     #     print '%s: %s' %(key, metadata_to_push[key])
 
@@ -675,7 +684,7 @@ def new_molecule(mol, sql_conn=None):
     # If there's more than one species in the splatalogue list with the same molecular mass, this finds the minimum value necessary to make it a unique ID
     if len(splat_id_list) > 0:
         max_id = max([int(x[0][3:]) for x in splat_id_list])
-        if max_id < 10:
+        if max_id < 9:
             splat_id = mol.tag[:3] + '0'+str(max_id+1)
         else:
             splat_id = mol.tag[:3] + str(max_id+1)
@@ -741,7 +750,7 @@ def new_molecule(mol, sql_conn=None):
     return final_cat, species_to_push, metadata_to_push
 
 
-def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_lines_flag=False, update=0):
+def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag='APPEND', append_lines_flag=False, update=0):
 
     # push_molecule() takes all the prepared entry data from either new_molecule() or process_update() and pushes it to the database
 
@@ -790,7 +799,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_
             print 'Removing previous Lovas NRAO recommended frequencies, if necessary...'
             cursor.execute('UPDATE main SET Lovas_NRAO = 0 WHERE species_id=%s', (meta_dict['species_id'],))
 
-        if push_metadata_flag:
+        if push_metadata_flag == 'REPLACE':
             print 'Removing duplicate metadata, if neeeded...' # In case of duplicate data
             cursor.execute('DELETE FROM species_metadata WHERE species_id=%s AND LineList=%s AND v3_0 = 3', (meta_dict['species_id'], meta_dict['LineList']))
 
@@ -825,7 +834,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag=True, append_
 
     
     # Create new metadata entry in database
-    if (update == 0) or (update == 1 and push_metadata_flag == True):
+    if (update == 0) or (update == 1 and push_metadata_flag in ('APPEND','REPLACE')):
         cursor = db.cursor()
         print 'Creating new entry in metadata table...'
         try:
