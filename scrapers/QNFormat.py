@@ -54,6 +54,10 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                       ),
 
                 1:   ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Atomic hyperfine transitions, pure J\'\' - J\''},),
+                
+                2:   ({'fmt': '<sup>3</sup>P<sub>{:d}</sub> - <sup>3</sup>P<sub>{:d}</sub>, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'N(II) atomic hyperfine lines'},),
+
+                11:  ({'fmt': '<sup>2</sup>P<sub>{}</sub> - <sup>2</sup>P<sub>{}</sub>', 'series': [0, 1], 'frac_series':[0,1], 'frac_shift': -1, 'tag': 'C(II) atomic lines'},),
 
                 112: ({'fmt': 'N = {:d} - {:d}, 2J = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Hunds case (A) linear'},
                       ),
