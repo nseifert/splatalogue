@@ -607,7 +607,9 @@ def process_update(mol, entry=None, sql_conn=None):
 
     # Push formatted quantum numbers to linelist
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
-
+    if any(mol.cat['resolved_QNs'] == ''):
+        print '======================\n'+'WARNING: The parsing code did not parse the quantum numbers. This may be due to the CAT QN code not being programmed into QNParser, but also might be due to you choosing not to parse the QNs.\n Please contact your friendly code developer (Nathan) if you need help in this regard.\n'+'======================'
+    
     if metadata_to_push['ism'] == 1:
         mol.cat['Lovas_NRAO'] = 1
     else:
@@ -743,6 +745,9 @@ def new_molecule(mol, sql_conn=None):
 
     # Push formatted quantum numbers to linelist
     mol.cat['resolved_QNs'] = pd.Series(fmtted_qns, index=mol.cat.index)
+    if any(mol.cat['resolved_QNs'] == ''):
+        print '======================\n'+'WARNING: The parsing code did not parse the quantum numbers. This may be due to the CAT QN code not being programmed into QNParser, but also might be due to you choosing not to parse the QNs.\n Please contact your friendly code developer (Nathan) if you need help in this regard.\n'+'======================'
+    
 
     # Prep linelist for submission to database
     sql_cur.execute("SHOW columns FROM main")

@@ -26,59 +26,58 @@ def make_frac(idx, qn, shift=-1, frac_series=None):
 def format_it(fmt_idx, qn_series, choice_idx=None):
     customChoice = None
 
-    fmt_dict = {202: ({'fmt': '{:d}({:d}) - {:d}({:d})','series': [0, 1, 2, 3], 'tag':'Symmetric top'},
-                      ),
+    fmt_dict = {202: [{'fmt': '{:d}({:d}) - {:d}({:d})','series': [0, 1, 2, 3], 'tag':'Symmetric top'},
+    ],
 
-                203: ({'fmt':'{:d}({:d}) - {:d}({:d}), F = {:d} - {:d}',
+                203: [{'fmt':'{:d}({:d}) - {:d}({:d}), F = {:d} - {:d}',
                        'series': [0, 1, 3, 4, 2, 5], 'tag': 'Symmetric top with 1 hyperfine nuclei.'},
                       {'fmt': '', 'series':[0], 'tag': 'Symmetric top with parity and weird electronic spin QN Omega (custom)'},
-                      ),
+                ],
 
-                213: ({'fmt': '', 'series': [0], 'tag': 'Hunds Case B with Lambda doubling'},
+                213: [{'fmt': '', 'series': [0], 'tag': 'Hunds Case B with Lambda doubling'},
                       {'fmt': '', 'series': [0], 'tag': 'Ziruys lambda-doubling. e.g. NaS'}
-                      ),
+                ],
 
-                303: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series':[0, 1, 2, 3, 4, 5], 'tag': 'Asymmetric top.' },
-                      ),
+                303: [{'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series':[0, 1, 2, 3, 4, 5], 'tag': 'Asymmetric top.' },
+                ],
 
-                304: ({'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d}), F = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with 1 hyperfine nuclei.'},
-                      ),
+                304: [{'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d}), F = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with 1 hyperfine nuclei.'},
+                ],
 
-                314: ({'fmt':'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'frac_series': [3, 7], 'frac_shift': -1,
+                314: [{'fmt':'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'frac_series': [3, 7], 'frac_shift': -1,
                       'tag': 'Asymmetric top with non-zero total electronic spin'},
-                      ),
+                ],
 
-                346: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {} - {}',
+                346: [{'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {} - {}',
                        'series': [0, 1, 2, 6, 7, 8, 3, 9, 4, 11], 'frac_series': [3, 9, 4, 11], 'frac_shift': -1,
                       'tag': 'Asymmetric top with non-zero total electronic spin and 1 hyperfine nuclei'},
-                      ),
+                ],
 
-                1:   ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Atomic hyperfine transitions, pure J\'\' - J\''},),
+                1:   [{'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Atomic hyperfine transitions, pure J\'\' - J\''},],
                 
-                2:   ({'fmt': '<sup>3</sup>P<sub>{:d}</sub> - <sup>3</sup>P<sub>{:d}</sub>, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'N(II) atomic hyperfine lines'},),
+                2:   [{'fmt': '<sup>3</sup>P<sub>{:d}</sub> - <sup>3</sup>P<sub>{:d}</sub>, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'N(II) atomic hyperfine lines'},],
 
-                11:  ({'fmt': '<sup>2</sup>P<sub>{}</sub> - <sup>2</sup>P<sub>{}</sub>', 'series': [0, 1], 'frac_series':[0,1], 'frac_shift': -1, 'tag': 'C(II) atomic lines'},),
+                11:  [{'fmt': '<sup>2</sup>P<sub>{}</sub> - <sup>2</sup>P<sub>{}</sub>', 'series': [0, 1], 'frac_series':[0,1], 'frac_shift': -1, 'tag': 'C(II) atomic lines'},],
 
-                112: ({'fmt': 'N = {:d} - {:d}, 2J = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Hunds case (A) linear'},
-                      ),
+                112: [{'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}', 'series': [1, 3, 0, 2], 'tag': 'Linear molecule, S state, with hyperfine'},],
 
-                113: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}, F = {} - {}', 'series':[1, 4, 0, 3, 2, 5], 'frac_series': [2,5], 'frac_shift': -1,
+                113: [{'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}, F = {} - {}', 'series':[1, 4, 0, 3, 2, 5], 'frac_series': [2,5], 'frac_shift': -1,
                        'tag': 'Linear molecule with singlet electronic spin and hyperfine nuclei'},
-                      ),
+                ],
 
-                123: ({'fmt':'N = {:d} - {:d}, J = {} - {}, F = {:d} - {:d}', 'series':[0, 3, 1, 4, 2, 5], 'frac_series': [1,4], 'frac_shift': -1,
+                123: [{'fmt':'N = {:d} - {:d}, J = {} - {}, F = {:d} - {:d}', 'series':[0, 3, 1, 4, 2, 5], 'frac_series': [1,4], 'frac_shift': -1,
                       'tag': 'Linear molecule with non-singlet electronic spin and hyperfine nuclei'},
-                      ),
-                1303: ({'fmt': '', 'series': [0], 'tag': 'Lambda doubled symmetric top, e.g. CH3CN v8=1'},
+                ],
+                1303: [{'fmt': '', 'series': [0], 'tag': 'Lambda doubled symmetric top, e.g. CH3CN v8=1'},
                        {'fmt': '', 'series': [1], 'tag': 'Methylamine (JPL)'},
                        {'fmt': '', 'series': [2], 'tag': 'Ethylene v5-v4 (CDMS)'}
-                       ),
+                ],
 
-                1304: ({'fmt':'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[1, 4, 3, 7],
+                1304: [{'fmt':'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[1, 4, 3, 7],
                        'tag': 'Symmetric top molecule with integral electronic spin'},
-                       ),
+                ],
 
-                1404: ({'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), m = {:d}', 'series': [0, 1, 2, 4, 5, 6, 3], 'tag': 'Asymmetric top with specified upper-state vibrational QN'},
+                1404: [{'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), m = {:d}', 'series': [0, 1, 2, 4, 5, 6, 3], 'tag': 'Asymmetric top with specified upper-state vibrational QN'},
                        {'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), v = {:d} - {:d}', 'series': [0, 1, 2, 4, 5, 6, 3, 7], 'tag': 'Asymmetric top with generic vibrational transition QNs'},
                        {'fmt':'{:d}({:d},{:d}) - {:d}({:d},{:d})', 'series': [0, 1, 2, 4, 5, 6], 'tag': 'Generic asymmetric top, no vibrational labelling.'},
                        {'fmt':'', 'series':[0], 'tag': 'Monodeuterated methanol, CH2DOH'},
@@ -87,51 +86,53 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        {'fmt':'', 'series':[3], 'tag': 'Ethanol, gauche/anti combined fit'},
                        {'fmt':'', 'series':[4], 'tag': 'Dimethyl ether, two methyl rotor fit (CDMS)'},
                        {'fmt':'', 'series':[5], 'tag': 'Methyl mercaptan, internal rotation with torsional excited states'}
-                       ),
+                ],
 
-                224: ({'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
+                224: [{'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
                       {'fmt': '', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting, e.g. NO'},
-                      ),
+                ],
 
-                234: ({'fmt':'', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting with half-integer quanta'},
-                      ),
+                234: [{'fmt':'', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting with half-integer quanta'},
+                ],
 
-                245: ({'fmt':'', 'series': [0], 'tag': 'Hunds case (a) with two hyperfine splittings, e.g. N17O'},
-                      ),
+                245: [{'fmt':'', 'series': [0], 'tag': 'Hunds case (a) with two hyperfine splittings, e.g. N17O'},
+                ],
 
-                255: ({'fmt': 'J = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', 'series':[2, 7, 1, 6, 3, 8, 4, 9], 'frac_series':[2,7],  'frac_shift': -1, 'tag': 'Linear molecule with two quads and parity'},
-                      ),
+                255: [{'fmt': 'J = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F<sub>2</sub> = {:d} - {:d}', 'series':[2, 7, 1, 6, 3, 8, 4, 9], 'frac_series':[2,7],  'frac_shift': -1, 'tag': 'Linear molecule with two quads and parity'},
+                ],
 
-                101: ({'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Linear molecule'}, ),
+                101: [{'fmt': 'J = {:d} - {:d}', 'series': [0, 1], 'tag': 'Linear molecule'}, ],
 
-                102: ({'fmt': 'J = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule, S state, with hyperfine'},),
+                102: [{'fmt': 'J = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule, S state, with hyperfine'},],
 
-                112: ({'fmt': 'N = {:d} - {:d}, J = {:d} - {:d}', 'series': [1, 3, 0, 2], 'tag': 'Linear molecule, S state, with hyperfine'},),
 
-                1202: ({'fmt': 'J = {:d} - {:d}, v = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule with generic vibrational QNs'},
-                       ),
 
-                325: ({'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'frac_series': [3,8], 'frac_shift': -1, 'tag': 'Asymmetric top with half-integer electronic spin + nuclear quad coupling'},
-                      ),
+                1202: [{'fmt': 'J = {:d} - {:d}, v = {:d} - {:d}', 'series': [0, 2, 1, 3], 'tag': 'Linear molecule with generic vibrational QNs'},
+                ],
 
-                1335: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
-                       ),
-                1325: ({'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
-                       ),
+                325: [{'fmt': 'N(K<sub>a</sub>,K<sub>c</sub>) = {:d}({:d},{:d}) - {:d}({:d},{:d}), J = {} - {}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'frac_series': [3,8], 'frac_shift': -1, 'tag': 'Asymmetric top with half-integer electronic spin + nuclear quad coupling'},
+                ],
 
-                1356: ({'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
-                       ),
+                1335: [{'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                ],
+                1325: [{'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                ],
 
-                1366: ({'fmt': 'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single integral quad'},
-                       ),
+                1356: [{'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
+                ],
 
-                6315: ({'fmt': 'N(KaKc) = {:d}({:d}, {:d}) - {:d}({:d}, {:d}), S = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with crazy coupling with reduced spin QN.'},
-                       ),
+                1366: [{'fmt': 'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single integral quad'},
+                ],
+
+                6315: [{'fmt': 'N(KaKc) = {:d}({:d}, {:d}) - {:d}({:d}, {:d}), S = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with crazy coupling with reduced spin QN.'},
+                ],
                        
-                1325: ({'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
-                    )
+                1325: [{'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
+                ]
 
                 }
+    for key in fmt_dict.keys():
+        fmt_dict[key].append({'fmt': '', 'series': [-1], 'tag': 'Do not parse QNs. Leave blank.'})
 
     try:
         temp = fmt_dict[fmt_idx]
@@ -139,10 +140,16 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
         frac_s = None
         frac_sh = None
+
     except KeyError:
+        if choice_idx == -1: # No QN formatter found for this QN code, and the user has chosen to return blanks.
+            return '', -1
+            
         if qn_series.shape[0] != 2:
-            raise MissingQNFormatException("QN format index %i is not recognized by the program. "
-                                           "Please add manually." % fmt_idx)
+            if eg.ccbox('QN format index %i is not recognized by the program. You will need to add it manually for proper QN parsing. Hit CONTINUE if you would like blank parsed QNs.' % fmt_idx, 'Missing QN Code'):
+                return '', -1
+            else:
+                raise MissingQNFormatException("QN format index %i is not recognized by the program, please add manually." % fmt_idx)
         else:
             fmt = '{:d} - {:d}'
             order = [0, 1]
@@ -191,7 +198,11 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
         if customChoice is not None:
 
-            if fmt_idx == 1404:
+            if customChoice == -1: 
+                fmt = ''
+                order = []
+
+            elif fmt_idx == 1404:
 
                 if customChoice == 0:
 
@@ -538,6 +549,5 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 return fmt.format(*[new_series[x] for x in order]), ''
             else:
                 return fmt.format(*[int(qn_series[x]) for x in order]), ''
-    except:
-        print('WARNING: If you are seeing this error it probably means the QN code for this CAT has not been programmed into QNFormat. Please contact your friendly local developer for help (e.g. Nate)')
-        raise
+    except: # QN Code not programmed into parser. WARNING message will be thrown in main parser code. 
+        return '', ''
