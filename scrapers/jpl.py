@@ -9,6 +9,7 @@ from collections import OrderedDict
 import re
 import MySQLdb as sqldb
 import easygui as eg
+import os
 from QNFormat import *
 
 
@@ -147,14 +148,14 @@ class JPLMolecule:
                         except TypeError:
                             print i, val, [x.strip() for x in qns]
             try:
-                parsed_list.append([float(s.strip()) for s in row[:-1]] + [qns_up, qns_down])
+                parsed_list.append([float(s.strip()) for s in row[:-1]] + [raw_qn] + [qns_up, qns_down])
             except ValueError:  # Get blank line or other issue?
                 line = [s.strip() for s in row[:-1]]
                 if not line[0]: # Blank line
                     continue
                 elif any([char.isalpha() for char in line[5]]): # Upper state degeneracy > 99:
                     line[5] = 1000 + l_to_idx(line[5][0])*100 + int(line[5][1:])
-                    parsed_list.append([float(col) for col in line]+ [qns_up, qns_down])
+                    parsed_list.append([float(col) for col in line]+ [raw_qn] + [qns_up, qns_down])
 
         dtypes = [('frequency', 'f8'), ('uncertainty', 'f8'), ('intintensity', 'f8'), ('degree_freedom', 'i4'),
                   ('lower_state_energy', 'f8'),('upper_state_degeneracy', 'i4'), ('molecule_tag', 'i4'),
@@ -242,8 +243,10 @@ class JPLMolecule:
         return cat
 
     def __init__(self, listing_entry, custom=False, custom_path=""):
+
         self.date = listing_entry[0]
         self.id = str(listing_entry[1])
+        self.tag = self.id
         self.name = listing_entry[2]
         self.formula = self.name
 
@@ -271,23 +274,118 @@ class JPLMolecule:
         self.cat['`v3.0`'] = 3
 
 def get_updates():
-    BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
 
-    # Pull new update list
-    update_page = urllib2.urlopen(BASE_URL+"/whats.new")
+    def build_database(working_path):
+        print('No local database of JPL updates exists, rebuilding...')
+        print('Takes a few minutes. Be patient!')
+        BASE_URL = "http://spec.jpl.nasa.gov"
 
-    i = 0
-    updates = []
-    for line in urllib2.urlopen(BASE_URL+"/whats.new"):
-        if i == 0:
-            i += 1
-            continue
-        elif line != '\n':
-            temp = line.split()
-            updates.append([time.strptime(temp[0], '%Y/%m/%d'), int(temp[1]), temp[2]])
+        # Pull new update list
+        update_page = urllib2.urlopen(BASE_URL+"/ftp/pub/catalog/catdir.html")
+        date_formats = ['%b. %Y', '%B %Y']
 
-    update_page.close()
-    return updates
+        updates = []
+
+        inTable = False
+
+        for line in update_page:
+
+            if '<PRE>' in line:
+                inTable = True
+                continue 
+
+            elif '</PRE>' in line:
+                break
+
+            if inTable:
+                entry = line.split()
+
+                # Scrape ID number and documentation url and name
+                id_num = int(entry[0]) 
+                doc_url = BASE_URL+re.findall(r'(?:/ftp/pub/catalog/doc/d)\d*(?:.cat)', line)[0]
+
+                end_bound = entry.index('<A')
+                name = ' '.join(entry[1:end_bound-2])
+                
+                # Open documentation URL and read out date 
+                try: 
+                    for line in urllib2.urlopen(doc_url).read().split('\n'):
+                        if 'Date:' in line:              
+                                date_line = line.split()
+                                # Now let's parse the date... there are lots of exceptions, so this is gonna be spaghetti code
+                                date = ' '.join(date_line[2:3+date_line[3:].index('&')]).strip('&').strip()
+
+                                for fmt in date_formats:
+                                    try:
+                                        parsed_date = time.strptime(date, fmt)
+                                        break
+                                    except ValueError:
+                                        pass
+                        
+                except urllib2.HTTPError: # TeX file doesn't exist
+                    parsed_date = time.strptime('1900/01', '%Y/%m')
+
+                print [time.strftime('%Y/%m', parsed_date),id_num, name]
+                updates.append([time.strftime('%Y/%m', parsed_date),id_num, name])
+
+        update_page.close()
+
+        sorted_updates = sorted(updates, key=lambda x:x[0], reverse=True)
+
+        # Write delimited file for database
+        with open(working_path+'/jpl_updates.db', 'w') as db_buffer:
+            for entry in sorted_updates:
+                db_buffer.write('%s :: %s :: %s \n'%(entry[0],entry[1],entry[2]))
+
+        return sorted_updates
+
+
+    working_path = os.path.dirname(os.path.realpath(__file__))
+
+    # First, let's check if update database exists
+    if os.path.exists(working_path+'/jpl_updates.db'):
+
+        msg = 'JPL listing database exists locally, and was created on %s. Would you like to use it, or update it?'%time.ctime(os.path.getctime(working_path+'/jpl_updates.db'))
+        title = 'JPL Updates'
+        choices = ['Continue', 'Update']
+        update_or_not_update = eg.buttonbox(msg=msg, title=title,choices=choices, default_choice='Continue')
+        if update_or_not_update == 'Continue':
+
+            updates = []
+            with open(working_path+'/jpl_updates.db', 'r') as inp_buffer:
+                for line in inp_buffer:
+                    elements = [x.strip() for x in line.split(' :: ')]
+                    elements[1] = int(elements[1])
+                    updates.append(elements)
+                    
+            return updates
+        else: 
+            return build_database(working_path)
+
+    
+    else: # Gotta build the database 
+        return build_database(working_path)
+
+        
+
+    # BASE_URL = "http://spec.jpl.nasa.gov/ftp/pub/catalog"
+
+    # # Pull new update list
+    # update_page = urllib2.urlopen(BASE_URL+"/catdir.html")
+
+    # i = 0
+    # updates = []
+    # for line in update_page:
+    #     print line
+    #     # if i == 0:
+    #     #     i += 1
+    #     #     continue
+    #     # elif line != '\n':
+    #     #     temp = line.split()
+    #     #     updates.append([time.strptime(temp[0], '%Y/%m/%d'), int(temp[1]), temp[2]])
+
+    # update_page.close()
+    # return updates
 
 def process_update(mol, entry=None, sql_conn=None):
     """
@@ -657,6 +755,7 @@ def push_molecule(db, ll, spec_dict, meta_dict, push_metadata_flag='APPEND', app
         print 'Creating new entry in metadata table...'
         try:
             cursor.execute(query("species_metadata", meta_dict), meta_dict.values())
+
         except sqldb.ProgrammingError:
             print "The folllowing query failed: "
             print query_err("species_metadata", meta_dict).format(*meta_dict.values())
@@ -685,8 +784,7 @@ def main(db):
 
     # Get JPL update listing
     listing = get_updates()
-
-    choice_list = ["%s  %s  %s" % (time.strftime('%Y/%m/%d', x[0]), x[1], x[2]) for x in listing]
+    choice_list = ["%s  %s  %s" % (x[0], x[1], x[2]) for x in listing]
     JPLLoop = True
     while JPLLoop:
 
