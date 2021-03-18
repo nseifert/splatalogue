@@ -239,6 +239,10 @@ class CDMSMolecule:
         q_temps = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.0': 'Q_500_0', '300.0': 'Q_300_0',
                    '225.0': 'Q_225_0', '150.0': 'Q_150_0', '75.00': 'Q_75_00', '37.50': 'Q_37_50',
                    '18.75': 'Q_18_75', '9.375': 'Q_9_375', '5.000': 'Q_5_00', '2.725': 'Q_2_725'}
+
+        q_temps_alt = {'2000.': 'Q_2000_', '1000.': 'Q_1000_', '500.': 'Q_500_0', '300.': 'Q_300_0',
+                   '225.0': 'Q_225_0', '150.': 'Q_150_0', '075.': 'Q_75_00', '37.50': 'Q_37_50',
+                   '18.75': 'Q_18_75', '9.375': 'Q_9_375', '5.000': 'Q_5_00', '2.725': 'Q_2_725'} # Bullshit workaround to fix some non-standard stuff in Holger's entries
         dipoles = {'a / D': 'MU_A', 'b / D': 'MU_B', 'c / D': 'MU_C'}
 
         # Initialize scraper
@@ -270,9 +274,13 @@ class CDMSMolecule:
                     metadata['Contributor'] = temp.split('Contributor')[1].encode('utf-8')
 
             # Pull out spin-rotation partition function values
-            for key in q_temps:
+            for key,key2 in zip(q_temps,q_temps_alt):
                 if 'Q(%s)' % key in temp:
                     metadata[q_temps[key].encode('utf-8')] = temp.split('Q(%s)' % key)[1].encode('utf-8')
+                elif 'Q(%s' % key2 in temp:
+                    metadata[q_temps_alt[key2].encode('utf-8')] = temp.split('Q(%s)' % key2)[1].encode('utf-8')
+
+                
 
             def value_check(x): return any(i.isdigit() for i in x)
 

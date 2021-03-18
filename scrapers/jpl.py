@@ -204,6 +204,7 @@ class JPLMolecule:
 
         metadata['Ref1'] = ref_data
         metadata['Name'] = self.name
+        metadata['Date'] = time.strftime('%b. %Y', time.strptime(self.date,'%Y/%m'))
 
         return metadata
 

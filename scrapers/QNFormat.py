@@ -128,7 +128,9 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 ],
                        
                 1325: [{'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
-                ]
+                ],
+
+                1405: [{'fmt': '', 'series': [0], 'tag': 'CDMS entry for acetic acid torsional states'}, ],
 
                 }
     for key in fmt_dict.keys():
@@ -528,6 +530,24 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
                                 fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
                         order = [0, 5, 3, 8, 1, 6, 4, 9, 2, 7]      
+            
+            elif fmt_idx == 1405:
+
+                if customChoice == 0:
+
+                    if qn_series[4] == 0: #E
+                        fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d}), E'
+                    elif qn_series[4] == 1: #A1
+                        if qn_series[9] == 2: #A2
+                            fmt = '{:d}({:d},{:d}) A1 - {:d}({:d},{:d}) A2'
+                        else: 
+                            fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d}) A1'
+                    elif qn_series[4] == 2:
+                        if qn_series[9] == 1: 
+                            fmt = '{:d}({:d},{:d}) A2 - {:d}({:d},{:d}) A1'
+                        else:
+                            fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d}) A2'
+                    order = [0, 1, 2, 5, 6, 7]
 
 
     try: 
