@@ -73,8 +73,8 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                        {'fmt': '', 'series': [2], 'tag': 'Ethylene v5-v4 (CDMS)'}
                 ],
 
-                1304: [{'fmt':'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[1, 4, 3, 7],
-                       'tag': 'Symmetric top molecule with integral electronic spin'},
+                1304: [{'fmt':'N = {:d} - {:d}, J = {:d} - {:d}', 'series':[1, 4, 3, 7], 'tag': 'Symmetric top molecule with integral electronic spin'},
+                       {'fmt':'', 'series':[0], 'tag': 'CDMS-style Ammonia, J,K,V,F'}
                 ],
 
                 1404: [{'fmt': '{:d}({:d},{:d}) - {:d}({:d},{:d}), m = {:d}', 'series': [0, 1, 2, 4, 5, 6, 3], 'tag': 'Asymmetric top with specified upper-state vibrational QN'},
@@ -548,6 +548,24 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         else:
                             fmt = '{:d}({:d},{:d}) - {:d}({:d},{:d}) A2'
                     order = [0, 1, 2, 5, 6, 7]
+            
+            elif fmt_idx == 1304:
+
+                if customChoice == 0:
+
+                    if qn_series[2] == 1:
+                        if qn_series[6] == 0: #0 = 0+, 1 = 0-
+                            fmt = '{:d}({:d})<sup>-</sup> - {:d}({:d})<sup>+</sup>, F = {:d} - {:d}'
+                        else:
+                            fmt = '{:d}({:d})<sup>-</sup> - {:d}({:d})<sup>-</sup>, F = {:d} - {:d}'
+                    
+                    elif qn_series[2] == 0:
+                        if qn_series[6] == 0: #0 = 0+, 1 = 0-
+                            fmt = '{:d}({:d})<sup>+</sup> - {:d}({:d})<sup>+</sup>, F = {:d} - {:d}'
+                        else:
+                            fmt = '{:d}({:d})<sup>+</sup> - {:d}({:d})<sup>-</sup>, F = {:d} - {:d}'
+                    order = [0, 1, 4, 5, 3, 7]
+                    
 
 
     try: 

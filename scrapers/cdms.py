@@ -180,7 +180,12 @@ class CDMSMolecule:
         for row in parsed_list:
             final_list.append(tuple(row[:-2]+row[-2]+row[-1]))
 
+
         nplist = np.zeros((len(final_list),), dtype=dtypes)
+        
+        for line in final_list:
+            print line
+        print dtypes
         nplist[:] = final_list
 
         return pd.DataFrame(nplist)
@@ -277,7 +282,7 @@ class CDMSMolecule:
             for key,key2 in zip(q_temps,q_temps_alt):
                 if 'Q(%s)' % key in temp:
                     metadata[q_temps[key].encode('utf-8')] = temp.split('Q(%s)' % key)[1].encode('utf-8')
-                elif 'Q(%s' % key2 in temp:
+                elif 'Q(%s)' % key2 in temp:
                     metadata[q_temps_alt[key2].encode('utf-8')] = temp.split('Q(%s)' % key2)[1].encode('utf-8')
 
                 
@@ -466,7 +471,13 @@ def pull_updates():
 
 
 def process_update(mol, entry=None, sql_conn=None):
-
+    """
+    Flow for process_update:
+    1) Check metadata, update if needed
+    2) Set QN formatting (????)
+    3) Delete CDMS-related linelist from Splatalogue
+    4) Push new linelist and metadata to Splatalogue
+    """
     sql_cur = sql_conn.cursor()
 
     # ----------------------------
@@ -478,11 +489,16 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
 
     results = sql_cur.fetchall()
+
+    MetadataMalformed = False 
+
     if len(results) == 1:
         db_meta = results[0]
+        db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
 
-    else:  # There's more than one linelist associated with the chosen species_id
+    elif len(results) > 1:  # There's more than one linelist associated with the chosen species_id
         chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[3], a[54], a[57], a[58]) for a in results]
+        print('Linelist choices: ', chc)
         user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
         for i, entry in enumerate(chc):
@@ -490,16 +506,29 @@ def process_update(mol, entry=None, sql_conn=None):
                 idx = i
                 break
         db_meta = results[idx]
-
-    db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
+        db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
     
-    metadata_push_answer = eg.buttonbox(msg='Do you want to APPEND or REPLACE a new metadata entry, or DO NOTHING? Do nothing if you are merely adding a hyperfine linelist to an existing entry.', choices=['APPEND', 'REPLACE', 'DO NOTHING'])
-    if metadata_push_answer == 'APPEND':
-        push_metadata_flag = 'APPEND'
-    elif metadata_push_answer == 'REPLACE':
-        push_metadata_flag = 'REPLACE'
+    else: # Species exists but there are no metadata entries, so we can have to populate a new one
+        db_meta = {}
+        MetadataMalformed = True
+        for i, col_name in enumerate(db_meta_cols):
+            if col_name in mol.metadata.keys():
+                db_meta[col_name] = mol.metadata[col_name]
+            else:
+                continue
+        mol.metadata['LineList'] = mol.ll_id
+        mol.metadata['species_id_noparens'] = mol.s_name_noparens
+    
+    if len(results) >= 1:  
+        metadata_push_answer = eg.buttonbox(msg='Do you want to APPEND or REPLACE a new metadata entry, or DO NOTHING? Do nothing if you are merely adding a hyperfine linelist to an existing entry.', choices=['APPEND', 'REPLACE', 'DO NOTHING'])
+        if metadata_push_answer == 'APPEND':
+            push_metadata_flag = 'APPEND'
+        elif metadata_push_answer == 'REPLACE':
+            push_metadata_flag = 'REPLACE'
+        else:
+            push_metadata_flag = 'NO'
     else:
-        push_metadata_flag = 'NO'
+        push_metadata_flag = 'APPEND'
 
     append_lines = eg.buttonbox(msg='Do you want to append the linelist, or replace the current linelist in the database?', choices=['Append', 'Replace'])
     if append_lines == 'Append' or not append_lines:
@@ -507,8 +536,14 @@ def process_update(mol, entry=None, sql_conn=None):
     elif append_lines == 'Replace':
         append_lines = False
 
-    if db_meta['LineList'] != mol.ll_id:
-        mol.metadata['LineList'] = mol.ll_id
+    try:
+        if db_meta['LineList'] != mol.ll_id:
+            mol.metadata['LineList'] = mol.ll_id
+
+    except KeyError: # Only catches when species exists but metadata doesn't
+        mol.metadata['Linelist'] = mol.ll_id
+        db_meta['LineList'] = mol.ll_id
+
         # Only entry in database isn't from the linelist of the entry that user wants to update
     mol.metadata['v1_0'] = '0'
     mol.metadata['v2_0'] = '0'
@@ -520,8 +555,8 @@ def process_update(mol, entry=None, sql_conn=None):
                             % mol.metadata['Name'], title="Metadata Name Change")
     if new_name is not '':
         mol.metadata['Name'] = new_name
-    else:
-        mol.metadata['Name'] = db_meta['Name']
+    elif not MetadataMalformed:
+        mol.metadata['Name'] = db_meta['Name']    
     
     # Check to see first column to place reference info
     # ref_idx = 1
@@ -532,18 +567,17 @@ def process_update(mol, entry=None, sql_conn=None):
 
     #mol.metadata['Ref%s'%ref_idx] = mol.metadata.pop('Ref1')
 
-    mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://www.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
-    mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('file=e','file=c')
-    mol.metadata['Ref19'] = mol.metadata['Ref19'].replace('Entry', 'CAT file')
+    mol.metadata['Ref20'] = '<a href=' + "\"" + 'http://cdms.astro.uni-koeln.de'+mol.meta_url + "\"" + " target=\"_blank\">CDMS Entry</a>"
+    mol.metadata['Ref19'] = mol.metadata['Ref20'].replace('cdmsinfo?file=e','cdmssearch?file=c').replace('Entry', 'CAT file')
     # meta_fields = ['%s \t %s' %(a[0],a[1]) for a in zip(db_meta_cols, db_meta) if 'Ref' not in a[0]]
 
     sql_cur.execute("SHOW columns FROM species")
 
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species WHERE species_id=%s", (db_meta['species_id'],))
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (entry[0],))
     db_species = sql_cur.fetchall()[0]
 
-    if db_meta['LineList'] != mol.ll_id:
+    if db_meta['LineList'] != mol.ll_id or MetadataMalformed:
         species_entry_dict = {key: value for (key, value) in [(db_species_cols[i], val) for i, val
                                                               in enumerate(db_species)]}
 
@@ -567,7 +601,7 @@ def process_update(mol, entry=None, sql_conn=None):
     # sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s and v1_0=%s and v2_0=%s",
     #                 (db_meta[0], mol.ll_id, db_meta[53], db_meta[54]))
 
-    if db_meta['LineList'] == mol.ll_id:
+    if db_meta['LineList'] == mol.ll_id or not MetadataMalformed:
         metadata_to_push = {}
         for i, col_name in enumerate(db_meta_cols):
             if col_name in mol.metadata.keys():
@@ -575,9 +609,9 @@ def process_update(mol, entry=None, sql_conn=None):
             #elif db_meta[col_name] is not None:
             #    metadata_to_push[col_name] = db_meta[col_name]
             else: # Hacky fix to ensure clean columns -- this cleans up columns with no default values that don't allow NULL or are values that aren't otherwise filled in by this routine
-                print col_name
                 if col_name in ['ism', 'species_id', 'LineList']:
                     metadata_to_push[col_name] = db_meta[col_name]
+
 
     else:
         metadata_to_push = mol.metadata
