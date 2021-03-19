@@ -405,9 +405,10 @@ def process_update(mol, entry=None, sql_conn=None):
     #      "WHERE species_id=%s" %str(entry[0])
     #print meta_cmd
 
+    SPECIES_ID = entry[0]
     sql_cur.execute("SHOW columns FROM species_metadata")
     db_meta_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (entry[0],))
+    sql_cur.execute("SELECT * from species_metadata WHERE species_id=%s", (SPECIES_ID,))
 
 
     results = sql_cur.fetchall()
@@ -418,8 +419,8 @@ def process_update(mol, entry=None, sql_conn=None):
         db_meta = results[0]
         db_meta = {key:value for key, value in zip(db_meta_cols, db_meta)}
     
-    elif len(results) > 1:  # There's more than one linelist associated with the chosen species_id
-        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[3], a[54], a[57], a[58]) for a in results]
+    elif len(results) > 1 and any([res[4] for res in results]):  # There's more than one linelist associated with the chosen species_id
+        chc = ['date: %s \t list: %s \t v2.0: %s \t v3.0: %s' % (a[4], a[55], a[57], a[59]) for a in results]
         print('Linelist choices: ', chc)
         user_chc = eg.choicebox("Choose an entry to update (CDMS linelist = 10)", "Entry list", chc)
         idx = 0
@@ -490,7 +491,7 @@ def process_update(mol, entry=None, sql_conn=None):
     sql_cur.execute("SHOW columns FROM species")
 
     db_species_cols = [tup[0] for tup in sql_cur.fetchall()]
-    sql_cur.execute("SELECT * from species WHERE species_id=%s", (entry[0],))
+    sql_cur.execute("SELECT * from species WHERE species_id=%s", (SPECIES_ID,))
     db_species = sql_cur.fetchall()[0]
 
 
@@ -526,7 +527,7 @@ def process_update(mol, entry=None, sql_conn=None):
                 print col_name
                 if col_name in ['ism', 'species_id', 'LineList']:
                     metadata_to_push[col_name] = db_meta[col_name]
-                    
+
     else:
         metadata_to_push = mol.metadata
 
