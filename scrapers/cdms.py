@@ -183,9 +183,6 @@ class CDMSMolecule:
 
         nplist = np.zeros((len(final_list),), dtype=dtypes)
         
-        for line in final_list:
-            print line
-        print dtypes
         nplist[:] = final_list
 
         return pd.DataFrame(nplist)

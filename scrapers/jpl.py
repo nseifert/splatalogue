@@ -524,7 +524,6 @@ def process_update(mol, entry=None, sql_conn=None):
             #elif db_meta[col_name] is not None:
             #    metadata_to_push[col_name] = db_meta[col_name]
             else: # Hacky fix to ensure clean columns -- this cleans up columns with no default values that don't allow NULL or are values that aren't otherwise filled in by this routine
-                print col_name
                 if col_name in ['ism', 'species_id', 'LineList']:
                     metadata_to_push[col_name] = db_meta[col_name]
 

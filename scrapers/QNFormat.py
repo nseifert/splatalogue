@@ -90,6 +90,7 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                 224: [{'fmt': 'N = {:d}, J = {} - {}, p = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 2, 6, 1, 5, 3, 7], 'tag': 'Hunds case A with hyperfine and parity -- generic', 'frac_series': [2,6], 'frac_shift': -1},
                       {'fmt': '', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting, e.g. NO'},
+                      {'fmt': '', 'series': [1], 'tag': 'Methylidene (CH) -- CDMS style'},
                 ],
 
                 234: [{'fmt':'', 'series': [0], 'tag': 'Hunds case A with hyperfine splitting with half-integer quanta'},
@@ -115,7 +116,11 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
 
                 1335: [{'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
                 ],
-                1325: [{'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+
+                1325: [
+                    {'fmt':'N = {:d} - {:d}, J = {} - {}, p = {:d} - {:d}, F = {} - {}', 'series':[0, 5, 3, 8, 1, 6, 4, 9], 'frac_series': [3,8,4,9], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin'},
+                    {'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
+                    {'fmt': '', 'series': [1], 'tag': 'JPL entry for CH, pure rotational transitions, multiple vib states'},
                 ],
 
                 1356: [{'fmt':'N = {:d} - {:d}, J + 1/2 = {} - {}, p = {:d} - {:d}, F<sub>1</sub> = {:d} - {:d}, F + 1/2 = {} - {}', 'series': [0, 6, 3, 9, 1, 7, 4, 10, 5, 11], 'frac_series': [3,9,5,11], 'frac_shift': -1, 'tag': 'Symmetric top with parity and half-integer electronic spin and single half-integer quad'},
@@ -127,9 +132,6 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                 6315: [{'fmt': 'N(KaKc) = {:d}({:d}, {:d}) - {:d}({:d}, {:d}), S = {:d} - {:d}, F = {:d} - {:d}', 'series': [0, 1, 2, 5, 6, 7, 3, 8, 4, 9], 'tag': 'Asymmetric top with crazy coupling with reduced spin QN.'},
                 ],
                        
-                1325: [{'fmt': '', 'series': [0], 'tag': 'JPL entry for Iodine monoxide, e.g. Hund\'s \'a\' case for pi1/2 and 3/2cases with nuclear hyperfine and vibrational states'},
-                ],
-
                 1405: [{'fmt': '', 'series': [0], 'tag': 'CDMS entry for acetic acid torsional states'}, ],
 
                 }
@@ -398,6 +400,22 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                         else:
                             fmt = u'J = {} - {}, &Omega; = 1/2, F = {}<sup>-</sup> - {}<sup>+</sup>'
                     order = [0, 4, 3, 7]
+                
+                elif customChoice == 1 and fmt_idx == 224: # CDMS CH entry
+                    fmt = u'N = {} - {}, '
+                    fmt += u'J = {}/2 - {}/2, '.format(2*int(qn_series[2])-1, 2*int(qn_series[6])-1)
+                    if int(qn_series[1]) < 0: # negative parity
+                        if int(qn_series[5]) <0: # negative parity, lower state                           
+                            fmt += u'F = {}<sup>-</sup> - {}<sup>-</sup>, v = 0, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                        else:
+                            fmt += u'F = {}<sup>-</sup> - {}<sup>+</sup>, v = 0, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                    elif int(qn_series[1]) > 0: # positive parity
+                        if int(qn_series[5]) > 0: # positive parity, lower state
+                            fmt += u'F = {}<sup>+</sup> - {}<sup>+</sup>, v = 0, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                        else:
+                            fmt += u'F = {}<sup>+</sup> - {}<sup>-</sup>, v = 0, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                    order = [0, 4, 3, 7]
+
 
             elif fmt_idx == 245:
                 if customChoice == 0:
@@ -530,6 +548,23 @@ def format_it(fmt_idx, qn_series, choice_idx=None):
                             elif np.abs(qn_series[5] - qn_series[8]) >= 1: # N'' - J'' = 1 --> pi 3/2
                                 fmt = u'N = {:d} - {:d}, J = {} - {}, &Lambda = {:d} - {:d}, F = {} - {}, v = {:d} - {:d}, <sup>2</sup>&Pi<sub>3/2</sub> -> <sup>2</sup>&Pi<sub>3/2</sub>'
                         order = [0, 5, 3, 8, 1, 6, 4, 9, 2, 7]      
+
+                elif customChoice == 1:
+                    # CH entry, JPL
+                    fmt = u'N = {} - {}, '
+                    fmt += u'J = {}/2 - {}/2, '.format(2*int(qn_series[3])-1, 2*int(qn_series[8])-1)
+                    if int(qn_series[1]) < 0: # negative parity
+                        if int(qn_series[5]) <0: # negative parity, lower state                           
+                            fmt += u'F = {}<sup>-</sup> - {}<sup>-</sup>, v = {}, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                        else:
+                            fmt += u'F = {}<sup>-</sup> - {}<sup>+</sup>, v = {}, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                    elif int(qn_series[1]) > 0: # positive parity
+                        if int(qn_series[5]) > 0: # positive parity, lower state
+                            fmt += u'F = {}<sup>+</sup> - {}<sup>+</sup>, v = {}, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                        else:
+                            fmt += u'F = {}<sup>+</sup> - {}<sup>-</sup>, v = {}, <sup>2</sup>&Pi;<sub>3/2</sub> - <sup>2</sup>&Pi;<sub>3/2</sub>'
+                    order = [0, 5, 4, 9, 2]
+
             
             elif fmt_idx == 1405:
 
