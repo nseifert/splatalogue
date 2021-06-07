@@ -451,14 +451,27 @@ def pull_updates():
     compiled = []  # 0 --> tag, 1 --> Molecule, 2 --> struct_time obj, 3 --> cat file, 4 --> metadata
     for i, entry in enumerate(urls):
         date = des[i][6].strip()
-
-        try:  # Because Holger isn't consistent with his date formatting
-            formatted_date = time.strptime(date, "%b. %Y")
-        except ValueError:
-            try:
-                formatted_date = time.strptime(date, "%B %Y")
-            except ValueError:
-                formatted_date = time.strptime(date, "%b %Y")
+        date_formats = ['%b. %Y', '%B %Y', '%b %Y', '%B. %Y']
+        try: 
+            for date_fmt in date_formats:
+                try: 
+                    formatted_date = time.strptime(date, date_fmt)
+                except ValueError: 
+                    continue 
+                else:
+                    break 
+            assert formatted_date
+        except AssertionError:
+            print('Date format %s is not supported in code. Please add to date_formats.'%date)
+        # try:  # Because Holger isn't consistent with his date formatting
+        #     formatted_date = time.strptime(date, "%b. %Y")
+        # except ValueError:
+        #     try:
+        #         formatted_date = time.strptime(date, "%B %Y")
+        #     except ValueError:
+        #         formatted_date = time.strptime(date, "%b %Y") 
+        #     except ValueError:
+        #         formatted_date = time.strptime(date, "%B. %Y")
 
         compiled.append([unidrop(des[i][0]).encode('utf-8'), unidrop(des[i][1]).encode('utf-8'),
                          formatted_date, urls[i][1], urls[i][2]])
